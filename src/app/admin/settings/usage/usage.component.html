@@ -1,0 +1,47 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class=" search-header mt-4">
+        <div class="float-left">
+          <h1>Usage</h1>
+        </div>
+        <div class="top-right-button-container dj">
+          <!-- <button type="button"
+            class="btn btn-md bR4 btn-outline-primary  d-md-inline-block top-right-button mr-1">Export to
+            CSV</button> -->
+        </div>
+      </div>
+      <div class="separator mt-2 mb-2"></div>
+
+
+    </div>
+  </div>
+  <div class="row mt-2">
+    <div class="col-lg-5 col-md-6 col-sm-12">
+      <div class="card">
+        <h6 class="chart-header">Total Space <span>{{this.pieChartData[1] + ' GB '}}</span></h6>
+        <div class="chart-container chart bgg3">
+          <canvas width="300" height="300" baseChart [data]="pieChartData" [labels]="pieChartLabels"
+            [chartType]="pieChartType" [options]="pieChartOptions" [plugins]="pieChartPlugins" [colors]="pieChartColors"
+            [legend]="pieChartLegend">
+          </canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-5 col-md-6 col-sm-12">
+      <div class="card">
+        <h6 class="chart-header">Total Licenses <span> {{licenceCount?licenceCount:'0'}} Licenses</span></h6>
+        <div class="chart-container chart bgg3">
+          <div style="display: block">
+            <canvas width="300" height="300" baseChart [data]="doughnutChartData" [labels]="doughnutChartLabels"
+              [chartType]="doughnutChartType">
+            </canvas>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

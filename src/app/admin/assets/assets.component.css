@@ -1,0 +1,87 @@
+.grid-list { display: flex; justify-content: space-between; margin-bottom: 10px;}
+.gl-group span { padding: 10px; background-color: transparent; cursor: pointer; color: #3a3a3a; border: 1px solid #922B88; }
+.gl-group span.gl-active { background-color: #922B88; color: #fff; }
+
+.mat-datepicker-content .mat-calendar { width: 296px; height: 354px; z-index: 999999; }
+::ng-deep .cdk-overlay-container { z-index: 1200 !important; }
+.top-right-button-container { display: flex; }
+
+.grid-list .grid-button { display: flex; flex-direction: row; align-items: center; }
+.grid-list .btn-back {  margin-right: 15px; display: flex; flex-direction: row; align-items: center; }
+.folder-breadcrumbs{ padding: 0;
+    list-style-type: none;
+    margin: 0;
+    display: flex;
+    flex-direction: row; }
+.folder-breadcrumbs li{ position: relative;     margin: 0;
+    padding-right: 20px; }
+.folder-breadcrumbs li::after{
+    content:'chevron_right';
+    font-family: 'Material Icons';
+    position: absolute;
+    right: 0px;
+}
+.folder-breadcrumbs li.active{ color: #922B88; }
+.folder-breadcrumbs li.active::after{ display: none; }
+.assets-sort .dropdown-menu { padding: 0px; border: 0; box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04); }
+.assets-sort .dropdown-menu ul { padding: 0; margin: 0; border-bottom: 1px solid #999; list-style-type: none; }
+.assets-sort .dropdown-menu ul:nth-last-child(1) { border-bottom: 0px; }
+.assets-sort .dropdown-menu ul li { padding: 4px 15px; margin: 0; color: #999; font-size: 13px; }
+.assets-sort .dropdown-menu ul li.sort-title { color: #922B88; font-size: 14px; }
+.assets-sort .dropdown-menu ul li.active { color: #000; }
+.assets-card .as-details .fname {  width: 250px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.astags{ display: flex;  }
+.astags ul{     display: flex;
+    flex-direction: row;
+    list-style-type: none;
+    padding: 0;
+    margin: 0; margin-left: 15px; }
+.astags ul li{     border: 1px solid #8c8181;
+    padding: 0px 8px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    margin: 0 5px 5px 0px; line-height: 20px; color: #000; }
+.astags ul li .removetag {
+    font-size: 15px;
+    margin-right: 5px;
+    cursor: pointer;
+    color: #000;
+}
+.filtermodal { padding: 0px !important; margin: 0px; }
+.filtermodal .modal-dialog { max-width: 100%; margin: 0px; }
+.filtermodal .modal-content { 
+    /* height: 100vh;  */
+    background-color: rgba(255,255,255,0.9); }
+.filtermodal .modal-body{ padding: 95px 160px 50px; }
+.filtermodal .modal-body .close{
+    position: absolute;
+    right: 12%;
+    z-index: 999;
+    font-size: 30px;
+}
+.filtermodal .title-header{
+    width: 100%;
+    display: inline-block;
+}
+.filtermodal .title-header h1{
+        width: 100%;
+        padding: 0;
+        margin: 0;
+}
+/* .assets-list-view{
+    position: absolute;
+    z-index: 999;
+} */
+.assets-grid-view{ min-height: 60vh;}
+/* .assets-grid-view ul {height: 500px; overflow: scroll;} */
+.filtermodal .modal-footer{ padding: 16px 155px; }
+.msg-position {
+  margin-top: 117px;
+  font-size: inherit;
+}
+.collection-modal .modal-body { min-height: 300px; }
+

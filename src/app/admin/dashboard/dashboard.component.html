@@ -1,0 +1,63 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="my-search">
+        <h2 class="search-title">Hello!</h2>
+        <div class="searchcard">
+          <div class="dashcard-body">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="main-searchtag" *ngIf="utilsService.flagForHideShowSearchInput === true">
+                  <div class="dash-searchtag">
+                    <mat-form-field class="custom-ngselect" appearance="outline">
+                      <ng-select #elem ngSelectMat placeholder="Search" (open)="onOpen(elem)"
+                        [items]="utilsService.arrayOfTags" [searchable]="true" [dropdownPosition]="'bottom'"
+                        notFoundText="Not found." [clearable]="true" [multiple]="true"
+                        [(ngModel)]="utilsService.searchNgModel" bindLabel="name" bindValue="name">
+                      </ng-select>
+
+                    </mat-form-field>
+                    <button class="btn btn-search">
+                      <span class="material-icons">search</span>
+                    </button>
+                  </div>
+                  <button class="btn btn-primary"
+                    [disabled]="utilsService.isEmptyObjectOrNullUndefiend(utilsService.searchNgModel)"
+                    (click)="utilsService.searchAssets('', this.utilsService.searchNgModel)">Go</button>
+                </div>
+                <div class="main-searchtext" *ngIf="utilsService.flagForHideShowSearchInput === false">
+                  <div class="dash-searchtext">
+                    <!-- <input placeholder="Search" [(ngModel)]="mainSearchNgModel" (keyup.enter)="utilsService.searchAssets(mainSearchNgModel, null)"
+                                        type="text" class="form-control"> -->
+
+                    <!-- (keyup.enter)="utilsService.mainSearchNgModel?utilsService.searchAssets(utilsService.mainSearchNgModel, null):''" -->
+                    <input matInput placeholder="Search" [(ngModel)]="utilsService.mainSearchNgModel" type="text"
+                      class="form-control">
+                    <button class="btn btn-search">
+                      <span class="material-icons">search</span>
+                    </button>
+                  </div>
+                  <button class="btn btn-primary"
+                    [disabled]="utilsService.isNullUndefinedOrBlank(utilsService.mainSearchNgModel)"
+                    (click)="utilsService.searchAssets(utilsService.mainSearchNgModel,null)">Go</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="dashcard-header">
+            <!-- <mat-button-toggle-group name="fontStyle" #group="matButtonToggleGroup" [value]="selectedVal"
+                            aria-label="Font Style" (change)="changeSearchBoxByToogle($event)">
+                            <mat-button-toggle value="MainSearch">Search </mat-button-toggle>
+                            <mat-button-toggle value="TagWisSearch">Search By Tags</mat-button-toggle>
+                        </mat-button-toggle-group> -->
+            <mat-slide-toggle class="example-margin"
+              (toggleChange)="utilsService.flagForHideShowSearchInput = !utilsService.flagForHideShowSearchInput"
+              [checked]="utilsService.flagForHideShowSearchInput" [disabled]="false">
+              By Tags
+            </mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

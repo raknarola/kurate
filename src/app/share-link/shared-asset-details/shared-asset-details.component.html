@@ -1,0 +1,357 @@
+<app-header></app-header>
+<app-side-navbar></app-side-navbar>
+<main class="default-transition">
+
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class=" search-header mt-4">
+          <div class="float-left">
+            <h1>{{assetObj.name}}</h1>
+            <span></span>
+          </div>
+          <div class="top-right-button-container dj">
+            <!-- <button type="button" class="btn btn-primary bR4 btn-md top-right-button mr-1 btn-width">Organizer
+
+              <span class="alertb">1 applied</span>
+            </button> -->
+            <!-- <button type="button"
+              class="btn btn-md bR4 btn-outline-primary  d-md-inline-block top-right-button mr-1 btn-width">Tages
+              <span class="alertb">0 applied</span>
+            </button> -->
+          </div>
+        </div>
+        <div class="separator mt-2 mb-2"></div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-12 col-md-4">
+        <div class="assets-box card">
+          <div class="ab-img32" *ngIf="assetObj.thumb_url"
+            [ngStyle]="{'background-image': 'url('+assetObj.thumb_url+')'}">
+
+          </div>
+          <div class="ab-img32"
+            *ngIf="utilsService.isNullUndefinedOrBlank(assetObj.thumb_url) && utilsService.isNullUndefinedOrBlank(assetObj.video_url)"
+            [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (assetObj.name.includes('.')?getFileExtension(assetObj.name):assetObj.file_type).toLowerCase() + '.jpg)'}">
+          </div>
+          <video width="430" height="240" controls *ngIf="assetObj.video_url" autoplay>
+            <source [src]="assetObj.video_url" type="video/mp4">
+            <!-- <source src="movie.ogg" type="video/ogg"> -->
+            Your browser does not support the video tag.
+          </video>
+          <div class="ab-descss">
+            <ul>
+              <!-- <li (click)="redirectToAssetsDetails(assetObj.id)">
+                    <span class="material-icons" matTooltip="View">
+                      remove_red_eye
+                    </span>
+                  </li> -->
+
+              <li>
+                <span class="material-icons" matTooltip="Download" *ngIf="shareObj.access_type === 1"
+                  (click)="download(assetObj.id, assetObj.name)">
+                  cloud_download
+                </span>
+              </li>
+
+
+            </ul>
+          </div>
+          <div class="assets-detailss bgg">
+            <h3>Shared Assets Details</h3>
+            <div class="as-dt">
+              <ul>
+                <li>
+                  <span>Created</span>
+                  <label>{{(assetObj.created_at | date)}}</label>
+                </li>
+                <li>
+                  <span>Modified</span>
+                  <label>{{(assetObj.updated_at | date)}}</label>
+                </li>
+              </ul>
+            </div>
+            <div class="as-dt">
+              <ul>
+                <li>
+                  <span>Size</span>
+                  <label>{{assetObj.asset_size?(assetObj.asset_size|filesize):'-'}}</label>
+                </li>
+                <li>
+                  <span>Type</span>
+                  <label>{{assetObj.file_type?assetObj.file_type:'-'}}</label>
+                </li>
+              </ul>
+            </div>
+            <div class="as-dt">
+              <ul>
+                <li>
+                  <span>width</span>
+                  <label>{{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('geometry')?assetObj.meta_data['image']['geometry']['width']:'-'}}</label>
+                </li>
+                <li>
+                  <span>height</span>
+                  <label>{{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('geometry')?assetObj.meta_data['image']['geometry']['height']:'-'}}</label>
+                </li>
+              </ul>
+            </div>
+            <div class="as-dt">
+              <ul>
+                <li>
+                  <span>Colourspace</span>
+                  <label>{{assetObj.meta_data?assetObj.meta_data['image']['colorspace']:'-'}}</label>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-7">
+        <div class="asset-inner card asdetails-tab">
+          <ul class="nav nav-tabs card-header-tabs ml-0 mr-0 mb-1" role="tablist">
+            <!-- <li class="nav-item text-center"><a class="nav-link active" id="meta-info-tab" data-toggle="tab"
+                href="#meta-info" role="tab" aria-selected="true">Meta info</a></li> -->
+            <li class="nav-item text-center">
+              <a class="nav-link active" id="version-tab" data-toggle="tab" href="#versiontab" role="tab"
+                aria-selected="false">Version</a>
+            </li>
+            <li class="nav-item text-center">
+              <a class="nav-link" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-selected="false">Tags</a>
+            </li>
+            <li class="nav-item text-center" *ngIf="!utilsService.isNullUndefinedOrBlank(assetObj.meta_data)">
+              <a class="nav-link" id="meta-data-tab" data-toggle="tab" href="#meta1" role="tab"
+                aria-selected="true">Meta
+                Data</a>
+            </li>
+          </ul>
+          <div class="tab-content h-100 bgg">
+            <!-- <div class="tab-pane fade h-100" id="meta-info" role="tabpanel" aria-labelledby="meta-info-tab">
+              <form id="exampleFormTopLabels" class="tooltip-right-bottom">
+                <div class="bdtF">
+                  <div class="form-group has-float-label w-70">
+                    <input class="form-control" name="Title" required />
+                    <span>Title</span>
+                  </div>
+                </div>
+                <div class="bdtF">
+                  <div class="form-group has-float-label w-70">
+                    <textarea class="form-control" type="text" name="Description" required></textarea>
+                    <span>Description</span>
+                  </div>
+                </div>
+                <div class="bdtF">
+                  <div class="form-group has-float-label w-70">
+                    <input data-role="tagsinput" class="tags-input" type="text" required name="ForDemo">
+                    <span>For Demo</span>
+                  </div>
+                </div>
+                <div class="bdtF">
+                  <div class="form-group has-float-label w-20">
+                    <input class="form-control datepicker" required name="UseAssetTill">
+                    <span>Use Asset Till</span>
+                  </div>
+                </div>
+                <div class="bdtF">
+                  <div class="form-group has-float-label w-70">
+                    <select class="form-control select2-single" name="jQueryTopLabelsState" required>
+                      <option></option>
+                      <optgroup label="Alaskan/Hawaiian Time Zone">
+                        <option value="AK">Alaska</option>
+                        <option value="HI">Hawaii</option>
+                      </optgroup>
+                      <optgroup label="Pacific Time Zone">
+                        <option value="CA">California</option>
+                        <option value="NV">Nevada</option>
+                        <option value="OR">Oregon</option>
+                        <option value="WA">Washington</option>
+                      </optgroup>
+                      <optgroup label="Mountain Time Zone">
+                        <option value="AZ">Arizona</option>
+                        <option value="CO">Colorado</option>
+                        <option value="ID">Idaho</option>
+                        <option value="MT">Montana</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="NM">New Mexico</option>
+                        <option value="ND">North Dakota</option>
+                        <option value="UT">Utah</option>
+                        <option value="WY">Wyoming</option>
+                      </optgroup>
+                    </select>
+                    <span>Select Box</span>
+                  </div>
+                </div>
+                <button class="my-aads btn btn-primary bR4 btn-md top-right-button mr-1" type="submit">Save</button>
+              </form>
+            </div> -->
+            <div class="tab-pane fade h-100 " *ngIf="!utilsService.isNullUndefinedOrBlank(assetObj.meta_data)"
+              id="meta1" role="tabpanel" aria-labelledby="meta-data-tab">
+              <!-- [ngClass]="{'show-less':showHideMetadata=== true, 'show-more':showHideMetadata === false }" -->
+              <div class="metadata-group">
+                <div class="metadata-header">
+                  <div class="md-title">Information</div>
+                  <!-- <div class="md-value" (click)="showHideMetadata = !showHideMetadata">
+                    {{showHideMetadata?'Show More':'Show Less'}}
+                  </div> -->
+                </div>
+
+                <div class="metadata-body">
+                  <div class="metadata-list">
+                    <div class="md-title">Created</div>
+                    <div class="md-value">{{(assetObj.created_at | date:'EEEE, MMMM d, y, h:mm:ss a')}}</div>
+                  </div>
+                  <div class="metadata-list">
+                    <div class="md-title">Modified</div>
+                    <div class="md-value">{{(assetObj.updated_at | date:'EEEE, MMMM d, y, h:mm:ss a')}}</div>
+                  </div>
+                  <!-- <div class="metadata-list">
+                  <div class="md-title">Last Opened</div>
+                  <div class="md-value">Saturday, 27 October 2018 at 10:06 AM</div>
+                </div> -->
+                  <div class="metadata-list">
+                    <div class="md-title">Content created</div>
+                    <div class="md-value">{{(assetObj.created_at | date:'EEEE, MMMM d, y, h:mm:ss a')}}</div>
+                  </div>
+                  <div class="metadata-list">
+                    <div class="md-title">Dimensions</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('geometry') ?assetObj.meta_data['image']['geometry']['width'] + ' * ' + assetObj.meta_data['image']['geometry']['height']:'-'}}
+                    </div>
+                  </div>
+                  <div class="metadata-list">
+                    <div class="md-title">Resolution</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('resolution')?assetObj.meta_data['image']['resolution']['x'] + ' * ' + assetObj.meta_data['image']['resolution']['y']:'-'}}
+                    </div>
+                  </div>
+                  <div class="metadata-list">
+                    <div class="md-title">Colourspace</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data?(assetObj.meta_data['image']['colorspace'] | uppercase):'-'}}</div>
+                  </div>
+                  <div class="metadata-list">
+                    <div class="md-title">Colour profile</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data?(assetObj.meta_data['image']['properties']['icc:description'] | uppercase  ):'-'}}
+                    </div>
+                  </div>
+                  <!-- <div class="metadata-list">
+                  <div class="md-title">Device make</div>
+                  <div class="md-value">SONY</div>
+                </div> -->
+                  <div class="metadata-list">
+                    <div class="md-title">Device model</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('properties')?assetObj.meta_data['image']['properties']['icc:model']:'-'}}
+                    </div>
+                  </div>
+                  <!-- <div class="metadata-list">
+                  <div class="md-title">Aperture value</div>
+                  <div class="md-value">6</div>
+                </div>
+                <div class="metadata-list">
+                  <div class="md-title">Exposure time</div>
+                  <div class="md-value">2</div>
+                </div>
+                <div class="metadata-list">
+                  <div class="md-title">Focal length</div>
+                  <div class="md-value">117 mm</div>
+                </div>
+                <div class="metadata-list">
+                  <div class="md-title">ISO speed</div>
+                  <div class="md-value">100</div>
+                </div>
+                <div class="metadata-list">
+                  <div class="md-title">Flash</div>
+                  <div class="md-value">No</div>
+                </div>
+                <div class="metadata-list">
+                  <div class="md-title">Metering mode</div>
+                  <div class="md-value">Pattern</div>
+                </div>
+                <div class="metadata-list">
+                  <div class="md-title">White balance</div>
+                  <div class="md-value">0</div>
+                </div> -->
+                  <div class="metadata-list">
+                    <div class="md-title">Content creator</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('properties')?assetObj.meta_data['image']['properties']['exif:Software']:'-'}}
+                    </div>
+                  </div>
+                  <div class="metadata-list">
+                    <div class="md-title">Copyright</div>
+                    <div class="md-value">
+                      {{assetObj.meta_data && assetObj.meta_data['image'].hasOwnProperty('properties')?assetObj.meta_data['image']['properties']['icc:copyright']:'-'}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade h-100" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+              <div class="d-flex align-item-center justify-content-between mb-2">
+                <h6 class="nowrap text-theme">User Tags</h6>
+              </div>
+              <div class="tag-list">
+                <mat-form-field appearance="outline" fxFlex="100" class="example-chip-list mat-tag-list">
+                  <mat-chip-list class="my-chip-list" #chipList1 aria-label="Tag Selection">
+                    <mat-chip *ngFor="let usrTag of arrayOfUserTag" [selectable]="selectable" [removable]="removable">
+                      {{usrTag.name}}
+                      <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="New User Tag..." [matChipInputFor]="chipList1" disabled
+                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur">
+                  </mat-chip-list>
+                </mat-form-field>
+              </div>
+              <hr>
+              <h6 class="nowrap text-theme">Smart Tags</h6>
+              <div class="tag-list">
+                <mat-form-field appearance="outline" fxFlex="100" class="example-chip-list mat-tag-list">
+                  <mat-chip-list class="my-chip-list" #chipList aria-label="Tag Selection">
+                    <mat-chip *ngFor="let smrtTag of arrayOfSmartTag" [selectable]="selectable" [removable]="removable">
+                      {{smrtTag.name}}
+                      <!-- <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon> -->
+                    </mat-chip>
+                    <input [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" disabled
+                      [matChipInputAddOnBlur]="addOnBlur">
+                  </mat-chip-list>
+                </mat-form-field>
+              </div>
+            </div>
+            <!-- <div class="tab-pane fade h-100" id="exif1" role="tabpanel" aria-labelledby="exif-tab">
+              exif-tab
+              <button type="button" class="btn btn-secondary mb-2" data-toggle="tooltip"
+            data-placement="top" title="Tooltip on left">
+            Tooltip on left
+        </button>
+            </div> -->
+            <!-- <div class="tab-pane fade h-100" id="xmptab" role="tabpanel" aria-labelledby="xmp-tab">
+              xmp-tab
+
+            </div>
+            <div class="tab-pane fade h-100" id="iptctab" role="tabpanel" aria-labelledby="iptc-tab">
+              iptc-tab
+            </div> -->
+            <div class="tab-pane version fade h-100 active show" id="versiontab" role="tabpanel"
+              aria-labelledby="version-tab">
+              <ul class="versionlist">
+                <li *ngFor="let item of assetsVersionArray;let i =index" (click)="viewVersionDetails(i)"
+                  [ngClass]="{'active': assetObj.version === item.version}">
+                  <span>{{item.version}}</span>
+                  <span>{{item.updated_at|date}}</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="loading" [hidden]="utilsService.loaderStart === 0">
+    <div class="load-circle">
+    </div>
+  </div>
+</main>

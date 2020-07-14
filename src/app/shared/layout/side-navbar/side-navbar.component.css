@@ -1,0 +1,20 @@
+.menu .sub-menu ul li {
+  margin-left: 30px;
+  margin-bottom: 0;
+  position: relative;
+  outline: 0;
+  cursor: pointer;
+}
+.menu .main-menu ul li.kishan a.active:after{
+  content: " ";
+    background: #922B88;
+    color: #fff;
+    border-radius: 10px;
+    position: absolute;
+    width: 6px;
+    height: 90px;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 0;
+}
+.menu .main-menu ul li.kishan a.active { color: #922B88; }

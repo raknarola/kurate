@@ -1,0 +1,9 @@
+body,
+.btn,
+.assets-card .as-details .fname,
+.assets-list-view .assets-list .assets-card .as-details,
+.assets-list-view .assets-list .assets-card .as-date, .as-dt label,
+body .ag-theme-balham .ag-header-row,
+body .ag-theme-balham{ font-size: 13px !important; }
+
+.assets-card .as-details .fname{ margin-top: 4px; }

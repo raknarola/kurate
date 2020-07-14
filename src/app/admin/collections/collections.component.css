@@ -1,0 +1,8 @@
+.colorvalue{ height: 40px; width: 40px; margin-top: 6px; }
+.mat-datepicker-content .mat-calendar { width: 296px; height: 354px; z-index: 999999; }
+::ng-deep .cdk-overlay-container { z-index: 1200 !important; }
+.collectionAssets-modal .modal-body { min-height: 300px; }
+.msg-position {
+  margin-top: 117px;
+  font-size: inherit;
+}

@@ -1,0 +1,446 @@
+<div class="container-fluid">
+
+  <div class="row">
+    <div class="col-12">
+      <div class="search-header mt-4">
+        <div class="float-left">
+
+          <h1>Users & Roles</h1>
+        </div>
+        <div class="top-right-button-container dj">
+          <button type="button" *ngIf="flagForHideShowUserAndRole === false"
+            class="btn btn-md bR4 btn-outline-primary  d-md-inline-block top-right-button mr-1"
+            (click)="openUserModal(undefined,'Add')">Add User</button>
+          <button type="button" *ngIf="flagForHideShowUserAndRole === true" class="btn btn-md bR4 btn-outline-primary  d-md-inline-block top-right-button mr-1"
+            (click)="openRoleModal(undefined,'Add')">Add Role</button>
+        </div>
+      </div>
+      <div class="separator mt-2 mb-2"></div>
+    </div>
+  </div>
+
+  <div class="row mt-2">
+    <div class="col-md-12 col-12">
+
+      <div class="card rounded">
+        <div class="card-body">
+          <div class="row justify-content-between">
+            <div class="col-lg-6 co-md-6 col-sm-12">
+
+              <ul class="nav nav-tabs my-tab" role="tablist">
+                <li class="nav-item text-center"><a class="nav-link"
+                    [ngClass]="{'active': flagForHideShowUserAndRole === false}" id="user1-tab"
+                    (click)="changeTab('User')" aria-selected="true">User(s)</a></li>
+                <li class="nav-item text-center"><a class="nav-link" (click)="changeTab('Role')"
+                    [ngClass]="{'active': flagForHideShowUserAndRole === true}" id="role1-tab"
+                    aria-selected="false">Roles</a></li>
+              </ul>
+            </div>
+            <!-- <div class="col-lg-2 co-md-4 col-sm-12">
+              <input class="form-control" type="text" (input)="setSearchNgModel($event.target.value)" name="search" />
+            </div> -->
+          </div>
+          <div class="row">
+            <div class="col-md-12 col-sm-12">
+              <div class="tab-content h-100">
+                <div class="tab-pane fade aggridtable h-100  bgg"
+                  [ngClass]="{'active show': flagForHideShowUserAndRole === false}" id="user-share"
+                  aria-labelledby="user1-tab">
+                  <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid
+                    style="height:calc(100vh - 265px);width:100%;max-height: 100%;" rowHeight="40" headerHeight="38"
+                    floatingFiltersHeight="50" class="ag-theme-balham" [rowData]="allUsers"
+                    [columnDefs]="columnDefsForUserDetails" [rowSelection]="rowSelection"
+                    [rowClassRules]="rowClassRules" [suppressRowClickSelection]="true" [defaultColDef]="defaultColDef"
+                    [suppressDragLeaveHidesColumns]="true" [pagination]="true" [isFullWidthCell]="isFullWidthCell"
+                    [fullWidthCellRenderer]="fullWidthCellRenderer" enableSorting [floatingFilter]="true"
+                    (gridReady)="onGridReady($event);" [debug]="true" [ensureDomOrder]="true"
+                    [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true"
+                    [suppressHorizontalScroll]="false" [enableColResize]="true" [pagination]="true"
+                    [sortingOrder]="sortingOrder" [frameworkComponents]="frameworkComponents">
+                    <!-- [suppressSizeToFit]= "true" -->
+                  </ag-grid-angular>
+                </div>
+                <div class="tab-pane fade h-100 bgg" [ngClass]="{'active show': flagForHideShowUserAndRole === true}"
+                  id="role-share" aria-labelledby="role1-tab">
+
+                  <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid2
+                    style="height:calc(100vh - 265px);width:100%;max-height: 100%;" rowHeight="40" headerHeight="38"
+                    floatingFiltersHeight="50" class="ag-theme-balham" [rowData]="allRoles"
+                    [columnDefs]="columnDefsForRole" [defaultColDef]="defaultColDef" [rowSelection]="rowSelection"
+                    [rowClassRules]="rowClassRules" [suppressRowClickSelection]="true"
+                    [suppressDragLeaveHidesColumns]="true" [pagination]="true" [isFullWidthCell]="isFullWidthCell"
+                    [fullWidthCellRenderer]="fullWidthCellRenderer" enableSorting [floatingFilter]="true"
+                    (gridReady)="onGridReady($event);" [debug]="true" [ensureDomOrder]="true"
+                    [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true"
+                    [suppressHorizontalScroll]="false" [enableColResize]="true" [sortingOrder]="sortingOrder"
+                    [frameworkComponents]="frameworkComponents">
+                  </ag-grid-angular>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="card-footer">
+          <div class="record-pagination" *ngIf="flagForHideShowUserAndRole === false">
+            <pagination-controls id='User_Pagination' (pageChange)="pagenumberForUserDetails = $event">
+            </pagination-controls>
+          </div>
+          <div class="record-pagination" *ngIf="flagForHideShowUserAndRole === true">
+            <pagination-controls id='Role_Pagination' (pageChange)="pagenumberForRole = $event"></pagination-controls>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="modal fade" id="adduserModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{statusForUserModal}} User</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="resetUserModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" [formGroup]="userForm">
+
+        <div class="row">
+          <div class="col-md-12 mb-2" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(errorArray)">
+            <div class="alert alert-danger" role="alert">
+              {{errorArray}}
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <!-- <div class="form-group custom-form-control"> -->
+            <!-- <label>Username</label> -->
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Username</mat-label>
+              <input matInput formControlName="userName" autocomplete="off" [(ngModel)]="userObj.username"
+                [maxlength]="utilsService.validationService.MAX_30">
+              <mat-error
+                *ngIf="userForm.controls['userName'].hasError('required') &&  userForm.controls['userName'].touched">
+                {{utilsService.validationService.REQUIRED_FOR_USERNAME}}</mat-error>
+              <mat-error
+                *ngIf="!userForm.controls['userName'].hasError('required') && !userForm.controls['userName'].valid && userForm.controls['userName'].touched">
+                {{utilsService.validationService.INVALID_FOR_USERNAME}}
+              </mat-error>
+            </mat-form-field>
+            <!-- <input type="text" [(ngModel)]="userObj.username" [maxlength]="utilsService.validationService.MAX_30"
+                formControlName="userName" class="form-control" required="" name="username">
+              <div class="error-msg"
+                *ngIf="userForm.controls['userName'].hasError('required') &&  userForm.controls['userName'].touched">
+                {{utilsService.validationService.REQUIRED_FOR_USERNAME}}</div>
+              <div class="error-msg"
+                *ngIf="!userForm.controls['userName'].hasError('required') && !userForm.controls['userName'].valid && userForm.controls['userName'].touched">
+                {{utilsService.validationService.INVALID_FOR_USERNAME}}
+              </div> -->
+            <!-- </div> -->
+          </div>
+          <div class="col-md-6 col-12" *ngIf="statusForUserModal === 'Add'">
+            <!-- <div class="form-group custom-form-control">
+              <label>Password</label>
+              <input [type]="!flagForPasswordHideShow?'password':'input'" [(ngModel)]="userObj.hash_password" class="form-control" formControlName="password"
+                name="Title" required="">
+              <div class="error-msg"
+                *ngIf="userForm.controls['password'].hasError('required') &&  userForm.controls['password'].touched">
+                {{utilsService.validationService.PASSWORD_REQUIRED}}</div>
+              <div class="error-msg"
+                *ngIf="!userForm.controls['password'].hasError('required') && !userForm.controls['password'].valid && userForm.controls['password'].touched">
+                {{utilsService.validationService.PASSWORD_INVALID}}
+              </div>
+              <span class="text-pwd pwd-show pwd-hide" [ngClass]="{'pwd-show': flagForPasswordHideShow,'pwd-hide':!flagForPasswordHideShow}"(click)="flagForPasswordHideShow = !flagForPasswordHideShow"></span>
+            </div> -->
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Password</mat-label>
+              <input matInput required formControlName="password" autocomplete="off" [(ngModel)]="userObj.hash_password"
+                [maxlength]="utilsService.validationService.MAX_30" [type]="!flagForPasswordHideShow?'password':'text'">
+              <mat-icon matSuffix class="secondary-text cursor-pointer"
+                (click)="flagForPasswordHideShow = !flagForPasswordHideShow">
+                {{flagForPasswordHideShow ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <mat-error
+                *ngIf="userForm.controls['password'].hasError('required') &&  userForm.controls['password'].touched">
+                {{utilsService.validationService.PASSWORD_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!userForm.controls['password'].hasError('required') && !userForm.controls['password'].valid && userForm.controls['password'].touched">
+                {{utilsService.validationService.PASSWORD_INVALID}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="w-100"></div>
+          <div class="col-md-6 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>First name</mat-label>
+              <input matInput required formControlName="firstName" autocomplete="off" [(ngModel)]="userObj.firstName"
+                [maxlength]="utilsService.validationService.MAX_30"
+                (input)="createUserName(userObj.firstName,userObj.lastName)">
+              <mat-error
+                *ngIf="userForm.controls['firstName'].hasError('required') &&  userForm.controls['firstName'].touched">
+                {{utilsService.validationService.FIRST_NAME_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!userForm.controls['firstName'].hasError('required') && !userForm.controls['firstName'].valid && userForm.controls['firstName'].touched">
+                {{utilsService.validationService.FIRST_NAME_INVALID}}
+              </mat-error>
+            </mat-form-field>
+            <!-- <div class="form-group custom-form-control">
+              <label>First name</label>
+              <input type="text" class="form-control" [maxlength]="utilsService.validationService.MAX_30"
+                [(ngModel)]="userObj.firstName" formControlName="firstName" required="" name="firstname">
+              <div class="error-msg"
+                *ngIf="userForm.controls['firstName'].hasError('required') &&  userForm.controls['firstName'].touched">
+                {{utilsService.validationService.FIRST_NAME_REQUIRED}}</div>
+              <div class="error-msg"
+                *ngIf="!userForm.controls['firstName'].hasError('required') && !userForm.controls['firstName'].valid && userForm.controls['firstName'].touched">
+                {{utilsService.validationService.FIRST_NAME_INVALID}}
+              </div>
+            </div> -->
+          </div>
+          <div class="col-md-6 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Last name</mat-label>
+              <input matInput required formControlName="lastName" autocomplete="off" [(ngModel)]="userObj.lastName"
+                [maxlength]="utilsService.validationService.MAX_30"
+                (input)="createUserName(userObj.firstName.toLowerCase(),userObj.lastName.toLowerCase())">
+              <mat-error
+                *ngIf="userForm.controls['lastName'].hasError('required') &&  userForm.controls['lastName'].touched">
+                {{utilsService.validationService.LAST_NAME_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!userForm.controls['lastName'].hasError('required') && !userForm.controls['lastName'].valid && userForm.controls['lastName'].touched">
+                {{utilsService.validationService.LAST_NAME_INVALID}}
+              </mat-error>
+            </mat-form-field>
+            <!-- <div class="form-group custom-form-control">
+              <label>Last name</label>
+              <input type="text" class="form-control" [maxlength]="utilsService.validationService.MAX_30"
+                [(ngModel)]="userObj.lastName" formControlName="lastName" required="" name="lastname">
+              <div class="error-msg"
+                *ngIf="userForm.controls['lastName'].hasError('required') &&  userForm.controls['lastName'].touched">
+                {{utilsService.validationService.LAST_NAME_REQUIRED}}</div>
+              <div class="error-msg"
+                *ngIf="!userForm.controls['lastName'].hasError('required') && !userForm.controls['lastName'].valid && userForm.controls['lastName'].touched">
+                {{utilsService.validationService.LAST_NAME_INVALID}}
+              </div>
+            </div> -->
+          </div>
+          <div class="col-md-6 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Email</mat-label>
+              <input matInput required formControlName="email" autocomplete="off" [(ngModel)]="userObj.email"
+                [maxlength]="utilsService.validationService.MAX_50">
+              <mat-error *ngIf="userForm.controls['email'].hasError('required') &&  userForm.controls['email'].touched">
+                {{utilsService.validationService.EMAIL_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!userForm.controls['email'].hasError('required') && !userForm.controls['email'].valid && userForm.controls['email'].touched">
+                {{utilsService.validationService.EMAIL_INVALID}}
+              </mat-error>
+            </mat-form-field>
+            <!-- <div class="form-group custom-form-control">
+              <label>Email</label>
+              <input type="email" class="form-control" [maxlength]="utilsService.validationService.MAX_50"
+                [(ngModel)]="userObj.email" required="" formControlName="email" name="Email">
+              <div class="error-msg"
+                *ngIf="userForm.controls['email'].hasError('required') &&  userForm.controls['email'].touched">
+                {{utilsService.validationService.EMAIL_REQUIRED}}</div>
+              <div class="error-msg"
+                *ngIf="!userForm.controls['email'].hasError('required') && !userForm.controls['email'].valid && userForm.controls['email'].touched">
+                {{utilsService.validationService.EMAIL_INVALID}}
+              </div>
+            </div> -->
+          </div>
+
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <!-- <label>Role</label> -->
+              <mat-form-field class="custom-ngselect" appearance="outline">
+                <mat-label>Role</mat-label>
+                <ng-select ngSelectMat [items]="rolesForDropDown" formControlName="role" [dropdownPosition]="'bottom'"
+                  notFoundText="Role not found." [clearable]="false" [(ngModel)]="userObj.role_id" bindLabel="name"
+                  bindValue="id" required>
+                </ng-select>
+                <mat-error *ngIf="userForm.controls['role'].hasError('required') &&  userForm.controls['role'].touched">
+                  {{utilsService.validationService.ROLE_REQUIRED}}
+                </mat-error>
+              </mat-form-field>
+              <!-- <ng-select [virtualScroll]="true" [items]="rolesForDropDown" formControlName="role" bindLabel="name"
+                bindValue="id" placeholder="Select Role" notFoundText="Role not found." [clearable]="false"
+                [(ngModel)]="userObj.role_id" name="Role">
+              </ng-select>
+              <div class="error-msg"
+                *ngIf="userForm.controls['role'].hasError('required') &&  userForm.controls['role'].touched">
+                {{utilsService.validationService.ROLE_REQUIRED}}</div>
+            </div> -->
+            </div>
+            <!-- <div class="col-12 col-md-4 pr-0">
+            <div class="custom-control custom-checkbox mb-3">
+              <input type="checkbox" name='admin' class="custom-control-input" id="customCheck1">
+              <label class="custom-control-label" for="customCheck1">Admin</label>
+            </div>
+          </div> -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="userForm.invalid"
+          (click)="saveUserDetails(statusForUserModal)">{{statusForUserModal === 'Add'?'Add':'Save'}}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetUserModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade addrolemodal" id="addroleModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">{{statusForRoleModal}} Role</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row" [formGroup]="roleForm">
+          <div class="col-md-12 mb-2" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(errorArray)">
+            <div class="alert alert-danger" role="alert">
+              {{errorArray}}
+            </div>
+          </div>
+          <div class="col-md-6 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Role name</mat-label>
+              <input matInput required formControlName="roleName" autocomplete="off" [(ngModel)]="roleObj.name"
+                [maxlength]="utilsService.validationService.MAX_30">
+              <mat-error
+                *ngIf="roleForm.controls['roleName'].hasError('required') &&  roleForm.controls['roleName'].touched">
+                {{utilsService.validationService.ROLE_NAME_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!roleForm.controls['roleName'].hasError('required') && !roleForm.controls['roleName'].valid && roleForm.controls['roleName'].touched">
+                {{utilsService.validationService.ROLE_NAME_INVALID}}
+              </mat-error>
+            </mat-form-field>
+            <!-- <div class="form-group custom-form-control">
+              <label>Role name</label>
+              <input type="text" class="form-control" formControlName="roleName" [(ngModel)]="roleObj.name" required=""
+                name="username">
+              <div class="error-msg"
+                *ngIf="roleForm.controls['roleName'].hasError('required') &&  roleForm.controls['roleName'].touched">
+                {{utilsService.validationService.ROLE_NAME_REQUIRED}}</div>
+              <div class="error-msg"
+                *ngIf="!roleForm.controls['roleName'].hasError('required') && !roleForm.controls['roleName'].valid && roleForm.controls['firstName'].touched">
+                {{utilsService.validationService.ROLE_NAME_INVALID}}
+              </div>
+            </div> -->
+          </div>
+          <div class="col-md-6 col-12">
+
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Description</mat-label>
+              <textarea matInput formControlName="description" autocomplete="off"
+                [(ngModel)]="roleObj.description"></textarea>
+            </mat-form-field>
+            <!-- <div class="form-group custom-form-control mb-4">
+              <label>Description</label>
+              <textarea class="form-control" formControlName="description"
+                [(ngModel)]="roleObj.description" name="Title" required="" rows="5"></textarea>
+            </div> -->
+          </div>
+          <div class="col-12">
+            <div class="form-group">
+              <label>Permission</label>
+              <button type="button" (click)="addItemsAtIndex()" class="btn-icon-add ml-2">
+                <i class="simple-icon-plus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-12">
+            <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid3
+              style="height:calc(100vh - 340px);width:100%;max-height: 100%;" rowHeight="40" headerHeight="38"
+              class="ag-theme-balham" [rowData]="arrayOfPermissions" [columnDefs]="columnDefsForPermission"
+              [rowSelection]="rowSelection" [rowClassRules]="rowClassRules" [suppressRowClickSelection]="true"
+              [suppressDragLeaveHidesColumns]="true" [pagination]="true" enableSorting
+              (gridReady)="onGridReady($event);" [debug]="true" [isFullWidthCell]="isFullWidthCell"
+              [fullWidthCellRenderer]="fullWidthCellRenderer" [ensureDomOrder]="true"
+              [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true"
+              [suppressHorizontalScroll]="false" [enableColResize]="true" [sortingOrder]="sortingOrder"
+              [frameworkComponents]="frameworkComponents" (cellEditingStarted)="cellValueStarted($event)"
+              (cellEditingStopped)="cellEditingStopped($event)" (cellValueChanged)="onCellValueChanged($event)">
+            </ag-grid-angular>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary"
+          [disabled]="roleForm.invalid && utilsService.isNullUndefinedOrBlank(roleObj.permission)"
+          (click)="saveRole(statusForRoleModal)">{{statusForRoleModal === 'Add'?'Add':'Save'}}</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetRoleModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal  delete-modal" id="deleteUserModal">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal body -->
+      <div class="modal-body text-center">
+        <div class="clear-icon">
+          <span class="material-icons">clear</span>
+        </div>
+        <h3>Do you really want to delete these records?</h3>
+        <p>This process cannot be undone.</p>
+        <div class="btngroup">
+          <button class="btn btn-primary mr-3" (click)="deleteUserById(userIdForDeleteAPI)">Yes</button>
+          <button class="btn btn-light" (click)="utilsService.hideModal('deleteUserModal')">No</button>
+        </div>
+      </div>
+
+
+    </div>
+  </div>
+</div>
+<!-- The Modal -->
+<div class="modal  delete-modal" id="deleteRoleModal">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="col-md-12 mb-2" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(errorArray)">
+        <div class="alert alert-danger" role="alert">
+          {{errorArray}}
+        </div>
+      </div>
+      <div class="modal-body text-center">
+        <div class="clear-icon">
+          <span class="material-icons">clear</span>
+        </div>
+        <h3>Do you really want to delete these records?</h3>
+        <p>This process cannot be undone.</p>
+        <div class="btngroup">
+          <button class="btn btn-primary mr-3" (click)="deleteRoleById(roleIdForDeleteAPI)">Yes</button>
+          <button class="btn btn-light" (click)="utilsService.hideModal('deleteRoleModal')">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal  delete-modal" id="deletePermissionModal">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center ">
+        <div class="clear-icon">
+          <span class="material-icons">clear</span>
+        </div>
+        <h3>Do you really want to delete these records?</h3>
+        <p>This process cannot be undone.</p>
+        <div class="btngroup">
+          <button class="btn btn-primary mr-3" (click)="deletePermissionFromArray()">Yes</button>
+          <button class="btn btn-light" (click)="utilsService.hideModal('deletePermissionModal')">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

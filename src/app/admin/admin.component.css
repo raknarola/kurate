@@ -1,0 +1,120 @@
+.upload-media{ position: fixed;
+    right: 25px;
+    bottom: 25px;
+    width: 450px; }
+.upload-media .card-header{
+        padding: 15px 10px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #86257D;
+    color: #fff;
+}
+.upload-media .card-header .upload-count{ }
+.upload-media .card-header .upload-icon{
+    display: flex;
+}
+.upload-media .card-header .upload-icon i.material-icons{
+    cursor: pointer;
+    background-color: #963f8e;
+    height: 35px;
+    width: 35px;
+    text-align: center;
+    line-height: 34px;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+/* .upload-media .card-header .upload-icon .material-icons.more{
+    display: block;
+}
+.upload-media .card-header.collapsed .upload-icon .material-icons.more{
+    display: none;
+}
+.upload-media .card-header .upload-icon .material-icons.less{
+    display: none;
+}
+.upload-media .card-header.collapsed .upload-icon .material-icons.less{
+    display: block;
+} */
+.upload-media .card-body{
+    padding: 0px;
+}
+.upload-media .card-body .list-group .list-group-item{     display: flex;
+    align-items: center;
+    border-radius: 0px;
+    flex-direction: row;
+    justify-content: space-between; }
+.upload-media .card-body .list-group .list-group-item:hover{     background-color: #bf7eb9;
+    color: #fff; }
+    .upload-media .card-body .list-group .list-group-item i.filesuccess{ color: #01C851 !important; }
+    .upload-media .card-body .list-group .list-group-item i.filedanger{ color: #FE3547 !important; }
+    .upload-media .card-body .list-group .filegroup {     display: flex;
+        align-items: center; }
+
+
+        /*Loader CSS*/
+.loading {
+  position: fixed;
+    top: 75px;
+    left: 118px;
+    height: 100%;
+    width: 100%;
+    z-index: 99999;
+}
+
+.loading:after,
+.loading:before {
+  content: '';
+  background: rgba(0,0,0,0.07);
+  height: 50%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  transition: all 1s;
+}
+
+.loading:after {
+  top: 0;
+}
+
+.loading:before {
+  bottom: 0;
+}
+
+.loading-end:after {
+  top: -60%;
+}
+
+.loading-end:before {
+  bottom: -60%;
+}
+
+.load-circle {
+  margin: 39vh 44%;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 5px solid #ddd;
+  border-top: 5px solid #922B88;
+  -webkit-animation: rotate 1.2s infinite linear;
+  animation: rotate 1.2s infinite linear;
+}
+@-webkit-keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}

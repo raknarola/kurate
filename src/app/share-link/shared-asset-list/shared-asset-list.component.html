@@ -1,0 +1,455 @@
+<app-header></app-header>
+<app-side-navbar></app-side-navbar>
+<main class="default-transition">
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-12">
+        <div class=" search-header mt-4">
+          <div class="float-left">
+            <h1>Shared Assets</h1>
+            <!-- <span>For Tags <label class="search-tag">Loremipsum <a href="#"
+                  class="simple-icon-close"></a></label></span> -->
+          </div>
+          <div class="top-right-button-container">
+            <button class="btn btn-back mr-1" *ngIf="flagForHideShowBackButton" (click)="BackToAllAssets()">
+              <i class="material-icons mr-2" matTooltip="Back">
+                keyboard_backspace
+              </i>
+              <span>Back to Assets</span>
+            </button>
+
+            <div class="btn-group dropdown assets-sort">
+
+              <!-- <button type="button" class="btn btn-primary pr-1 pl-2 cursor-pointer">
+                <label class="custom-control custom-checkbox mb-0 d-inline-block">
+                  <input type="checkbox" [(ngModel)]="value" class="custom-control-input"
+                    id="checkAll">
+                  <span class="custom-control-label cursor-pointer">&nbsp;</span>
+                </label>
+              </button> -->
+
+              <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split pl-2 pr-2"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span class="sr-only">Toggle Dropdown</span>
+              </button>
+
+              <div class="dropdown-menu dropdown-menu-right">
+                <ul>
+                  <li class="sort-title">Sort By</li>
+                    <li class="cursor-pointer" [ngStyle]="{'color': orderBy== item.key? '#000':'#999'}"
+                  *ngFor="let item of arrayForSortingKeys" (click)="sortBy(item.key)">{{item.value}}
+                </li>
+                </ul>
+                <ul>
+                  <li class="sort-title">Order</li>
+                  <li class=" cursor-pointer" [ngStyle]="{'color': reverseFlag === false? '#000':'#999'}"
+                  (click)="orderByASCDESC('ASC')">
+                  Ascending</li>
+                <li class="active cursor-pointer" [ngStyle]="{'color': reverseFlag === true? '#000':'#999'}"
+                  (click)="orderByASCDESC('DESC')">
+                  Descending</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="grid-list">
+          <div class="grid-button">
+          </div>
+          <div class="d-flex">
+            <div class="gl-group">
+
+              <span class="material-icons" [ngClass]="{'gl-active': flagForHideShowListView === true}"
+                (click)="changeListView('ListView')">
+                list
+              </span>
+              <span class="material-icons" [ngClass]="{'gl-active': flagForHideShowListView === false}"
+                (click)="changeListView('GridView')">
+                apps
+              </span>
+            </div>
+
+
+          </div>
+
+        </div>
+        <div class="separator mb-1"></div>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-md-12 col-sm-12" *ngIf="flagForHideShowListView === false">
+        <div class="assets-grid-view">
+          <ul class="assets-list">
+
+            <li *ngFor="let item of sharedAssetsObj.assets_data | orderBy: orderBy:reverseFlag: caseInsensitive : comparator ;let i =index;">
+              <div class="assets-card">
+                <div class="as-img" (click)="redirectToAssetsDetails(item.id, item.asset_type)"
+                  [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (item.name.includes('.')?getFileExtension(item.name):item.file_type).toLowerCase() + '.jpg)'}">
+                  <span class="file-badge" [ngClass]="{
+                    'fb-ai': item.file_type === 'application/postscript',
+                    'fb-folder':item.file_type === 'folder',
+                    'fb-avi':item.file_type === 'video/avi',
+                    'fb-cdr':item.file_type === 'image/x-coreldraw',
+                    'fb-doc':item.file_type === 'application/msword',
+                    'fb-docx':item.file_type === 'application/docx',
+                    'fb-eps':item.file_type === 'application/x-postscript',
+                    'fb-jpg':item.file_type === 'image/jpg',
+                    'fb-jpeg':item.file_type === 'image/jpeg',
+                    'fb-mp4':item.file_type === 'video/mp4',
+                    'fb-mpeg':item.file_type === 'video/mpeg',
+                    'fb-pdf':item.file_type === 'application/pdf',
+                    'fb-png':item.file_type === 'image/png',
+                    'fb-pptx':item.file_type === 'application/x-pptx',
+                    'fb-psb':item.file_type === 'application/x-psb',
+                    'fb-psd':item.file_type === 'application/x-photoshop',
+                    'fb-svg':item.file_type === 'image/svg+xml',
+                    'fb-xls':item.file_type === 'application/excel',
+                    'fb-xlsx':item.file_type === 'application/xlsx',
+                    'fb-sevenzip':item.file_type === 'application/7zip',
+                    'fb-aiff':item.file_type === 'audio/aiff',
+                    'fb-arj':item.file_type === 'application/arj',
+                    'fb-bin':item.file_type === 'application/x-binary',
+                    'fb-csv':item.file_type === 'application/csv',
+                    'fb-dat':item.file_type === 'zz-application/zz-winassoc-dat',
+                    'fb-db':item.file_type === 'application/vnd.sqlite3',
+                    'fb-deb':item.file_type === 'application/x-debian-package',
+                    'fb-dmg':item.file_type === 'application/dmg',
+                    'fb-iso':item.file_type === 'application/iso',
+                    'fb-log':item.file_type === 'application/log',
+                    'fb-mdb':item.file_type === 'application/mdb',
+                    'fb-mp3':item.file_type === 'audio/mpeg3',
+                    'fb-pkg':item.file_type === 'application/x-newton-compatible-pkg',
+                    'fb-rar':item.file_type === 'application/rar',
+                    'fb-targz':item.file_type === 'application/targz',
+                    'fb-toast':item.file_type === 'application/x-roxio-toast',
+                    'fb-vcd':item.file_type === 'application/x-cdlink',
+                    'fb-wav':item.file_type === 'audio/wav',
+                    'fb-wma':item.file_type === 'audio/x-ms-wma',
+                    'fb-wpl':item.file_type === 'application/vnd.ms-wpl',
+                    'fb-zzip':item.file_type === 'application/zzip',
+                    'fb-zip':item.file_type === 'application/zip',
+                    'fb-3g2':item.file_type === 'video/3g2',
+                    'fb-3gp':item.file_type === 'video/3gp',
+                    'fb-aif':item.file_type === 'audio/aiff',
+                    'fb-apk':item.file_type === 'application/vnd.android.package-archive',
+                    'fb-asp':item.file_type === 'text/asp',
+                    'fb-asp':item.file_type === 'text/aspx',
+                    'fb-avi':item.file_type === 'video/avi',
+                    'fb-bak':item.file_type === 'application/x-trash',
+                    'fb-bat':item.file_type === 'application/x-bat',
+                    'fb-bmp':item.file_type === 'image/bmp',
+                    'fb-c':item.file_type === 'text/x-c',
+                    'fb-cab ':item.file_type === 'application/vnd.ms-cab-compressed',
+                    'fb-cda':item.file_type === 'application/x-cdf',
+                    'fb-cdr':item.file_type === 'image/x-coreldraw',
+                    'fb-cer':item.file_type === 'application/pkix-cert',
+                    'fb-cfg':item.file_type === 'application/xhtml+xml',
+                    'fb-cfm':item.file_type === 'application/x-cfm',
+                    'fb-cgi':item.file_type === 'application/x-httpd-cgi',
+                    'fb-class':item.file_type === 'application/x-httpd-java',
+                    'fb-com':item.file_type === 'application/x-msdos-program',
+                    'fb-cpl':item.file_type === 'application/cpl+xml',
+                    'fb-cpp':item.file_type === 'text/x-c++src',
+                    'fb-cs':item.file_type === 'application/x-cs',
+                    'fb-css':item.file_type === 'text/css',
+                    'fb-cur':item.file_type === 'application/x-win-bitmapder',
+                    'fb-dll':item.file_type === 'application/x-msdownload',
+                    'fb-dmp':item.file_type === 'application/x-dmp',
+                    'fb-email ':item.file_type === 'application/x-email',
+                    'fb-eml':item.file_type === 'message/rfc822',
+                    'fb-emlx':item.file_type === 'text/x-emlx',
+                    'fb-eps':item.file_type === 'application/x-postscript',
+                    'fb-exe':item.file_type === 'application/octet-stream',
+                    'fb-file':item.file_type === 'file/x-win',
+                    'fb-flv':item.file_type === 'video/x-flv',
+                    'fb-fnt':item.file_type === 'application/x-font-opentype',
+                    'fb-fon':item.file_type === 'application/x-font',
+                    'fb-gadget':item.file_type === 'application/x-windows-gadget',
+                    'fb-gif':item.file_type === 'image/gif',
+                    'fb-h':item.file_type === 'text/x-h',
+                    'fb-html':item.file_type === 'text/html',
+                    'fb-icns':item.file_type === 'application/icon-mac',
+                    'fb-ico':item.file_type === 'image/x-icon',
+                    'fb-ini':item.file_type === 'application/textedit',
+                    'fb-jar':item.file_type === 'application/java-archive',
+                    'fb-java':item.file_type === 'application/ms-java',
+                    'fb-js':item.file_type === 'application/x-javascript',
+                    'fb-jsp':item.file_type === 'application/x-jsp',
+                    'fb-key':item.file_type === 'application/keynote',
+                    'fb-lnk':item.file_type === 'application/x-ms-shortcut',
+                    'fb-m4v':item.file_type === 'video/x-m4v',
+                    'fb-mid':item.file_type === 'audio/mid',
+                    'fb-midi':item.file_type === 'audio/midi',
+                    'fb-mkv':item.file_type === 'video/x-matroska',
+                    'fb-mov':item.file_type === 'video/quicktime',
+                    'fb-mpa':item.file_type === 'audio/mpeg',
+                    'fb-mpeg':item.file_type === 'video/mpeg',
+                    'fb-msg':item.file_type === 'application/vnd.ms-outlook',
+                    'fb-msi':item.file_type === 'application/x-msi',
+                    'fb-odp':item.file_type === 'application/vnd.oasis.opendocument.presentation',
+                    'fb-ods':item.file_type === 'application/vnd.oasis.opendocument.spreadsheet',
+                    'fb-oft':item.file_type === 'application/x-oft',
+                    'fb-ogg':item.file_type === 'application/ogg',
+                    'fb-ost':item.file_type === 'application/x-ost',
+                    'fb-php':item.file_type === 'application/x-php',
+                    'fb-pl':item.file_type === 'application/x-perl',
+                    'fb-pps':item.file_type === 'application/vnd.ms-powerpoint',
+                    'fb-ppt':item.file_type === 'application/ms-powerpoint',
+                    'fb-pptx':item.file_type === 'application/x-pptx',
+                    'fb-ps':item.file_type === 'application/x-postscript',
+                    'fb-psb':item.file_type === 'application/x-psb',
+                    'fb-psd':item.file_type === 'application/x-photoshop',
+                    'fb-pst':item.file_type === 'application/x-pst',
+                    'fb-py':item.file_type === 'application/x-python-code',
+                    'fb-raw':item.file_type === 'image/x-panasonic-raw',
+                    'fb-rm':item.file_type === 'application/vnd.rn-realmedia',
+                    'fb-rss':item.file_type === 'application/rss+xml',
+                    'fb-sav':item.file_type === 'application/x-spss-sav',
+                    'fb-sh':item.file_type === 'application/x-sh',
+                    'fb-sql':item.file_type === 'application/sql',
+                    'fb-svg':item.file_type === 'image/svg+xml',
+                    'fb-swf':item.file_type === 'application/x-shockwave-flash',
+                    'fb-swift':item.file_type === 'application/x-swift',
+                    'fb-sys':item.file_type === 'application/x-sys',
+                    'fb-tar':item.file_type === 'application/tar',
+                    'fb-tiff':item.file_type === 'image/tiff',
+                    'fb-tmp':item.file_type === 'application/x-tmp',
+                    'fb-ttf':item.file_type === 'application/x-font-ttf',
+                    'fb-vb':item.file_type === 'application/x-visual-basic',
+                    'fb-vcf':item.file_type === 'text/x-vcard',
+                    'fb-vob':item.file_type === 'video/dvd video/mpeg',
+                    'fb-wsf':item.file_type === 'text/xml',
+                    'fb-xhtml':item.file_type === 'application/xhtml+xml',
+                    'fb-xlsm':item.file_type === 'application/vnd.ms-excel.sheet.macroEnabled.12',
+                    'fb-json':item.file_type === 'application/json',
+                    'fb-txt':item.file_type === 'text/plain',
+                    'fb-rtf':item.file_type === 'application/rtf',
+                    'fb-wpd':item.file_type === 'application/wordperfect',
+                    'fb-odt':item.file_type === 'application/odt',
+                    'fb-rpm':item.file_type === 'application/x-rpm',
+                    'fb-tex':item.file_type === 'application/x-tex',
+                    'fb-xml':item.file_type === 'application/xml'}">{{item.file_type}}</span>
+                </div>
+                <div class="as-details" >
+                  <!-- <div class="custom-control custom-checkbox d-flex cursor-pointer">
+                    <input type="checkbox" class="custom-control-input" id="asset{{i}}">
+                    <label class="custom-control-label cursor-pointer" for="asset{{i}}"></label> -->
+                    <span class="fname" (click)="redirectToAssetsDetails(item.id, item.asset_type)">{{item.name}}</span>
+                  <!-- </div> -->
+
+                  <ul class="as-action">
+                    <li (click)="redirectToAssetsDetails(item.id, item.asset_type)">
+                      <span class="material-icons" matTooltip="View">
+                        remove_red_eye
+                      </span>
+                    </li>
+                    <li *ngIf="sharedAssetsObj.access_type === 1">
+                      <span  class="material-icons" matTooltip="Download"
+                        (click)="download(item.id, item.name, item.asset_type)">
+                        cloud_download
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-12 col-sm-12" *ngIf="flagForHideShowListView === true">
+        <div class="assets-list-view">
+          <ul class="assets-list">
+            <li *ngFor="let item of sharedAssetsObj.assets_data | orderBy: orderBy:reverseFlag: caseInsensitive : comparator ;let i =index;">
+              <div class="assets-card">
+                <div class="as-img" (click)="redirectToAssetsDetails(item.id, item.asset_type)"
+                  [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (item.name.includes('.')?item.name.split('.')[1]:item.file_type).toLowerCase() + '.jpg)'}">
+
+                </div>
+                <div class="as-details">
+                  <div class="custom-control custom-checkbox" >
+                    <input type="checkbox" class="custom-control-input" id="asset{{i}}">
+                    <label class="custom-control-label cursor-pointer" (click)="openFolder(item)" for="asset{{i}}">{{item.name}}</label>
+                  </div>
+                </div>
+
+                  <div class="as-date">
+                     {{item.created_at | date}}
+                  </div>
+                  <div class="as-file-badge">
+                  <span class="file-badge " [ngClass]="{
+                    'fb-ai': item.file_type === 'application/postscript',
+                    'fb-folder':item.file_type === 'folder',
+                    'fb-avi':item.file_type === 'video/avi',
+                    'fb-cdr':item.file_type === 'image/x-coreldraw',
+                    'fb-doc':item.file_type === 'application/msword',
+                    'fb-docx':item.file_type === 'application/docx',
+                    'fb-eps':item.file_type === 'application/x-postscript',
+                    'fb-jpg':item.file_type === 'image/jpg',
+                    'fb-jpeg':item.file_type === 'image/jpeg',
+                    'fb-mp4':item.file_type === 'video/mp4',
+                    'fb-mpeg':item.file_type === 'video/mpeg',
+                    'fb-pdf':item.file_type === 'application/pdf',
+                    'fb-png':item.file_type === 'image/png',
+                    'fb-pptx':item.file_type === 'application/x-pptx',
+                    'fb-psb':item.file_type === 'application/x-psb',
+                    'fb-psd':item.file_type === 'application/x-photoshop',
+                    'fb-svg':item.file_type === 'image/svg+xml',
+                    'fb-xls':item.file_type === 'application/excel',
+                    'fb-xlsx':item.file_type === 'application/xlsx',
+                    'fb-sevenzip':item.file_type === 'application/7zip',
+                    'fb-aiff':item.file_type === 'audio/aiff',
+                    'fb-arj':item.file_type === 'application/arj',
+                    'fb-bin':item.file_type === 'application/x-binary',
+                    'fb-csv':item.file_type === 'application/csv',
+                    'fb-dat':item.file_type === 'zz-application/zz-winassoc-dat',
+                    'fb-db':item.file_type === 'application/vnd.sqlite3',
+                    'fb-deb':item.file_type === 'application/x-debian-package',
+                    'fb-dmg':item.file_type === 'application/dmg',
+                    'fb-iso':item.file_type === 'application/iso',
+                    'fb-log':item.file_type === 'application/log',
+                    'fb-mdb':item.file_type === 'application/mdb',
+                    'fb-mp3':item.file_type === 'audio/mpeg3',
+                    'fb-pkg':item.file_type === 'application/x-newton-compatible-pkg',
+                    'fb-rar':item.file_type === 'application/rar',
+                    'fb-targz':item.file_type === 'application/targz',
+                    'fb-toast':item.file_type === 'application/x-roxio-toast',
+                    'fb-vcd':item.file_type === 'application/x-cdlink',
+                    'fb-wav':item.file_type === 'audio/wav',
+                    'fb-wma':item.file_type === 'audio/x-ms-wma',
+                    'fb-wpl':item.file_type === 'application/vnd.ms-wpl',
+                    'fb-zzip':item.file_type === 'application/zzip',
+                    'fb-zip':item.file_type === 'application/zip',
+                    'fb-3g2':item.file_type === 'video/3g2',
+                    'fb-3gp':item.file_type === 'video/3gp',
+                    'fb-aif':item.file_type === 'audio/aiff',
+                    'fb-apk':item.file_type === 'application/vnd.android.package-archive',
+                    'fb-asp':item.file_type === 'text/asp',
+                    'fb-asp':item.file_type === 'text/aspx',
+                    'fb-avi':item.file_type === 'video/avi',
+                    'fb-bak':item.file_type === 'application/x-trash',
+                    'fb-bat':item.file_type === 'application/x-bat',
+                    'fb-bmp':item.file_type === 'image/bmp',
+                    'fb-c':item.file_type === 'text/x-c',
+                    'fb-cab ':item.file_type === 'application/vnd.ms-cab-compressed',
+                    'fb-cda':item.file_type === 'application/x-cdf',
+                    'fb-cdr':item.file_type === 'image/x-coreldraw',
+                    'fb-cer':item.file_type === 'application/pkix-cert',
+                    'fb-cfg':item.file_type === 'application/xhtml+xml',
+                    'fb-cfm':item.file_type === 'application/x-cfm',
+                    'fb-cgi':item.file_type === 'application/x-httpd-cgi',
+                    'fb-class':item.file_type === 'application/x-httpd-java',
+                    'fb-com':item.file_type === 'application/x-msdos-program',
+                    'fb-cpl':item.file_type === 'application/cpl+xml',
+                    'fb-cpp':item.file_type === 'text/x-c++src',
+                    'fb-cs':item.file_type === 'application/x-cs',
+                    'fb-css':item.file_type === 'text/css',
+                    'fb-cur':item.file_type === 'application/x-win-bitmapder',
+                    'fb-dll':item.file_type === 'application/x-msdownload',
+                    'fb-dmp':item.file_type === 'application/x-dmp',
+                    'fb-email ':item.file_type === 'application/x-email',
+                    'fb-eml':item.file_type === 'message/rfc822',
+                    'fb-emlx':item.file_type === 'text/x-emlx',
+                    'fb-eps':item.file_type === 'application/x-postscript',
+                    'fb-exe':item.file_type === 'application/octet-stream',
+                    'fb-file':item.file_type === 'file/x-win',
+                    'fb-flv':item.file_type === 'video/x-flv',
+                    'fb-fnt':item.file_type === 'application/x-font-opentype',
+                    'fb-fon':item.file_type === 'application/x-font',
+                    'fb-gadget':item.file_type === 'application/x-windows-gadget',
+                    'fb-gif':item.file_type === 'image/gif',
+                    'fb-h':item.file_type === 'text/x-h',
+                    'fb-html':item.file_type === 'text/html',
+                    'fb-icns':item.file_type === 'application/icon-mac',
+                    'fb-ico':item.file_type === 'image/x-icon',
+                    'fb-ini':item.file_type === 'application/textedit',
+                    'fb-jar':item.file_type === 'application/java-archive',
+                    'fb-java':item.file_type === 'application/ms-java',
+                    'fb-js':item.file_type === 'application/x-javascript',
+                    'fb-jsp':item.file_type === 'application/x-jsp',
+                    'fb-key':item.file_type === 'application/keynote',
+                    'fb-lnk':item.file_type === 'application/x-ms-shortcut',
+                    'fb-m4v':item.file_type === 'video/x-m4v',
+                    'fb-mid':item.file_type === 'audio/mid',
+                    'fb-midi':item.file_type === 'audio/midi',
+                    'fb-mkv':item.file_type === 'video/x-matroska',
+                    'fb-mov':item.file_type === 'video/quicktime',
+                    'fb-mpa':item.file_type === 'audio/mpeg',
+                    'fb-mpeg':item.file_type === 'video/mpeg',
+                    'fb-msg':item.file_type === 'application/vnd.ms-outlook',
+                    'fb-msi':item.file_type === 'application/x-msi',
+                    'fb-odp':item.file_type === 'application/vnd.oasis.opendocument.presentation',
+                    'fb-ods':item.file_type === 'application/vnd.oasis.opendocument.spreadsheet',
+                    'fb-oft':item.file_type === 'application/x-oft',
+                    'fb-ogg':item.file_type === 'application/ogg',
+                    'fb-ost':item.file_type === 'application/x-ost',
+                    'fb-php':item.file_type === 'application/x-php',
+                    'fb-pl':item.file_type === 'application/x-perl',
+                    'fb-pps':item.file_type === 'application/vnd.ms-powerpoint',
+                    'fb-ppt':item.file_type === 'application/ms-powerpoint',
+                    'fb-pptx':item.file_type === 'application/x-pptx',
+                    'fb-ps':item.file_type === 'application/x-postscript',
+                    'fb-psb':item.file_type === 'application/x-psb',
+                    'fb-psd':item.file_type === 'application/x-photoshop',
+                    'fb-pst':item.file_type === 'application/x-pst',
+                    'fb-py':item.file_type === 'application/x-python-code',
+                    'fb-raw':item.file_type === 'image/x-panasonic-raw',
+                    'fb-rm':item.file_type === 'application/vnd.rn-realmedia',
+                    'fb-rss':item.file_type === 'application/rss+xml',
+                    'fb-sav':item.file_type === 'application/x-spss-sav',
+                    'fb-sh':item.file_type === 'application/x-sh',
+                    'fb-sql':item.file_type === 'application/sql',
+                    'fb-svg':item.file_type === 'image/svg+xml',
+                    'fb-swf':item.file_type === 'application/x-shockwave-flash',
+                    'fb-swift':item.file_type === 'application/x-swift',
+                    'fb-sys':item.file_type === 'application/x-sys',
+                    'fb-tar':item.file_type === 'application/tar',
+                    'fb-tiff':item.file_type === 'image/tiff',
+                    'fb-tmp':item.file_type === 'application/x-tmp',
+                    'fb-ttf':item.file_type === 'application/x-font-ttf',
+                    'fb-vb':item.file_type === 'application/x-visual-basic',
+                    'fb-vcf':item.file_type === 'text/x-vcard',
+                    'fb-vob':item.file_type === 'video/dvd video/mpeg',
+                    'fb-wsf':item.file_type === 'text/xml',
+                    'fb-xhtml':item.file_type === 'application/xhtml+xml',
+                    'fb-xlsm':item.file_type === 'application/vnd.ms-excel.sheet.macroEnabled.12',
+                    'fb-json':item.file_type === 'application/json',
+                    'fb-txt':item.file_type === 'text/plain',
+                    'fb-rtf':item.file_type === 'application/rtf',
+                    'fb-wpd':item.file_type === 'application/wordperfect',
+                    'fb-odt':item.file_type === 'application/odt',
+                    'fb-rpm':item.file_type === 'application/x-rpm',
+                    'fb-tex':item.file_type === 'application/x-tex',
+                    'fb-xml':item.file_type === 'application/xml'}">{{item.file_type}}</span>
+                </div>
+                <div class="as-action">
+                  <ul class="">
+                    <li>
+                      <span class="material-icons" matTooltip="View"
+                        (click)="redirectToAssetsDetails(item.id, item.asset_type)">
+                        remove_red_eye
+                      </span>
+                    </li>
+                    <li>
+                      <span class="material-icons" matTooltip="Download" *ngIf="sharedAssetsObj.access_type === 1"
+                        (click)="download(item.id, item.name, item.asset_type)">
+                        cloud_download
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="loading" [hidden]="utilsService.loaderStart === 0">
+    <div class="load-circle">
+    </div>
+  </div>
+</main>

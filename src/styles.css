@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~ag-grid-community/dist/styles/ag-grid.css";
+@import "~ag-grid-community/dist/styles/ag-theme-balham.css";
+ /* @import "~@ng-select/ng-select/themes/default.theme.css"; */
+@import "~@ng-select/ng-select/themes/material.theme.css"; 
+@import '~ngx-toastr/toastr.css';
+@import '~@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+
+/* @import '~ag-grid-community/dist/styles/ag-theme-material.css'; */

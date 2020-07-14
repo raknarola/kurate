@@ -1,0 +1,8 @@
+.btn-outline-primary.disabled, .btn-outline-primary:disabled {
+  background-color: transparent;
+  cursor: no-drop;
+  color: #922B88
+}
+.top-right-button-container .btn.btn-lg{ margin-top: -23px; }
+.datefromto .mat-form-field{ margin-bottom: 0px !important; }
+.datefromto .mat-form-field-wrapper{ margin-bottom: 0 !important; }

@@ -1,0 +1,87 @@
+<!-- <label class="btn btn-default">
+  <input type="file" (change)="selectFile($event)" multiple>
+</label> -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class=" search-header mt-3">
+                <div class="float-left">
+                    <h1>File/Folder Upload Demo</h1>
+                </div>
+                <div class="top-right-button-container dj">
+                    <!-- <button type="button" class="btn btn-md bR4 btn-outline-primary  d-md-inline-block top-right-button mr-1"
+                            (click)="openCollectionModal(undefined,'Add')">Add
+                            Collection
+                        </button> -->
+                </div>
+            </div>
+            <div class="separator mt-2 mb-4"></div>
+        </div>
+    </div>
+    <div class="w-600">
+        <div class="row">
+            <div class="col-md-12">
+                <ngx-file-drop class="custom-upload" dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)"
+                    (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)" [showBrowseBtn]="true">
+                    <!--<ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+                            Optional custom content that replaces the the entire default content.
+                            <button type="button" (click)="openFileSelector">Browse Files</button>
+                        </ng-template> -->
+                </ngx-file-drop>
+            </div>
+            <div class="col-md-12 mt-2 " style="text-align: right">
+                <button class="btn btn-success" [disabled]="utilsService.isNullUndefinedOrBlank(arrayOfSelectedFiles)"
+                    (click)="uploadFiles()">Upload</button>
+            </div>
+            <div class="col-md-12">
+                <p class="text-danger mt-0 mb-2" *ngIf="flagForShowErrorMsg">Only PDF Files are allowed.</p>
+            </div>
+            <div class="col-md-12">
+                <p class="text-danger mt-0 mb-2" *ngIf="flagForInvalidSizeMsg">Total File size exceeding 100 MB.</p>
+            </div>
+            <div class="col-md-12">
+                <p class="text-danger mt-0 mb-2" *ngFor="let item of errorMsgArray">{{item.errormsg}}</p>
+            </div>
+            <div class="col-md-12 mt-2">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Name</th>
+                            <th>Progress</th>
+                            <th class="width150">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of arrayOfSelectedFiles; let i=index">
+                            <td class="word-break">{{ item.key }}</td>
+                            <td>
+                                <!-- <progress-bar [progress]="item.progress" [color]="'#488aff'">
+                                    </progress-bar> -->
+                                <mat-progress-spinner class="example-margin" color="primary" mode="determinate"
+                                    [value]="item.progress">
+                                </mat-progress-spinner>
+                            </td>
+                            <td class="width150">
+                                <!-- <button mat-icon-button class="button-small" color="cyan" matTooltip="View"
+                                    (click)="openViewDoc('Attached File', item.documentName)">
+                                    <mat-icon>remove_red_eye</mat-icon>
+                                    </button> -->
+                                <button mat-icon-button class="button-small" color="warn" matTooltip="Delete"
+                                    (click)="deleteAttachement(i)">
+                                    <mat-icon>delete</mat-icon>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngIf="arrayOfSelectedFiles.length === 0">
+                            <td colspan="2" style="text-align: center">
+                                {{utilsService.serverVariableService.STRING_WHEN_NO_ATTCHAMENT_FOUND}}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- <button class="btn btn-success" [disabled]="!selectedFiles" (click)="uploadFiles(selectedFiles)">Upload</button> -->
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,18 @@
+.notification .dropdown-menu { overflow: auto; border-radius: .75rem; }
+.notification .dropdown-menu .scroll { margin: 0px; padding: 0px; }
+.notification .dropdown-menu .noti-list { padding: 10px; }
+.uploadbox .dropdown .dropdown-menu { box-shadow: 0 0px 6px rgba(0, 0, 0, 0.16); border-radius: 10px; border: 0; width: 280px; }
+.uploadbox .dropdown-menu ul { margin: 0px; padding: 0px; list-style-type: none; }
+.uploadbox .dropdown-menu ul li { border-bottom: 1px solid #ddd; margin: 0; display: flex; align-items: center; position: relative; }
+.uploadbox .dropdown-menu ul li.normalli { cursor: pointer; padding: 9px 15px 9px 15px; font-size: 15px; color: #3a3a3a; }
+.uploadbox .dropdown-menu ul li.fulldrop .uploadcontrol{ position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.uploadbox .dropdown-menu ul li:nth-last-child(1) { border-bottom: 0px; }
+.uploadbox .dropdown-menu ul li .material-icons { position: absolute; left: 14px; }
+.uploadbox .dropdown-menu ul li:hover { background-color: #f2f2f2; }
+.uploadbox .dropdown-menu ul li img{ height: 24px; width: auto; margin-right: 10px; }
+
+.mat-button-toggle-checked{
+    background-color: #922B88;
+    color: #fff !important;
+}
+.navbar .navbar-left .mat-slide-toggle{ margin-left: 15px; }

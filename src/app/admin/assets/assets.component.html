@@ -1,0 +1,1028 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class=" search-header mt-4">
+        <div class="float-left">
+          <h1 *ngIf="utilsService.flagForHideShowAssestLabel === false">Assets</h1>
+          <h1 *ngIf="utilsService.flagForHideShowAssestLabel === true">Search Result</h1>
+          <span
+            *ngIf="utilsService.flagForHideShowAssestLabel === true && !utilsService.isEmptyObjectOrNullUndefiend(utilsService.arrayOfSearchedTags) "
+            class="astags">For Tags
+            <ul>
+              <li *ngFor="let item of utilsService.arrayOfSearchedTags;let i = index;"><span class="removetag"
+                  (click)="removeAndSearchAgain(i)">×</span>{{item}}
+              </li>
+            </ul>
+          </span>
+        </div>
+        <div class="top-right-button-container">
+          <button class="btn btn-back mr-1" *ngIf="utilsService.flagForHideShowBackButton" (click)="BackToAllAssets()">
+            <i class="material-icons mr-2" matTooltip="Back">
+              keyboard_backspace
+            </i>
+            <span>Back to Assets</span>
+          </button>
+          <button class="btn btn-back mr-1" (click)="refreshAssets()">
+            <i class="material-icons mr-2" matTooltip="Back">
+              settings_backup_restore
+            </i>
+            <span>Refresh</span>
+          </button>
+          <button type="button" class="btn btn-primary mr-1" (click)="openDeleteAllAssets()"
+            [disabled]="this.utilsService.isEmptyObjectOrNullUndefiend(utilsService.arrayOfSelectedAssets)">
+            Delete
+          </button>
+
+          <button type="button" class="btn btn-primary mr-1" data-toggle="modal" data-target="#filterModal">Filters
+            <span class="alertb">{{filterCount}} applied</span>
+          </button>
+
+          <div class="btn-group dropdown assets-sort">
+            <button type="button" class="btn btn-primary pr-1 pl-2 cursor-pointer">
+              <label class="custom-control custom-checkbox mb-0 d-inline-block" style="top: -2px;">
+                <input type="checkbox" [(ngModel)]="value" (change)="selectAllAssets()" class="custom-control-input"
+                  id="checkAll">
+                <span class="custom-control-label cursor-pointer">&nbsp;</span>
+              </label>
+            </button>
+            <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split pl-2 pr-2"
+              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <span class="sr-only">Toggle Dropdown</span>
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right" *ngIf="orderByForGridView">
+              <ul>
+                <!-- [ngClass]="{'active': orderBy === 'name'}" (click)="sortBy('name')"
+                  [ngClass]="{'active': orderBy === 'created_at'}" (click)="sortBy('created_at')"
+                  [ngClass]="{'active': orderBy === 'updated_at'}" (click)="sortBy('updated_at')" -->
+                <li class="sort-title">Sort By</li>
+                <li class="cursor-pointer" [ngStyle]="{'color': orderByForGridView === item.key? '#000':'#999'}"
+                  *ngFor="let item of arrayForSortingKeys" (click)="sortBy(item.key)">{{item.value}}
+                </li>
+
+                <!-- <li class="cursor-pointer" [ngClass]="{'active': orderByForGridView === 'created_at'}"
+                  (click)="sortBy('created_at')">Created Date {{ orderByForGridView === 'created_at'}}</li>
+                <li class="cursor-pointer" [ngClass]="{'active': orderByForGridView === 'updated_at'}"
+                  (click)="sortBy('updated_at')">Modified Date</li> -->
+              </ul>
+              <ul>
+                <!-- [ngClass]="{'active': reverseFlag === true}" (click)="orderByASCDESC('ASC')"
+                  [ngClass]="{'active': reverseFlag === false}" (click)="orderByASCDESC('DESC')" -->
+                <li class="sort-title ">Order</li>
+                <li class=" cursor-pointer" [ngStyle]="{'color': reverseFlagForGridView === false? '#000':'#999'}"
+                  (click)="orderByASCDESC('ASC')">
+                  Ascending</li>
+                <li class="active cursor-pointer" [ngStyle]="{'color': reverseFlagForGridView === true? '#000':'#999'}"
+                  (click)="orderByASCDESC('DESC')">
+                  Descending</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid-list mt-4">
+        <div class="grid-button">
+          <ul class="folder-breadcrumbs" *ngIf="utilsService.isBreadCrumb">
+            <li class="cursor-pointer" (click)="gotoAllAssets()">Assets</li>
+            <li class="cursor-pointer" [ngClass]="{'active':item.isActive }"
+              *ngFor="let item of utilsService.arrayOfBreadCrumb;let i = index"
+              (click)="gotoBreadCrumb(item.asset_id, i, item.folder_name)">{{item.folder_name}}</li>
+          </ul>
+
+        </div>
+        <div class="d-flex">
+
+          <div class="gl-group">
+
+            <span class="material-icons" [ngClass]="{'gl-active': flagForHideShowListView === true}"
+              (click)="changeListView('ListView')">
+              list
+            </span>
+            <span class="material-icons" [ngClass]="{'gl-active': flagForHideShowListView === false}"
+              (click)="changeListView('GridView')">
+              apps
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="separator mt-2 mb-2"></div>
+    </div>
+  </div>
+  <div class="row mt-2 justify-content-center">
+    <!-- <div class="col-md-4 col-sm-12" *ngIf="utilsService.isEmptyObjectOrNullUndefiend(utilsService.allAssets)">
+      <p class="text-center" *ngIf="utilsService.isNullUndefinedOrBlank(utilsService.assetIdForGetFolderAssetsOnDelete)">Assets Not Found.</p>
+      <p class="text-center" *ngIf="utilsService.assetIdForGetFolderAssetsOnDelete > 0">Directory Not Found.</p>
+    </div> -->
+    <div class="col-md-12 col-sm-12" *ngIf="flagForHideShowListView === false">
+      <div class="assets-grid-view" #mainGridHieght>
+        <!-- [ngStyle]="{'height':scroll + 'px'}" -->
+        <!-- [ngClass]="{'drop-zone': utilsService.isFileDropzone === true}" -->
+        <ngx-file-drop class="maingragdropgrid" id="test" [ngStyle]="{'height':utilsService.scroll + 'px'}"
+          (onFileDrop)="utilsService.dropped($event,'Files',utilsService.keyForFolderName?utilsService.keyForFolderName + '/':undefined)"
+          (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
+          [showBrowseBtn]="false">
+          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+            <ul class="assets-list" style="margin-bottom:30px;" infiniteScroll [infiniteScrollDistance]="0"
+              [infiniteScrollThrottle]="300" (scrolled)="onScroll()">
+              <!-- | orderBy: orderByForGridView:reverseFlagForGridView: caseInsensitive : comparator  -->
+              <li *ngFor="let item of utilsService.allAssets;let i =index;">
+                <div class="assets-card">
+                  <div class="as-img" (click)="utilsService.redirectToAssetsDetails(item.id, item.asset_type,item)"
+                    [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (item.name.includes('.')?getFileExtension(item.name):item.file_type).toLowerCase() + '.jpg)'}">
+                    <span class="file-badge" [ngClass]="{
+                  'fb-ai': item.file_type === 'application/postscript',
+                  'fb-folder':item.file_type === 'folder',
+                  'fb-avi':item.file_type === 'video/avi',
+                  'fb-cdr':item.file_type === 'image/x-coreldraw',
+                  'fb-doc':item.file_type === 'application/msword',
+                  'fb-docx':item.file_type === 'application/docx',
+                  'fb-eps':item.file_type === 'application/x-postscript',
+                  'fb-jpg':item.file_type === 'image/jpg',
+                  'fb-jpeg':item.file_type === 'image/jpeg',
+                  'fb-mp4':item.file_type === 'video/mp4',
+                  'fb-mpeg':item.file_type === 'video/mpeg',
+                  'fb-pdf':item.file_type === 'application/pdf',
+                  'fb-png':item.file_type === 'image/png',
+                  'fb-pptx':item.file_type === 'application/x-pptx',
+                  'fb-psb':item.file_type === 'application/x-psb',
+                  'fb-psd':item.file_type === 'application/x-photoshop',
+                  'fb-svg':item.file_type === 'image/svg+xml',
+                  'fb-xls':item.file_type === 'application/excel',
+                  'fb-xlsx':item.file_type === 'application/xlsx',
+                  'fb-sevenzip':item.file_type === 'application/7zip',
+                  'fb-aiff':item.file_type === 'audio/aiff',
+                  'fb-arj':item.file_type === 'application/arj',
+                  'fb-bin':item.file_type === 'application/x-binary',
+                  'fb-csv':item.file_type === 'application/csv',
+                  'fb-dat':item.file_type === 'zz-application/zz-winassoc-dat',
+                  'fb-db':item.file_type === 'application/vnd.sqlite3',
+                  'fb-deb':item.file_type === 'application/x-debian-package',
+                  'fb-dmg':item.file_type === 'application/dmg',
+                  'fb-iso':item.file_type === 'application/iso',
+                  'fb-log':item.file_type === 'application/log',
+                  'fb-mdb':item.file_type === 'application/mdb',
+                  'fb-mp3':item.file_type === 'audio/mpeg3',
+                  'fb-pkg':item.file_type === 'application/x-newton-compatible-pkg',
+                  'fb-rar':item.file_type === 'application/rar',
+                  'fb-targz':item.file_type === 'application/targz',
+                  'fb-toast':item.file_type === 'application/x-roxio-toast',
+                  'fb-vcd':item.file_type === 'application/x-cdlink',
+                  'fb-wav':item.file_type === 'audio/wav',
+                  'fb-wma':item.file_type === 'audio/x-ms-wma',
+                  'fb-wpl':item.file_type === 'application/vnd.ms-wpl',
+                  'fb-zzip':item.file_type === 'application/zzip',
+                  'fb-zip':item.file_type === 'application/zip',
+                  'fb-3g2':item.file_type === 'video/3g2',
+                  'fb-3gp':item.file_type === 'video/3gp',
+                  'fb-aif':item.file_type === 'audio/aiff',
+                  'fb-apk':item.file_type === 'application/vnd.android.package-archive',
+                  'fb-asp':item.file_type === 'text/asp',
+                  'fb-asp':item.file_type === 'text/aspx',
+                  'fb-avi':item.file_type === 'video/avi',
+                  'fb-bak':item.file_type === 'application/x-trash',
+                  'fb-bat':item.file_type === 'application/x-bat',
+                  'fb-bmp':item.file_type === 'image/bmp',
+                  'fb-c':item.file_type === 'text/x-c',
+                  'fb-cab ':item.file_type === 'application/vnd.ms-cab-compressed',
+                  'fb-cda':item.file_type === 'application/x-cdf',
+                  'fb-cdr':item.file_type === 'image/x-coreldraw',
+                  'fb-cer':item.file_type === 'application/pkix-cert',
+                  'fb-cfg':item.file_type === 'application/xhtml+xml',
+                  'fb-cfm':item.file_type === 'application/x-cfm',
+                  'fb-cgi':item.file_type === 'application/x-httpd-cgi',
+                  'fb-class':item.file_type === 'application/x-httpd-java',
+                  'fb-com':item.file_type === 'application/x-msdos-program',
+                  'fb-cpl':item.file_type === 'application/cpl+xml',
+                  'fb-cpp':item.file_type === 'text/x-c++src',
+                  'fb-cs':item.file_type === 'application/x-cs',
+                  'fb-css':item.file_type === 'text/css',
+                  'fb-cur':item.file_type === 'application/x-win-bitmapder',
+                  'fb-dll':item.file_type === 'application/x-msdownload',
+                  'fb-dmp':item.file_type === 'application/x-dmp',
+                  'fb-email ':item.file_type === 'application/x-email',
+                  'fb-eml':item.file_type === 'message/rfc822',
+                  'fb-emlx':item.file_type === 'text/x-emlx',
+                  'fb-eps':item.file_type === 'application/x-postscript',
+                  'fb-exe':item.file_type === 'application/octet-stream',
+                  'fb-file':item.file_type === 'file/x-win',
+                  'fb-flv':item.file_type === 'video/x-flv',
+                  'fb-fnt':item.file_type === 'application/x-font-opentype',
+                  'fb-fon':item.file_type === 'application/x-font',
+                  'fb-gadget':item.file_type === 'application/x-windows-gadget',
+                  'fb-gif':item.file_type === 'image/gif',
+                  'fb-h':item.file_type === 'text/x-h',
+                  'fb-html':item.file_type === 'text/html',
+                  'fb-icns':item.file_type === 'application/icon-mac',
+                  'fb-ico':item.file_type === 'image/x-icon',
+                  'fb-ini':item.file_type === 'application/textedit',
+                  'fb-jar':item.file_type === 'application/java-archive',
+                  'fb-java':item.file_type === 'application/ms-java',
+                  'fb-js':item.file_type === 'application/x-javascript',
+                  'fb-jsp':item.file_type === 'application/x-jsp',
+                  'fb-key':item.file_type === 'application/keynote',
+                  'fb-lnk':item.file_type === 'application/x-ms-shortcut',
+                  'fb-m4v':item.file_type === 'video/x-m4v',
+                  'fb-mid':item.file_type === 'audio/mid',
+                  'fb-midi':item.file_type === 'audio/midi',
+                  'fb-mkv':item.file_type === 'video/x-matroska',
+                  'fb-mov':item.file_type === 'video/quicktime',
+                  'fb-mpa':item.file_type === 'audio/mpeg',
+                  'fb-mpeg':item.file_type === 'video/mpeg',
+                  'fb-msg':item.file_type === 'application/vnd.ms-outlook',
+                  'fb-msi':item.file_type === 'application/x-msi',
+                  'fb-odp':item.file_type === 'application/vnd.oasis.opendocument.presentation',
+                  'fb-ods':item.file_type === 'application/vnd.oasis.opendocument.spreadsheet',
+                  'fb-oft':item.file_type === 'application/x-oft',
+                  'fb-ogg':item.file_type === 'application/ogg',
+                  'fb-ost':item.file_type === 'application/x-ost',
+                  'fb-php':item.file_type === 'application/x-php',
+                  'fb-pl':item.file_type === 'application/x-perl',
+                  'fb-pps':item.file_type === 'application/vnd.ms-powerpoint',
+                  'fb-ppt':item.file_type === 'application/ms-powerpoint',
+                  'fb-pptx':item.file_type === 'application/x-pptx',
+                  'fb-ps':item.file_type === 'application/x-postscript',
+                  'fb-psb':item.file_type === 'application/x-psb',
+                  'fb-psd':item.file_type === 'application/x-photoshop',
+                  'fb-pst':item.file_type === 'application/x-pst',
+                  'fb-py':item.file_type === 'application/x-python-code',
+                  'fb-raw':item.file_type === 'image/x-panasonic-raw',
+                  'fb-rm':item.file_type === 'application/vnd.rn-realmedia',
+                  'fb-rss':item.file_type === 'application/rss+xml',
+                  'fb-sav':item.file_type === 'application/x-spss-sav',
+                  'fb-sh':item.file_type === 'application/x-sh',
+                  'fb-sql':item.file_type === 'application/sql',
+                  'fb-svg':item.file_type === 'image/svg+xml',
+                  'fb-swf':item.file_type === 'application/x-shockwave-flash',
+                  'fb-swift':item.file_type === 'application/x-swift',
+                  'fb-sys':item.file_type === 'application/x-sys',
+                  'fb-tar':item.file_type === 'application/tar',
+                  'fb-tiff':item.file_type === 'image/tiff',
+                  'fb-tmp':item.file_type === 'application/x-tmp',
+                  'fb-ttf':item.file_type === 'application/x-font-ttf',
+                  'fb-vb':item.file_type === 'application/x-visual-basic',
+                  'fb-vcf':item.file_type === 'text/x-vcard',
+                  'fb-vob':item.file_type === 'video/dvd video/mpeg',
+                  'fb-wsf':item.file_type === 'text/xml',
+                  'fb-xhtml':item.file_type === 'application/xhtml+xml',
+                  'fb-xlsm':item.file_type === 'application/vnd.ms-excel.sheet.macroEnabled.12',
+                  'fb-json':item.file_type === 'application/json',
+                  'fb-txt':item.file_type === 'text/plain',
+                  'fb-rtf':item.file_type === 'application/rtf',
+                  'fb-wpd':item.file_type === 'application/wordperfect',
+                  'fb-odt':item.file_type === 'application/odt',
+                  'fb-rpm':item.file_type === 'application/x-rpm',
+                  'fb-tex':item.file_type === 'application/x-tex',
+                  'fb-xml':item.file_type === 'application/xml'}">{{item.file_type}}</span>
+                  </div>
+                  <div class="as-details">
+                    <div class="custom-control custom-checkbox d-flex cursor-pointer">
+                      <input type="checkbox" [(ngModel)]="item['isSelected']"
+                        (change)="selectUnselectAsset(item.id,i,item['isSelected'])" class="custom-control-input"
+                        id="asset{{i}}">
+                      <label class="custom-control-label cursor-pointer" for="asset{{i}}"></label>
+                      <span class="fname"
+                        (click)="utilsService.openFolder(item, (orderByForGridView + (reverseFlagForListView ? '.desc':'.asc')))">{{item.name}}</span>
+                    </div>
+
+                    <ul class="as-action" *ngIf="item.isPermission">
+                      <li
+                        (click)="utilsService.redirectToAssetsDetails(item.id, item.asset_type,item, (orderByForGridView + (reverseFlagForListView ? '.desc':'.asc')))">
+                        <span class="material-icons" matTooltip="View"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name), 'isView']">
+                          remove_red_eye
+                        </span>
+                      </li>
+                      <!-- <li>
+                      <span class="material-icons" matTooltip="Tag">
+                        loyalty
+                      </span>
+                    </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Download"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isView']"
+                          (click)="download(item.id, item.name, item.asset_type)">
+                          cloud_download
+                        </span>
+                      </li>
+                      <!-- <li>
+                      <span class="material-icons" matTooltip="Attachment">
+                        attachment
+                      </span>
+                    </li> -->
+                      <li>
+                        <span (click)="openShareModal(item)" class="material-icons" matTooltip="Share"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isCreate']">
+                          share
+                        </span>
+
+                      </li>
+                      <!-- <li>
+                      <span class="material-icons" matTooltip="Copy">
+                        file_copy
+                      </span>
+                    </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Assign"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isCreate']"
+                          (click)="openAssignModal(item.id)">
+                          exit_to_app
+                        </span>
+                      </li>
+                      <li>
+                        <span class="material-icons" matTooltip="Delete"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isDelete']"
+                          (click)="openDeleteAssetModal(item.id)">
+                          delete
+                        </span>
+                      </li>
+                    </ul>
+                    <ul class="as-action" *ngIf="item.isPermission === false">
+                      <li
+                        (click)="utilsService.redirectToAssetsDetails(item.id, item.asset_type,item,(orderByForGridView + (reverseFlagForListView ? '.desc':'.asc')))">
+                        <span class="material-icons" matTooltip="View">
+                          remove_red_eye
+                        </span>
+                      </li>
+                      <!-- <li>
+                      <span class="material-icons" matTooltip="Tag">
+                        loyalty
+                      </span>
+                    </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Download"
+                          (click)="download(item.id, item.name, item.asset_type)">
+                          cloud_download
+                        </span>
+                      </li>
+                      <!-- <li>
+                      <span class="material-icons" matTooltip="Attachment">
+                        attachment
+                      </span>
+                    </li> -->
+                      <li (click)="openShareModal(item)">
+                        <span class="material-icons" matTooltip="Share">
+                          share
+                        </span>
+
+                      </li>
+                      <!-- <li>
+                      <span class="material-icons" matTooltip="Copy">
+                        file_copy
+                      </span>
+                    </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Assign" (click)="openAssignModal(item.id)">
+                          exit_to_app
+                        </span>
+                      </li>
+                      <li>
+                        <span class="material-icons" matTooltip="Delete" (click)="openDeleteAssetModal(item.id)">
+                          delete
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- <ngx-file-drop class="dragdropfile"
+                  (onFileDrop)="utilsService.dropped($event,'Files',utilsService.keyForFolderName?utilsService.keyForFolderName + '/':undefined, item)"
+                  (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
+                  [showBrowseBtn]="false">
+                </ngx-file-drop> -->
+                </div>
+              </li>
+            </ul>
+            <!-- <div class="spinner-border text-primary" role="status">
+              <span class="sr-only">Loading...</span>
+            </div> -->
+          </ng-template>
+
+        </ngx-file-drop>
+
+
+      </div>
+
+
+      <!-- <ngx-file-drop class="maingragdropgrid"
+        (onFileDrop)="utilsService.dropped($event,'Files',utilsService.keyForFolderName?utilsService.keyForFolderName + '/':undefined)"
+        (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
+        [showBrowseBtn]="false">
+      </ngx-file-drop> -->
+    </div>
+    <!-- <div class="col-md-4 col-sm-12" *ngIf="forlistview">
+      <p class="text-center">Assets Not Found.</p>
+      <p class="text-center">Directory Not Found.</p>
+    </div> -->
+    <div class="col-md-12 col-sm-12" *ngIf="flagForHideShowListView === true">
+      <div class="assets-list-view">
+        <!-- [ngClass]="{'drop-zone': utilsService.isFileDropzone === true}" -->
+        <ngx-file-drop class="maingragdropgrid" style="margin-bottom:30px;" id="test"
+          [ngStyle]="{'height':utilsService.scroll + 'px'}"
+          (onFileDrop)="utilsService.dropped($event,'Files',utilsService.keyForFolderName?utilsService.keyForFolderName + '/':undefined)"
+          (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
+          [showBrowseBtn]="false">
+          <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
+            <ul class="assets-list" infiniteScroll [infiniteScrollDistance]="0" [infiniteScrollThrottle]="300"
+              (scrolled)="onScroll()">
+              <!-- | orderBy: orderByForListView:reverseFlagForListView: caseInsensitive : comparator -->
+              <li *ngFor="let item of utilsService.allAssets ;let i =index;">
+                <div class="assets-card">
+                  <div class="as-img" (click)="utilsService.redirectToAssetsDetails(item.id, item.asset_type,item)"
+                    [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (item.name.includes('.')? getFileExtension(item.name):item.file_type).toLowerCase() + '.jpg)'}">
+
+                  </div>
+                  <div class="as-details">
+                    <div class="custom-control custom-checkbox d-flex cursor-pointer">
+                      <input type="checkbox" [(ngModel)]="item['isSelected']"
+                        (change)="selectUnselectAsset(item.id,i,item['isSelected'])" class="custom-control-input"
+                        id="asset{{i}}">
+                      <label class="custom-control-label cursor-pointer" for="asset{{i}}"></label>
+                      <span class="fname"
+                        (click)="utilsService.openFolder(item, (orderByForGridView + (reverseFlagForListView ? '.desc':'.asc')))">{{item.name}}</span>
+                    </div>
+                  </div>
+                  <div class="as-date">
+                    {{item.created_at | date}}
+                  </div>
+                  <div class="as-file-badge">
+                    <span class="file-badge " [ngClass]="{
+                  'fb-ai': item.file_type === 'application/postscript',
+                  'fb-folder':item.file_type === 'folder',
+                  'fb-avi':item.file_type === 'video/avi',
+                  'fb-cdr':item.file_type === 'image/x-coreldraw',
+                  'fb-doc':item.file_type === 'application/msword',
+                  'fb-docx':item.file_type === 'application/docx',
+                  'fb-eps':item.file_type === 'application/x-postscript',
+                  'fb-jpg':item.file_type === 'image/jpg',
+                  'fb-jpeg':item.file_type === 'image/jpeg',
+                  'fb-mp4':item.file_type === 'video/mp4',
+                  'fb-mpeg':item.file_type === 'video/mpeg',
+                  'fb-pdf':item.file_type === 'application/pdf',
+                  'fb-png':item.file_type === 'image/png',
+                  'fb-pptx':item.file_type === 'application/x-pptx',
+                  'fb-psb':item.file_type === 'application/x-psb',
+                  'fb-psd':item.file_type === 'application/x-photoshop',
+                  'fb-svg':item.file_type === 'image/svg+xml',
+                  'fb-xls':item.file_type === 'application/excel',
+                  'fb-xlsx':item.file_type === 'application/xlsx',
+                  'fb-sevenzip':item.file_type === 'application/7zip',
+                  'fb-aiff':item.file_type === 'audio/aiff',
+                  'fb-arj':item.file_type === 'application/arj',
+                  'fb-bin':item.file_type === 'application/x-binary',
+                  'fb-csv':item.file_type === 'application/csv',
+                  'fb-dat':item.file_type === 'zz-application/zz-winassoc-dat',
+                  'fb-db':item.file_type === 'application/vnd.sqlite3',
+                  'fb-deb':item.file_type === 'application/x-debian-package',
+                  'fb-dmg':item.file_type === 'application/dmg',
+                  'fb-iso':item.file_type === 'application/iso',
+                  'fb-log':item.file_type === 'application/log',
+                  'fb-mdb':item.file_type === 'application/mdb',
+                  'fb-mp3':item.file_type === 'audio/mpeg3',
+                  'fb-pkg':item.file_type === 'application/x-newton-compatible-pkg',
+                  'fb-rar':item.file_type === 'application/rar',
+                  'fb-targz':item.file_type === 'application/targz',
+                  'fb-toast':item.file_type === 'application/x-roxio-toast',
+                  'fb-vcd':item.file_type === 'application/x-cdlink',
+                  'fb-wav':item.file_type === 'audio/wav',
+                  'fb-wma':item.file_type === 'audio/x-ms-wma',
+                  'fb-wpl':item.file_type === 'application/vnd.ms-wpl',
+                  'fb-zzip':item.file_type === 'application/zzip',
+                  'fb-zip':item.file_type === 'application/zip',
+                  'fb-3g2':item.file_type === 'video/3g2',
+                  'fb-3gp':item.file_type === 'video/3gp',
+                  'fb-aif':item.file_type === 'audio/aiff',
+                  'fb-apk':item.file_type === 'application/vnd.android.package-archive',
+                  'fb-asp':item.file_type === 'text/asp',
+                  'fb-asp':item.file_type === 'text/aspx',
+                  'fb-avi':item.file_type === 'video/avi',
+                  'fb-bak':item.file_type === 'application/x-trash',
+                  'fb-bat':item.file_type === 'application/x-bat',
+                  'fb-bmp':item.file_type === 'image/bmp',
+                  'fb-c':item.file_type === 'text/x-c',
+                  'fb-cab ':item.file_type === 'application/vnd.ms-cab-compressed',
+                  'fb-cda':item.file_type === 'application/x-cdf',
+                  'fb-cdr':item.file_type === 'image/x-coreldraw',
+                  'fb-cer':item.file_type === 'application/pkix-cert',
+                  'fb-cfg':item.file_type === 'application/xhtml+xml',
+                  'fb-cfm':item.file_type === 'application/x-cfm',
+                  'fb-cgi':item.file_type === 'application/x-httpd-cgi',
+                  'fb-class':item.file_type === 'application/x-httpd-java',
+                  'fb-com':item.file_type === 'application/x-msdos-program',
+                  'fb-cpl':item.file_type === 'application/cpl+xml',
+                  'fb-cpp':item.file_type === 'text/x-c++src',
+                  'fb-cs':item.file_type === 'application/x-cs',
+                  'fb-css':item.file_type === 'text/css',
+                  'fb-cur':item.file_type === 'application/x-win-bitmapder',
+                  'fb-dll':item.file_type === 'application/x-msdownload',
+                  'fb-dmp':item.file_type === 'application/x-dmp',
+                  'fb-email ':item.file_type === 'application/x-email',
+                  'fb-eml':item.file_type === 'message/rfc822',
+                  'fb-emlx':item.file_type === 'text/x-emlx',
+                  'fb-eps':item.file_type === 'application/x-postscript',
+                  'fb-exe':item.file_type === 'application/octet-stream',
+                  'fb-file':item.file_type === 'file/x-win',
+                  'fb-flv':item.file_type === 'video/x-flv',
+                  'fb-fnt':item.file_type === 'application/x-font-opentype',
+                  'fb-fon':item.file_type === 'application/x-font',
+                  'fb-gadget':item.file_type === 'application/x-windows-gadget',
+                  'fb-gif':item.file_type === 'image/gif',
+                  'fb-h':item.file_type === 'text/x-h',
+                  'fb-html':item.file_type === 'text/html',
+                  'fb-icns':item.file_type === 'application/icon-mac',
+                  'fb-ico':item.file_type === 'image/x-icon',
+                  'fb-ini':item.file_type === 'application/textedit',
+                  'fb-jar':item.file_type === 'application/java-archive',
+                  'fb-java':item.file_type === 'application/ms-java',
+                  'fb-js':item.file_type === 'application/x-javascript',
+                  'fb-jsp':item.file_type === 'application/x-jsp',
+                  'fb-key':item.file_type === 'application/keynote',
+                  'fb-lnk':item.file_type === 'application/x-ms-shortcut',
+                  'fb-m4v':item.file_type === 'video/x-m4v',
+                  'fb-mid':item.file_type === 'audio/mid',
+                  'fb-midi':item.file_type === 'audio/midi',
+                  'fb-mkv':item.file_type === 'video/x-matroska',
+                  'fb-mov':item.file_type === 'video/quicktime',
+                  'fb-mpa':item.file_type === 'audio/mpeg',
+                  'fb-mpeg':item.file_type === 'video/mpeg',
+                  'fb-msg':item.file_type === 'application/vnd.ms-outlook',
+                  'fb-msi':item.file_type === 'application/x-msi',
+                  'fb-odp':item.file_type === 'application/vnd.oasis.opendocument.presentation',
+                  'fb-ods':item.file_type === 'application/vnd.oasis.opendocument.spreadsheet',
+                  'fb-oft':item.file_type === 'application/x-oft',
+                  'fb-ogg':item.file_type === 'application/ogg',
+                  'fb-ost':item.file_type === 'application/x-ost',
+                  'fb-php':item.file_type === 'application/x-php',
+                  'fb-pl':item.file_type === 'application/x-perl',
+                  'fb-pps':item.file_type === 'application/vnd.ms-powerpoint',
+                  'fb-ppt':item.file_type === 'application/ms-powerpoint',
+                  'fb-pptx':item.file_type === 'application/x-pptx',
+                  'fb-ps':item.file_type === 'application/x-postscript',
+                  'fb-psb':item.file_type === 'application/x-psb',
+                  'fb-psd':item.file_type === 'application/x-photoshop',
+                  'fb-pst':item.file_type === 'application/x-pst',
+                  'fb-py':item.file_type === 'application/x-python-code',
+                  'fb-raw':item.file_type === 'image/x-panasonic-raw',
+                  'fb-rm':item.file_type === 'application/vnd.rn-realmedia',
+                  'fb-rss':item.file_type === 'application/rss+xml',
+                  'fb-sav':item.file_type === 'application/x-spss-sav',
+                  'fb-sh':item.file_type === 'application/x-sh',
+                  'fb-sql':item.file_type === 'application/sql',
+                  'fb-svg':item.file_type === 'image/svg+xml',
+                  'fb-swf':item.file_type === 'application/x-shockwave-flash',
+                  'fb-swift':item.file_type === 'application/x-swift',
+                  'fb-sys':item.file_type === 'application/x-sys',
+                  'fb-tar':item.file_type === 'application/tar',
+                  'fb-tiff':item.file_type === 'image/tiff',
+                  'fb-tmp':item.file_type === 'application/x-tmp',
+                  'fb-ttf':item.file_type === 'application/x-font-ttf',
+                  'fb-vb':item.file_type === 'application/x-visual-basic',
+                  'fb-vcf':item.file_type === 'text/x-vcard',
+                  'fb-vob':item.file_type === 'video/dvd video/mpeg',
+                  'fb-wsf':item.file_type === 'text/xml',
+                  'fb-xhtml':item.file_type === 'application/xhtml+xml',
+                  'fb-xlsm':item.file_type === 'application/vnd.ms-excel.sheet.macroEnabled.12',
+                  'fb-json':item.file_type === 'application/json',
+                  'fb-txt':item.file_type === 'text/plain',
+                  'fb-rtf':item.file_type === 'application/rtf',
+                  'fb-wpd':item.file_type === 'application/wordperfect',
+                  'fb-odt':item.file_type === 'application/odt',
+                  'fb-rpm':item.file_type === 'application/x-rpm',
+                  'fb-tex':item.file_type === 'application/x-tex',
+                  'fb-xml':item.file_type === 'application/xml'}">{{item.file_type}}</span>
+                  </div>
+                  <div class="as-action">
+                    <!-- <ul>
+                  <li>
+                    <span class="material-icons" matTooltip="View"
+                      (click)="utilsService.redirectToAssetsDetails(item.id , item.asset_type,item)">
+                      remove_red_eye
+                    </span>
+                  </li>
+                  <li>
+                    <span class="material-icons" matTooltip="Download"
+                      (click)="download(item.id, item.name, item.asset_type)">
+                      cloud_download
+                    </span>
+                  </li>
+
+                  <li>
+                    <span class="material-icons" matTooltip="Share" (click)="openShareModal(item)">
+                      share
+                    </span>
+
+                  </li>
+
+                  <li>
+                    <span class="material-icons" matTooltip="Assign" (click)="openAssignModal(item.id)">
+                      exit_to_app
+                    </span>
+                  </li>
+                  <li>
+                    <span class="material-icons" matTooltip="Delete" (click)="openDeleteAssetModal(item.id)">
+                      delete
+                    </span>
+                  </li>
+                </ul> -->
+                    <ul *ngIf="item.isPermission === false">
+                      <li (click)="utilsService.redirectToAssetsDetails(item.id, item.asset_type,item)">
+                        <span class="material-icons" matTooltip="View">
+                          remove_red_eye
+                        </span>
+                      </li>
+                      <!-- <li>
+                    <span class="material-icons" matTooltip="Tag">
+                      loyalty
+                    </span>
+                  </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Download"
+                          (click)="download(item.id, item.name, item.asset_type)">
+                          cloud_download
+                        </span>
+                      </li>
+                      <!-- <li>
+                    <span class="material-icons" matTooltip="Attachment">
+                      attachment
+                    </span>
+                  </li> -->
+                      <li (click)="openShareModal(item)">
+                        <span class="material-icons" matTooltip="Share">
+                          share
+                        </span>
+
+                      </li>
+                      <!-- <li>
+                    <span class="material-icons" matTooltip="Copy">
+                      file_copy
+                    </span>
+                  </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Assign" (click)="openAssignModal(item.id)">
+                          exit_to_app
+                        </span>
+                      </li>
+                      <li>
+                        <span class="material-icons" matTooltip="Delete" (click)="openDeleteAssetModal(item.id)">
+                          delete
+                        </span>
+                      </li>
+                    </ul>
+
+                    <ul *ngIf="item.isPermission">
+                      <li (click)="utilsService.redirectToAssetsDetails(item.id, item.asset_type,item)">
+                        <span class="material-icons" matTooltip="View"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name), 'isView']">
+                          remove_red_eye
+                        </span>
+                      </li>
+                      <!-- <li>
+                    <span class="material-icons" matTooltip="Tag">
+                      loyalty
+                    </span>
+                  </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Download"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isView']"
+                          (click)="download(item.id, item.name, item.asset_type)">
+                          cloud_download
+                        </span>
+                      </li>
+                      <!-- <li>
+                    <span class="material-icons" matTooltip="Attachment">
+                      attachment
+                    </span>
+                  </li> -->
+                      <li>
+                        <span (click)="openShareModal(item)" class="material-icons" matTooltip="Share"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isCreate']">
+                          share
+                        </span>
+
+                      </li>
+                      <!-- <li>
+                    <span class="material-icons" matTooltip="Copy">
+                      file_copy
+                    </span>
+                  </li> -->
+                      <li>
+                        <span class="material-icons" matTooltip="Assign"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isCreate']"
+                          (click)="openAssignModal(item.id)">
+                          exit_to_app
+                        </span>
+                      </li>
+                      <li>
+                        <span class="material-icons" matTooltip="Delete"
+                          *appCanAccess="[item['isFolderPermission'] ? ('/' + utilsService.keyForFolderName + ('/' + item.name)):utilsService.allPermissions ? utilsService.allPermissions:('/'+item.name),'isDelete']"
+                          (click)="openDeleteAssetModal(item.id)">
+                          delete
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                  <!-- <ngx-file-drop class="dragdropfile"
+                (onFileDrop)="utilsService.openFolder(item); utilsService.dropped($event, 'Files', utilsService.keyForFolderName?utilsService.keyForFolderName + '/':undefined)"
+                (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
+                [showBrowseBtn]="false"> </ngx-file-drop> -->
+                </div>
+              </li>
+            </ul>
+          </ng-template>
+        </ngx-file-drop>
+      </div>
+      <!-- <ngx-file-drop class="maingragdropgrid"
+        (onFileDrop)="utilsService.dropped($event,'Files',utilsService.keyForFolderName?utilsService.keyForFolderName + '/':undefined, item)"
+        (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
+        [showBrowseBtn]="false">
+      </ngx-file-drop> -->
+    </div>
+
+    <div class="col-md-12 col-sm-12" [hidden]="loaderCount === 0">
+      <div class="assetsloader">
+        <div class="spinner-border text-primary" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+      <!-- <div class="assets-loader">
+          <div class="assets-load-circle">
+          </div>
+        </div> -->
+    </div>
+
+  </div>
+</div>
+
+<div class="modal fade" id="shareassetsModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Share Assets</h5>
+        <button type="button" class="close" data-dismiss="modal" (click)="resetShareModal()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row" [formGroup]="shareForm">
+          <div class="col-md-12 mb-2" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(errorArray)">
+            <div class="alert alert-danger" role="alert">
+              {{errorArray}}
+            </div>
+          </div>
+          <div class="col-md-12 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Share Name</mat-label>
+              <input [(ngModel)]="shareObj.name" formControlName="shareName" matInput required autocomplete="off">
+              <mat-error
+                *ngIf="shareForm.controls['shareName'].hasError('required') &&  shareForm.controls['shareName'].touched">
+                {{utilsService.validationService.SHARE_NAME_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!shareForm.controls['shareName'].hasError('required') && !shareForm.controls['shareName'].valid && shareForm.controls['shareName'].touched">
+                {{utilsService.validationService.SHARE_NAME_INVALID}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label>Expiry On</mat-label>
+              <input matInput [matDatepicker]="expiry" [(ngModel)]="shareObj.expire_date" formControlName="expiry"
+                [min]="todayDate" autocomplete="off" [(ngModel)]="expiryDate" placeholder="Choose a date"
+                appendTo="body">
+              <mat-datepicker-toggle matSuffix [for]="expiry"></mat-datepicker-toggle>
+              <mat-datepicker #expiry></mat-datepicker>
+              <mat-error
+                *ngIf="shareForm.controls['expiry'].hasError('required') &&  shareForm.controls['expiry'].touched">
+                {{utilsService.validationService.EXPIRE_DATE_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!shareForm.controls['expiry'].hasError('required') && !shareForm.controls['expiry'].valid && shareForm.controls['expiry'].touched">
+                {{utilsService.validationService.EXPIRE_DATE_INVALID}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 col-12">
+            <mat-form-field appearance="outline" fxFlex="100">
+              <mat-label># Download Allowed</mat-label>
+              <input matInput [(ngModel)]="shareObj.allow_downloads" formControlName="downloadAllowed" required
+                autocomplete="off">
+              <mat-error
+                *ngIf="shareForm.controls['downloadAllowed'].hasError('required') &&  shareForm.controls['downloadAllowed'].touched">
+                {{utilsService.validationService.DOWNLOAD_ALLOWED_REQUIRED}}</mat-error>
+              <mat-error
+                *ngIf="!shareForm.controls['downloadAllowed'].hasError('required') && !shareForm.controls['downloadAllowed'].valid && shareForm.controls['downloadAllowed'].touched">
+                {{utilsService.validationService.DOWNLOAD_ALLOWED_INVALID}}
+              </mat-error>
+            </mat-form-field>
+          </div>
+          <div class="col-md-6 col-12">
+            <div class="form-group">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" [(ngModel)]="flagForAccessType"
+                  formControlName="alloweDownloadCheckBox" (change)="changeAccessType(flagForAccessType)" id="download">
+                <label class="custom-control-label" for="download">Allow Download</label>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12 col-12" *ngIf="!this.utilsService.isNullUndefinedOrBlank(shareLink)">
+            <mat-form-field appearance="outline" class="inputbutton" fxFlex="100">
+              <mat-label>Share Link</mat-label>
+              <input matInput autocomplete="off" formControlName="sharelink" [(ngModel)]="shareLink" #userInput>
+              <button mat-button matSuffix (click)="utilsService.copyInputMessage(userInput)">
+                COPY LINK
+              </button>
+            </mat-form-field>
+          </div>
+        </div>
+        <p>
+          <b>Note :</b> 999999 indicates unlimited downloading</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" [disabled]="shareForm.invalid"
+          (click)="createShare(assetsIdForCreateShare)">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetShareModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade collection-modal" id="colorModal" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Assign Collection
+          <!-- <label class="fname">image.jpg</label> -->
+        </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-3 col-sm-12 mb-2" *ngFor="let item of allCollections;let i = index;">
+            <div class="custom-control custom-checkbox">
+              <input type="checkbox" class="custom-control-input" id="checkbox{{i}}" #checkbox{{i}}
+                [(ngModel)]="item.isSelected" (change)="addOrRemoveCollection(item.isSelected,item)">
+              <label class="custom-control-label" for="checkbox{{i}}">
+                <!-- [ngStyle]="{'background-color': item.background_color }" -->
+                <div class="color-checkbox">{{item.name}}
+                </div>
+              </label>
+            </div>
+          </div>
+          <div *ngIf="utilsService.isEmptyObjectOrNullUndefiend(allCollections)"
+            class="col-sm-12 text-center msg-position">
+            No Collections Available.
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" (click)="assignColllections(assetsIdForAssignCollection)"
+          [disabled]="utilsService.isEmptyObjectOrNullUndefiend(selectedCollectionsIds)">Save</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal delete-modal" id="deleteAssetModal">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-20">
+        <div class="clear-icon">
+          <span class="material-icons">clear</span>
+        </div>
+        <h3> Do you really want to delete these records? </h3>
+        <p>This process cannot be undone.</p>
+        <div class="btngroup">
+          <button class="btn btn-primary mr-3"
+            (click)="deleteAssetById(assetIdForDelete, 'deleteAssetModal')">Yes</button>
+          <button class="btn btn-light" (click)="utilsService.hideModal('deleteAssetModal')">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The Modal -->
+<div class="modal filtermodal" id="filterModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <!-- Modal body -->
+      <div class="modal-body">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="title-header">
+              <div class="float-left">
+                <h1>Filter View</h1>
+                <!-- <p class="mb-0">You're in Packaging Design</p> -->
+              </div>
+            </div>
+            <div class="separator mt-2 mb-3"></div>
+          </div>
+
+        </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Filter By Type</label>
+              <div class="radiobtns">
+                <mat-radio-group aria-labelledby="example-radio-group-label" class="example-radio-group"
+                  [(ngModel)]="utilsService.seletedFilType">
+                  <mat-radio-button color="primary" class="example-radio-button"
+                    *ngFor="let filetype of arrayOfFileTypes" [value]="filetype">
+                    {{filetype}}
+                  </mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="form-group">
+              <label class="control-label">Filter By Modified Date</label>
+              <div class="row" [formGroup]="fromDateToDateForm">
+                <div class="col-md-3 col-sm-12">
+                  <mat-form-field appearance="outline">
+                    <mat-label>From Date</mat-label>
+                    <input matInput [matDatepicker]="startdate" formControlName="fromDate"
+                      [(ngModel)]="utilsService.fromDate" placeholder="Choose a date" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="startdate"></mat-datepicker-toggle>
+                    <mat-datepicker #startdate></mat-datepicker>
+                    <mat-error *ngIf="hasError('fromDate','notValid')">
+                    </mat-error>
+                    <mat-error *ngIf="hasError('fromDate','required')">
+                      {{utilsService.validationService.FROM_DATE_REQUIRED}}
+                    </mat-error>
+                    <mat-error *ngIf="hasError('fromDate','requiredTrue')">
+                      {{utilsService.validationService.FROM_DATE_REQUIRED}}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-3 col-sm-12 pl-0">
+                  <mat-form-field appearance="outline">
+                    <mat-label>To Date</mat-label>
+                    <input matInput [matDatepicker]="enddate" formControlName="toDate" [(ngModel)]="utilsService.toDate"
+                      placeholder="Choose a date" readonly>
+                    <mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>
+                    <mat-datepicker #enddate></mat-datepicker>
+                    <mat-error *ngIf="hasError('toDate','notValid')">
+                      From Date and To Date Invalid.
+                    </mat-error>
+                    <mat-error *ngIf="hasError('toDate','required')">
+                      {{utilsService.validationService.TO_DATE_REQUIRED}}
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-12">
+            <div class="float-left">
+              <button type="button" class="btn btn-primary mr-2"
+                (click)="setFiletOnAssets(utilsService.assetIdForGetFolderAssetsOnDelete?utilsService.assetIdForGetFolderAssetsOnDelete:0, '0', (orderByForGridView + (reverseFlagForListView ? '.desc':'.asc')))"
+                [disabled]="fromDateToDateForm.invalid">Save</button>
+              <button type="button" class="btn btn-secondary" (click)="cancelFilter()">Cancel</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+      <!-- <div class="modal-footer">
+        <div class="row col-md-12">
+          <div class="float-left">
+            <button type="button" class="btn btn-primary mr-2"
+              (click)="setFiletOnAssets(utilsService.assetIdForGetFolderAssetsOnDelete?utilsService.assetIdForGetFolderAssetsOnDelete:0, '0', (orderByForGridView + (reverseFlagForListView ? '.desc':'.asc')))"
+              [disabled]="fromDateToDateForm.invalid">Save</button>
+            <button type="button" class="btn btn-secondary" (click)="cancelFilter()">Cancel</button>
+          </div>
+        </div>
+      </div> -->
+
+    </div>
+  </div>
+</div>
+
+
+<!-- The Modal -->
+<div class="modal delete-modal" id="deleteAllAssetModal">
+
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body text-center p-20">
+        <div class="clear-icon">
+          <span class="material-icons">clear</span>
+        </div>
+        <h3> Do you really want to delete these records? </h3>
+        <p>This process cannot be undone.</p>
+        <div class="btngroup">
+          <!-- (click)="deleteAssetById(assetIdForDelete)" -->
+          <button class="btn btn-primary mr-3"
+            (click)="deleteAllAssetById(utilsService.arrayOfSelectedAssets, 'deleteAllAssetModal')">Yes</button>
+          <button class="btn btn-light" (click)="utilsService.hideModal('deleteAllAssetModal')">No</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

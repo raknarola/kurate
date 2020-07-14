@@ -1,0 +1,102 @@
+.searchcard{
+    width: 590px !important;
+    max-width: 100% !important;
+    margin: 0 auto;
+    border: initial;
+    background-color: transparent;
+    border-radius: .1rem;
+
+    position: relative;
+    padding: 0px;
+}
+.searchcard .dashcard-body{
+    /* background-color: #fff;
+    box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04); */
+}
+.searchcard .mat-button-toggle-appearance-standard{
+    color: #000;
+    background: #ddd;
+}
+.searchcard .mat-button-toggle-checked{
+    background-color: #922B88;
+    color: #fff !important;
+}
+.searchcard .dashcard-body{
+    margin-top: 30px;
+}
+
+.dash-searchtag { position: relative; }
+.dash-searchtag mat-form-field { width: 100%; }
+
+.dash-searchtag .btn-search{
+    position: absolute;
+    right: 0;
+    top: 1px;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 5px;
+    color: #DBDBDB;
+    padding: 13px 10px;
+    cursor: default;
+    font-size: 16px;
+    line-height: 8px;
+    z-index: 9;
+}
+.searchcard .dash-searchtext{
+    position: relative;
+}
+.searchcard .dash-searchtext .form-control{
+    height: 51px;
+    border: 0px !important;
+    font-size: 13px;
+    letter-spacing: 1px;
+    font-weight: 400;
+    padding: 5px 12px;
+}
+.searchcard .dash-searchtext .form-control::placeholder {
+    color: #333;
+  }
+.searchcard .dash-searchtext .btn-search{
+    position: absolute;
+    right: 0;
+    top: 0;
+    background-color: transparent;
+    border: 0px;
+    border-radius: 5px;
+    color: #DBDBDB;
+    padding: 14px 10px;
+    cursor: default;
+    font-size: 16px;
+    line-height: 8px;
+    z-index: 9;
+}
+.dash-searchtag .mat-form-field{ margin: 0px !important; min-height: 50px; }
+.searchcard .dashcard-header{
+    margin-top: 20px;
+    text-align: center;
+}
+.main-searchtext{     display: flex;
+    flex-direction: row;
+    position: relative; }
+    .main-searchtext .dash-searchtext{     flex: 0 0 89%;
+        max-width: 89%; border-radius: 5px; background-color: #fff;
+        box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04); }
+.main-searchtext .btn-primary{
+    border-radius: 5px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    padding: 5px 15px;
+  }
+    .main-searchtag{     display: flex;
+        flex-direction: row;
+        position: relative; }
+        .main-searchtag .dash-searchtag{     flex: 0 0 89%;
+            max-width: 89%; border-radius: 5px; background-color: #fff;
+            box-shadow: 0 1px 15px rgba(0,0,0,.04), 0 1px 6px rgba(0,0,0,.04); }
+            .main-searchtag .btn-primary{     border-radius: 5px;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0; padding: 5px 15px; }
