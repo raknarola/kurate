@@ -87,11 +87,10 @@ export class DemoFileUploadCloudComponent implements OnInit {
 
           fileEntry.file((file: File) => {
             let flagForDuplicateFile: boolean;
-            let totalFileSize: number = 0;
+            let totalFileSize = 0;
             if (!this.utilsService.isNullUndefinedOrBlank(this.arrayOfSelectedFiles)) {
               // console.log(this.arrayOfSelectedFiles);
-
-              let flag1 = this.arrayOfSelectedFiles.filter(val => {
+              const flag1 = this.arrayOfSelectedFiles.filter(val => {
                 // console.log(typeof val.asset_size);
 
                 totalFileSize += val.asset_size;

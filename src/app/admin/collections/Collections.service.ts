@@ -106,7 +106,7 @@ export class CollectionsService {
     }
   ];
   errorArray: Array<string>;
-  color: string = '#ffffffff';
+  color = '#ffffffff';
   flagForHideShowCollection: boolean;
 
 
@@ -302,6 +302,7 @@ export class CollectionsService {
   }
 
   openViewCollectionsAssetsModal(event) {
+    console.log('event => ', event);
     this.getAllAssetsOfCollection(event.rowData.id);
     this.utilsService.openModal('assetListModal');
   }
@@ -309,7 +310,6 @@ export class CollectionsService {
   getAllAssetsOfCollection(colId) {
     const formData = new FormData();
     // console.log(colId);
-
     formData.set('id', colId);
     this.collectionAssets = new Array<Assets>();
     this.utilsService.postMethodAPI(false, this.utilsService.serverVariableService.listCollectionAssetsAPI, formData, (response, isResponseOnPage) => {
@@ -466,6 +466,7 @@ export class CollectionsService {
     this.errorArray = [];
     this.utilsService.openModal('shareCollectionModal');
   }
+
   createShare(assetId) {
     const formData = new FormData();
     this.shareObj.asset_id = assetId;
