@@ -1,14 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { SingleDataSet, Label } from 'ng2-charts';
-import { ChartType, ChartOptions } from 'chart.js';
-import * as pluginDataLabels from 'chartjs-plugin-datalabels';
 import { UtilsService } from '../../../services/utils.service';
-import { isNullOrUndefined } from 'util';
 import * as Highcharts from 'highcharts';
 import StockModule from 'highcharts/modules/stock';
 StockModule(Highcharts);
-
-
 
 @Component({
     selector: 'app-usage',
@@ -20,8 +14,6 @@ export class UsageComponent implements OnInit {
 
     Highcharts: typeof Highcharts = Highcharts;
     public pieChartData: number[] = [];
-
-
     // // Pie
     // public pieChartOptions: ChartOptions = {
     //     responsive: true,
@@ -183,22 +175,31 @@ export class UsageComponent implements OnInit {
             for (const key in response) {
                 if (Object.prototype.hasOwnProperty.call(response, key)) {
                     pieData.push({
-                        name: key,
-                        y: response[key],
+                        name: (key.toString().split('_').join('\n')).toUpperCase(),
+                        y: response[key]
                     });
                     this.pieChartData.push(response[key]);
                 }
             }
+            this.pieChartOptions.tooltip = {
+                formatter: function () {
+                    if (this.point.x === 0) {
+                        return '<b>Using: </b>' + ('<p style="color:"black">' + this.y + 'GB' + '</p>');
+                    } else {
+                        return '<b>Permitted Use: </b>' + ('<p style="color:"red">' + this.y + 'GB' + '</p>');
+                    }
+                }
+            };
+            setTimeout(() => {
+                const series = [{
+                    type: 'pie',
+                    colorByPoint: true,
+                    data: pieData
+                }];
+                this.pieChartOptions.series = series;
+                this.pieupdateFlag = true;
+            }, 2000);
         });
-        setTimeout(() => {
-            const series = [{
-                type: 'pie',
-                colorByPoint: true,
-                data: pieData
-            }];
-            this.pieChartOptions.series = series;
-            this.pieupdateFlag = true;
-        }, 2000);
     }
 
 }

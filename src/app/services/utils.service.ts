@@ -211,7 +211,13 @@ export class UtilsService {
     }
 
     download(downurl, docName) {
-        fileSaver(downurl, docName.replace(/[^a-zA-Z0-9.]/g));
+        console.log('downurl => ', downurl);
+        console.log('docName => ', docName);
+
+
+        console.log('in here');
+
+        fileSaver(downurl, docName);
         // const url = UtilsService.URL + this.serverVariableService.downloadIndividualAssetAPI + '?asset_id=' + docId;
         // const url = downurl;
         // const dlLink = document.createElement('a');
@@ -1644,10 +1650,10 @@ export class UtilsService {
         this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
             if (!this.isNullUndefinedOrBlank(response)) {
                 console.log('File Saved SuccessFully');
-                this.refreshAssets();
                 // this.getAllAssets(0, 0, 'created_at.desc');
             }
         });
+        this.refreshAssets();
     }
 
     refreshAssets() {

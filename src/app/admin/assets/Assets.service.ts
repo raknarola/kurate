@@ -12,7 +12,7 @@ import { Collection } from '../../models/Collection';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { HeaderService } from '../../shared/layout/header/header.service';
-import { saveAs as importedSaveAs } from 'file-saver';
+import { saveAs } from 'file-saver';
 import { Observable, BehaviorSubject } from 'rxjs';
 declare var $: any;
 
@@ -37,6 +37,7 @@ export class AssetsService {
     shareObj = new Share();
     assetsIdForCreateShare: number;
     fileUrl: SafeResourceUrl;
+    fileURL2;
     assetIdForDelete: number;
     assetsIdForAssignCollection: number;
     flagForAccessType: boolean;
@@ -787,10 +788,10 @@ export class AssetsService {
         }
     }
 
-    download(docId?, docName?, asseType?) {
-        // console.log('Download', docId);
-        // console.log('docName', docName);
-        // console.log('asseType', asseType);
+    download(docId, docName, asseType) {
+        console.log('Download', docId);
+        console.log('docName', docName);
+        console.log('asseType', asseType);
         const headers = new HttpHeaders()
             .append('ChannelID', 'WEB')
             .append('ReqID', '789654')
@@ -804,6 +805,8 @@ export class AssetsService {
             headers: headers,
             reportProgress: true
         }).subscribe((res: any) => {
+            console.log('res => ', res);
+
             // if (Wres.type === HttpEventType.DownloadProgress) {
             //   // This is an download progress event. Compute and show the % done:
             //   const percentDone = Math.round(100 * res.loaded / res.total);
@@ -811,7 +814,15 @@ export class AssetsService {
             // } else if (res instanceof HttpResponse) {
             //   console.log('File is completely downloaded!');
             // }
-            const blob = new Blob([res], { type: 'application/octet-stream' });
+            // importedSaveAs(res.download_url, docName);
+            // const a = document.createElement("a");
+            // document.body.appendChild(a);
+            // a.href = res.download_url;
+            // a.download = docName;
+            // a.click();
+            // document.body.removeChild(a);
+            // const blob = new Blob([res], { type: 'application/jpeg' });
+            // console.log('blob => ', blob);
             if (res['response'] === 0) {
                 this.utilsService.loaderStart--;
                 this.utilsService.toasterService.error(res['message'], '', {
@@ -819,12 +830,27 @@ export class AssetsService {
                     closeButton: true
                 });
             } else {
+                console.log('in else');
+
                 if (asseType === 'folder') {
                     docName += '.zip';
                 }
-                // FileSaver.saveAs(res['download_url'], docName.replace(/[^a-zA-Z0-9.]/g, ''));
-                this.utilsService.download(blob, docName.replace(/[^a-zA-Z0-9.]/g));
-                this.utilsService.loaderStart--;
+                // const blob = new Blob([res], { type: 'application/jpg' });
+                // saveAs(blob, docName);
+
+                // document.body.appendChild(a);
+                // a.href = res.download_url;
+                // a.download = docName;
+                // a.click();
+                // document.body.removeChild(a);
+
+                // const blobUrl = URL.createObjectURL(blob);
+                // const a = document.createElement('a');
+                // // a.href = blobUrl;
+                // a.download = blob + docName;
+                // document.body.appendChild(a);
+                // this.utilsService.download(blob, docName);
+                // this.utilsService.loaderStart--;
             }
         }, err => {
             this.utilsService.loaderStart--;
@@ -837,6 +863,20 @@ export class AssetsService {
         });
     }
 
+    // textFileDownload() {
+    //     this.httpClient.get('url', { responseType: 'arraybuffer' })
+    //         .subscribe((res) => {
+    //             this.writeContents(res, 'test.txt', 'text/txt'); // file extension
+    //         });
+    // }
+
+    // writeContents(content, fileName, contentType) {
+    //     const a = document.createElement('a');
+    //     const file = new Blob([content], { type: contentType });
+    //     a.href = URL.createObjectURL(file);
+    //     a.download = fileName;
+    //     a.click();
+    // }
     openDeleteAssetModal(id) {
         this.assetIdForDelete = id;
         this.utilsService.openModal('deleteAssetModal');

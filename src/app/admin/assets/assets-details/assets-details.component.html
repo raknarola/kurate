@@ -52,6 +52,7 @@
                         </li> -->
                         <!-- <li><span class="material-icons" matTooltip="Tag">loyalty</span></li> -->
                         <li>
+                            <!-- {{assetObj | json}} -->
                             <span class="material-icons" matTooltip="Download"
                                 *appCanAccess="[utilsService.allPermissions, 'isView']"
                                 (click)="download(assetObj.id, assetObj.name)">
