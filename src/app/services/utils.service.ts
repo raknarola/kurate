@@ -21,6 +21,7 @@ declare var $: any;
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Tags } from '../models/Tags';
+import * as fileSaver from 'file-saver';
 
 @Injectable({
     providedIn: 'root'
@@ -28,8 +29,11 @@ import { Tags } from '../models/Tags';
 
 export class UtilsService {
 
-    static URL = 'https://api.kurate.app/';
-    static FRONT_URL = 'https://api.kurate.app/';
+    // static URL = 'http://13.234.132.85/';
+    static URL = 'http://uat-api-server.genuusdemo.com/';
+    static FRONT_URL = 'http://uat-kurate-an.genuusdemo.com/';
+    // static URL = 'https://api.kurate.app/';
+    // static FRONT_URL = 'https://api.kurate.app/';
 
     flagForHideMenuForShareLinkPage: boolean;
     flagForhideShowUploadingFiles: boolean;
@@ -87,7 +91,13 @@ export class UtilsService {
         positionClass: 'toast-top-center',
         closeButton: true,
     };
-    constructor(public http: HttpClient,
+    statusOfAction: string;
+    orderByForGridView = 'created_at';
+    orderByForListView = 'created_at';
+    reverseFlagForGridView: boolean;
+    reverseFlagForListView: boolean;
+    constructor(
+        public http: HttpClient,
         public router: Router,
         public formBuilder: FormBuilder,
         public serverVariableService: ServerVariableService,
@@ -134,7 +144,6 @@ export class UtilsService {
         // headers = headers.append('Content-Type', 'application/x-www-form-urlencoded');
         // }
         if (this.arrayOfapiNameToExcludeToken.indexOf(apiName) < 0) {
-            // console.log(apiName);
             if (apiName === 'api/forgotPassword') {
                 headers = headers.append('ApiToken', 'yc2w6Scz3aZNrSO3z9TAYm0G8GzDKrGCTHUlh18ATT2ZlRPei4niaxVQXglvm278YZGftWxQs59ARPT0');
             } else {
@@ -177,7 +186,6 @@ export class UtilsService {
                     if (isCrudAPI) {
                         callback(serverResponse.message, true);
                     } else {
-                        console.log(serverResponse);
                         this.toasterService.error(serverResponse.message, '', {
                             positionClass: 'toast-top-right',
                             closeButton: true
@@ -203,19 +211,20 @@ export class UtilsService {
     }
 
     download(downurl, docName) {
+        fileSaver(downurl, docName.replace(/[^a-zA-Z0-9.]/g));
         // const url = UtilsService.URL + this.serverVariableService.downloadIndividualAssetAPI + '?asset_id=' + docId;
-        const url = downurl;
-        const dlLink = document.createElement('a');
-        dlLink.setAttribute('crossOrigin', 'anonymous');
-        dlLink.setAttribute('data-downloadurl', url);
-        dlLink.setAttribute('download', url);
-        dlLink.href = url;
-        dlLink.target = '_blank';
-        dlLink.dataset.downloadurl = [dlLink.download, url['href']].join(':');
-        document.body.appendChild(dlLink);
-        dlLink.click();
-        // console.log(dlLink);
-        document.body.removeChild(dlLink);
+        // const url = downurl;
+        // const dlLink = document.createElement('a');
+        // dlLink.setAttribute('crossOrigin', 'anonymous');
+        // dlLink.setAttribute('data-downloadurl', url);
+        // dlLink.setAttribute('download', url);
+        // dlLink.href = url;
+        // // dlLink.target = '_blank';
+        // dlLink.dataset.downloadurl = [dlLink.download, url['href']].join(':');
+        // document.body.appendChild(dlLink);
+        // dlLink.click();
+        // // console.log(dlLink);
+        // document.body.removeChild(dlLink);
     }
 
     /**
@@ -279,14 +288,13 @@ export class UtilsService {
 
     isNullUndefinedOrBlank(obj): boolean {
         if (obj == null || obj === undefined || (obj === '' && obj !== 0)) {
-            // console.log('obj => ', obj);
             return true;
         }
         return false;
     }
+
     isEmptyObjectOrNullUndefiend(...value): boolean {
         if (value && value.length > 0) {
-            // console.log('value => ', value);
             for (let i = 0; i < value.length; i++) {
                 if (this.isNullUndefinedOrBlank(value[i]) || this.isEmptyObject(value[i])) {
                     return true;
@@ -338,7 +346,6 @@ export class UtilsService {
 
     /* To copy Text from Textbox */
     copyInputMessage(inputElement) {
-        // console.log(inputElement);
         inputElement.select();
         document.execCommand('copy');
         inputElement.setSelectionRange(0, 0);
@@ -370,17 +377,14 @@ export class UtilsService {
             this.arrayOfSelectedFiles = new Array<Assets>();
         }
         const index2 = this.arrayOfPermissionForAssets.findIndex(val => val.name === '/');
-        console.log('index2 => ', index2 !== -1);
         if (index2 !== -1) {
-            console.log('==>', this.arrayOfPermissionForAssets[index2].isCreate === true);
             if (this.arrayOfPermissionForAssets[index2].isCreate === true) {
                 // this.errorMsgArray = new Array<{ errormsg: string }>();
-                console.log('!this.isNullUndefinedOrBlank(assets) => ', this.isNullUndefinedOrBlank(assets));
+                // console.log('!this.isNullUndefinedOrBlank(assets) => ', this.isNullUndefinedOrBlank(assets));
                 if (!this.isNullUndefinedOrBlank(assets)) {
                     this.openFolder(assets, 'created_at.desc');
                 }
                 for (const droppedFile of files) {
-                    // console.log(droppedFile);
                     if (droppedFile.fileEntry.isFile) {
                         const ext = droppedFile.relativePath.split('.').pop();
                         const ext1 = (ext).toLowerCase();
@@ -440,25 +444,17 @@ export class UtilsService {
                                             // console.log(this.arrayOfSelectedFiles);
                                             const key = 'origin/assets/' + relativePath;
                                             this.uploadCompleteCount = this.arrayOfSelectedFiles.length;
-
                                             this.uploadFile(attachment, key, this.arrayOfSelectedFiles.findIndex(val => val.key === 'origin/assets/' + relativePath));
                                         }
-                                    }
-                                    );
-
+                                    });
                                 } else {
                                     // console.log('File Size Error');
                                     const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
                                     // console.log(index);
-
                                     files.splice(index, 1);
                                     this.flagForDuplicateFileMsg = true;
                                 }
-                            }
-
-                            );
-
-
+                            });
                         } else {
                             // console.log('invalid file');
                             const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
@@ -470,9 +466,7 @@ export class UtilsService {
                         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
                         // console.log(droppedFile.relativePath, fileEntry);
                     }
-
                 }
-                // console.log('called');
             } else {
                 // this.toasterService.error(this.serverVariableService.ERROR_MSG_WHEN_NO_ACCESS_ON_Upload, '', {
                 //   positionClass: 'toast-top-right',
@@ -482,40 +476,31 @@ export class UtilsService {
             }
         } else if (!this.isNullUndefinedOrBlank(this.allPermissions)) {
             console.log(this.allPermissions);
-
             const index1 = this.arrayOfPermissionForAssets.findIndex(val => val.name === this.allPermissions);
             if (this.allPermissions === '/') {
                 if (index1 !== -1) {
                     console.log('ifff');
-
                     if (this.arrayOfPermissionForAssets[index1].isCreate === true) {
                         // this.errorMsgArray = new Array<{ errormsg: string }>();
                         if (!this.isNullUndefinedOrBlank(assets)) {
-
                             this.openFolder(assets, 'created_at.desc');
                         }
-
                         for (const droppedFile of files) {
                             console.log(droppedFile);
-
                             // Is it a file?
                             if (droppedFile.fileEntry.isFile) {
                                 const ext = droppedFile.relativePath.split('.').pop();
                                 const ext1 = (ext).toLowerCase();
                                 if (ext1) {
-
                                     const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
                                     console.log(fileEntry);
-
                                     fileEntry.file(async (file: File) => {
                                         const flagForDuplicateFile = false;
                                         const totalFileSize = 0;
                                         // if (!this.isNullUndefinedOrBlank(this.arrayOfSelectedFiles)) {
                                         //   console.log(this.arrayOfSelectedFiles);
-
                                         //   const flag1 = this.arrayOfSelectedFiles.filter(val => {
                                         //     console.log(typeof val.asset_size);
-
                                         //     totalFileSize += val.asset_size;
                                         //     if (val.file.name === file.name) {
                                         //       console.log('match');
@@ -526,21 +511,17 @@ export class UtilsService {
                                         //   });
                                         // }
                                         // console.log(totalFileSize);
-
                                         if (!flagForDuplicateFile) {
                                             // if (totalFileSize + file.size <= fileSize) {
-
                                             let relativePath = (type === 'Files' ? droppedFile.relativePath : file['webkitRelativePath']);
                                             if (!this.isNullUndefinedOrBlank(folderDropedKey)) {
                                                 // console.log(folderDropedKey);
                                                 // console.log('Relative');
-
                                                 relativePath = folderDropedKey + relativePath;
                                             }
                                             relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
                                             // console.log(relativePath);
                                             // console.log(type);
-
                                             const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
                                                 // Here you can access the real file
                                                 // console.log(droppedFile.relativePath, file);
@@ -556,8 +537,6 @@ export class UtilsService {
                                                 attachment.progress = Number(0);
                                                 attachment.file_type = file.type;
                                                 // console.log(val1);
-
-
                                                 if (val1 === 'Asset found') {
                                                     // this.openModal('copyOrReplaceAssetModal');
                                                     // console.log(attachment);
@@ -566,9 +545,7 @@ export class UtilsService {
                                                     attachment.isCopyReplace = true;
                                                     this.arrayOfSelectedFiles.push(attachment);
                                                     this.uploadCompleteCount = this.arrayOfSelectedFiles.length;
-
                                                 } else {
-
                                                     this.flagForhideShowUploadingFiles = true;
                                                     this.togglemore = true;
                                                     attachment.isCopyReplace = false;
@@ -579,22 +556,15 @@ export class UtilsService {
                                                     const key = 'origin/assets/' + relativePath;
                                                     this.uploadFile(attachment, key, this.arrayOfSelectedFiles.findIndex(val => val.key === 'origin/assets/' + relativePath));
                                                 }
-                                            }
-                                            );
-
+                                            });
                                         } else {
                                             console.log('File Size Error');
                                             const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
                                             // console.log(index);
-
                                             files.splice(index, 1);
                                             this.flagForDuplicateFileMsg = true;
                                         }
-                                    }
-
-                                    );
-
-
+                                    });
                                 } else {
                                     console.log('invalid file');
                                     const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
@@ -606,7 +576,6 @@ export class UtilsService {
                                 const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
                                 // console.log(droppedFile.relativePath, fileEntry);
                             }
-
                         }
                         // console.log('called');
                     } else {
@@ -618,7 +587,6 @@ export class UtilsService {
                     }
                 } else {
                     this.openModal('warningModal');
-
                 }
             } else {
                 const folderUrl = '/' + this.keyForFolderName;
@@ -629,31 +597,24 @@ export class UtilsService {
                     if (this.arrayOfPermissionForAssets[index3].isCreate === true) {
                         // this.errorMsgArray = new Array<{ errormsg: string }>();
                         if (!this.isNullUndefinedOrBlank(assets)) {
-
                             this.openFolder(assets, 'created_at.desc');
                         }
-
                         for (const droppedFile of files) {
                             console.log(droppedFile);
-
                             // Is it a file?
                             if (droppedFile.fileEntry.isFile) {
                                 const ext = droppedFile.relativePath.split('.').pop();
                                 const ext1 = (ext).toLowerCase();
                                 if (ext1) {
-
                                     const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
                                     console.log(fileEntry);
-
                                     fileEntry.file(async (file: File) => {
                                         const flagForDuplicateFile = false;
                                         const totalFileSize = 0;
                                         // if (!this.isNullUndefinedOrBlank(this.arrayOfSelectedFiles)) {
                                         //   console.log(this.arrayOfSelectedFiles);
-
                                         //   const flag1 = this.arrayOfSelectedFiles.filter(val => {
                                         //     console.log(typeof val.asset_size);
-
                                         //     totalFileSize += val.asset_size;
                                         //     if (val.file.name === file.name) {
                                         //       console.log('match');
@@ -664,21 +625,17 @@ export class UtilsService {
                                         //   });
                                         // }
                                         // console.log(totalFileSize);
-
                                         if (!flagForDuplicateFile) {
                                             // if (totalFileSize + file.size <= fileSize) {
-
                                             let relativePath = (type === 'Files' ? droppedFile.relativePath : file['webkitRelativePath']);
                                             if (!this.isNullUndefinedOrBlank(folderDropedKey)) {
                                                 // console.log(folderDropedKey);
                                                 // console.log('Relative');
-
                                                 relativePath = folderDropedKey + relativePath;
                                             }
                                             relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
                                             // console.log(relativePath);
                                             // console.log(type);
-
                                             const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
                                                 // Here you can access the real file
                                                 // console.log(droppedFile.relativePath, file);
@@ -694,8 +651,6 @@ export class UtilsService {
                                                 attachment.progress = Number(0);
                                                 attachment.file_type = file.type;
                                                 // console.log(val1);
-
-
                                                 if (val1 === 'Asset found') {
                                                     // this.openModal('copyOrReplaceAssetModal');
                                                     // console.log(attachment);
@@ -704,9 +659,7 @@ export class UtilsService {
                                                     attachment.isCopyReplace = true;
                                                     this.arrayOfSelectedFiles.push(attachment);
                                                     this.uploadCompleteCount = this.arrayOfSelectedFiles.length;
-
                                                 } else {
-
                                                     this.flagForhideShowUploadingFiles = true;
                                                     this.togglemore = true;
                                                     attachment.isCopyReplace = false;
@@ -717,22 +670,15 @@ export class UtilsService {
                                                     const key = 'origin/assets/' + relativePath;
                                                     this.uploadFile(attachment, key, this.arrayOfSelectedFiles.findIndex(val => val.key === 'origin/assets/' + relativePath));
                                                 }
-                                            }
-                                            );
-
+                                            });
                                         } else {
                                             console.log('File Size Error');
                                             const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
                                             // console.log(index);
-
                                             files.splice(index, 1);
                                             this.flagForDuplicateFileMsg = true;
                                         }
-                                    }
-
-                                    );
-
-
+                                    });
                                 } else {
                                     console.log('invalid file');
                                     const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
@@ -744,7 +690,6 @@ export class UtilsService {
                                 const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
                                 // console.log(droppedFile.relativePath, fileEntry);
                             }
-
                         }
                         // console.log('called');
                     } else {
@@ -752,41 +697,30 @@ export class UtilsService {
                     }
                 } else {
                     this.openModal('warningModal');
-
                 }
             }
-
-
         } else {
             this.openModal('warningModal');
-
             // // this.errorMsgArray = new Array<{ errormsg: string }>();
             // if (!this.isNullUndefinedOrBlank(assets)) {
-
             //   this.openFolder(assets, 'created_at.desc');
             // }
-
             // for (const droppedFile of files) {
             //   console.log(droppedFile);
-
             //   // Is it a file?
             //   if (droppedFile.fileEntry.isFile) {
             //     const ext = droppedFile.relativePath.split('.').pop();
             //     const ext1 = (ext).toLowerCase();
             //     if (ext1) {
-
             //       const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
             //       console.log(fileEntry);
-
             //       fileEntry.file(async (file: File) => {
             //         const flagForDuplicateFile: boolean = false;
             //         const totalFileSize = 0;
             //         // if (!this.isNullUndefinedOrBlank(this.arrayOfSelectedFiles)) {
             //         //   console.log(this.arrayOfSelectedFiles);
-
             //         //   const flag1 = this.arrayOfSelectedFiles.filter(val => {
             //         //     console.log(typeof val.asset_size);
-
             //         //     totalFileSize += val.asset_size;
             //         //     if (val.file.name === file.name) {
             //         //       console.log('match');
@@ -797,21 +731,17 @@ export class UtilsService {
             //         //   });
             //         // }
             //         console.log(totalFileSize);
-
             //         if (!flagForDuplicateFile) {
             //           // if (totalFileSize + file.size <= fileSize) {
-
             //           let relativePath = (type === 'Files' ? droppedFile.relativePath : file['webkitRelativePath']);
             //           if (!this.isNullUndefinedOrBlank(folderDropedKey)) {
             //             console.log(folderDropedKey);
             //             console.log('Relative');
-
             //             relativePath = folderDropedKey + relativePath;
             //           }
             //           relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
             //           console.log(relativePath);
             //           console.log(type);
-
             //           const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
             //             // Here you can access the real file
             //             console.log(droppedFile.relativePath, file);
@@ -827,8 +757,6 @@ export class UtilsService {
             //             attachment.progress = Number(0);
             //             attachment.file_type = file.type;
             //             console.log(val1);
-
-
             //             if (val1 === 'Asset found') {
             //               // this.openModal('copyOrReplaceAssetModal');
             //               console.log(attachment);
@@ -837,9 +765,7 @@ export class UtilsService {
             //               attachment.isCopyReplace = true;
             //               this.arrayOfSelectedFiles.push(attachment);
             //               this.uploadCompleteCount = this.arrayOfSelectedFiles.length;
-
             //             } else {
-
             //               this.flagForhideShowUploadingFiles = true;
             //               this.togglemore = true;
             //               attachment.isCopyReplace = false;
@@ -847,26 +773,18 @@ export class UtilsService {
             //               // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
             //               // console.log(this.arrayOfSelectedFiles);
             //               this.uploadCompleteCount = this.arrayOfSelectedFiles.length;
-
             //               const key = 'origin/assets/' + relativePath;
             //               this.uploadFile(attachment, key, this.arrayOfSelectedFiles.findIndex(val => val.key === 'origin/assets/' + relativePath));
             //             }
-            //           }
-            //           );
-
+            //           });
             //         } else {
             //           console.log('File Size Error');
             //           const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
             //           console.log(index);
-
             //           files.splice(index, 1);
             //           this.flagForDuplicateFileMsg = true;
             //         }
-            //       }
-
-            //       );
-
-
+            //       });
             //     } else {
             //       console.log('invalid file');
             //       const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
@@ -878,19 +796,15 @@ export class UtilsService {
             //     const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
             //     console.log(droppedFile.relativePath, fileEntry);
             //   }
-
             // }
             // console.log('called');
         }
-
-
-
     }
 
     public fileOver(event) {
         // console.log(event);
+        console.log('event => ', event);
         // console.log('file Over');
-
         this.isFileDropzone = true;
     }
 
@@ -912,8 +826,6 @@ export class UtilsService {
             this.uploadFile(file, file.key, index);
         }
     }
-
-
 
     // uploadFile(assetObj: Assets, key, index) {
     //   const contentType = assetObj.file.type;
@@ -987,7 +899,6 @@ export class UtilsService {
     //           }
     //           return false;
     //         }
-
     //         // this.uploadCompleteCount = this.arrayOfSelectedFiles.length - 1;
     //         return true;
     //       });
@@ -1023,10 +934,10 @@ export class UtilsService {
             }
         });
     }
+
     uploadFile(assetObj: Assets, key, index) {
         const contentType = assetObj.file.type;
         console.log(this.arrayOfSelectedFiles[index].progress);
-
         const bucket = new S3(
             {
                 // accessKeyId: '6LFGSALG327SOVD2WLEV', // for digital ocean spaces
@@ -1042,7 +953,6 @@ export class UtilsService {
         AWS.config.httpOptions.timeout = 0;
         // const params = new AWS.S3.ManagedUpload({
         //   params: {
-
         //     Bucket: this.organizationObj.BucketName,
         //     Key: key,
         //     Body: assetObj.file,
@@ -1051,7 +961,6 @@ export class UtilsService {
         //   }
         // });
         const params = {
-
             Bucket: this.organizationObj.BucketName,
             Key: key,
             Body: assetObj.file,
@@ -1063,7 +972,7 @@ export class UtilsService {
             console.log(this.arrayOfSelectedFiles[index].progress);
             // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
             console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
-
+            // this.clickMe();
         }).send((err, data) => {
             if (err) {
                 assetObj.status = 'Failed';
@@ -1072,7 +981,6 @@ export class UtilsService {
             }
             assetObj.status = 'Success';
             console.log('Successfully uploaded file.', data);
-
             // this.uploadCompleteCount = this.arrayOfSelectedFiles.length - 1;
             this.createAssetAPI(data, assetObj);
             return true;
@@ -1083,7 +991,6 @@ export class UtilsService {
         //   console.log(this.arrayOfSelectedFiles[index].progress);
         //   // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
         //   console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
-
         // }).send((err, data) => {
         //   if (err) {
         //     assetObj.status = 'Failed';
@@ -1103,11 +1010,11 @@ export class UtilsService {
         // this.viewHeight = this.elementView.nativeElement.offsetHeight;
         const test1 = document.getElementById('test').scrollHeight;
         if (!this.isNullUndefinedOrBlank(test1)) {
-
             this.scroll = test1;
         }
         // console.log(test1);
     }
+
     searchAssets(searchParam: string, tags) {
         const formData = new FormData();
         // console.log(searchParam);
@@ -1725,7 +1632,6 @@ export class UtilsService {
                 assetObj.file_type = 'application/x-tex';
                 break;
             }
-
             default:
                 break;
         }
@@ -1738,23 +1644,67 @@ export class UtilsService {
         this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
             if (!this.isNullUndefinedOrBlank(response)) {
                 console.log('File Saved SuccessFully');
-
+                this.refreshAssets();
+                // this.getAllAssets(0, 0, 'created_at.desc');
             }
         });
     }
 
-
+    refreshAssets() {
+        this.offsetCount = 0;
+        // console.log(this.assetIdForGetFolderAssetsOnDelete);
+        // console.log(this.statusOfAction);
+        // console.log(this.mainSearchNgModel);
+        // console.log(this.searchNgModel);
+        this.arrayOfSelectedAssets = new Array<number>();
+        if (!this.isNullUndefinedOrBlank(this.statusOfAction)) {
+            if (!this.isNullUndefinedOrBlank(this.assetIdForGetFolderAssetsOnDelete) && this.assetIdForGetFolderAssetsOnDelete > 0) {
+                this.scroll = 0;
+                this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
+                console.log(' this.assetIdForGetFolderAssetsOnDelete=> ', this.assetIdForGetFolderAssetsOnDelete);
+                setTimeout(() => {
+                    if (this.allAssets.length > 4) {
+                        this.clickMe();
+                    } else {
+                        this.scroll = 600;
+                    }
+                }, 2000);
+                this.offsetCount += 50;
+            } else {
+                if (!this.isNullUndefinedOrBlank(this.mainSearchNgModel)) {
+                    const searchparams = localStorage.getItem('search-param');
+                    this.mainSearchNgModel = searchparams;
+                    // console.log(searchparams);
+                    this.searchAssets(searchparams, null);
+                } else if (!this.isEmptyObjectOrNullUndefiend(this.searchNgModel)) {
+                    const searchTagsparams = JSON.parse(localStorage.getItem('search-tags-param'));
+                    this.searchNgModel = searchTagsparams;
+                    this.searchAssets(null, searchTagsparams);
+                }
+            }
+        } else {
+            this.scroll = 0;
+            this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
+            setTimeout(() => {
+                if (this.allAssets.length > 4) {
+                    this.clickMe();
+                } else {
+                    this.scroll = 600;
+                }
+            }, 2000);
+            this.offsetCount += 50;
+        }
+        // }
+    }
 
     checkFileExistOrNot(key) {
         const formData = new FormData();
         formData.set('asset_key', key);
         formData.set('parent_id', this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete.toString() : '0');
-
         return new Promise((resolve, reject) => {
             this.postMethodAPI(true, this.serverVariableService.checkFileExistsAPI, formData, (response) => {
                 if (!this.isNullUndefinedOrBlank(response)) {
                     // console.log(response);
-
                     resolve(response);
                 } else {
                     reject('Error');
@@ -1772,31 +1722,28 @@ export class UtilsService {
         });
     }
 
-    getAllAssets(idForFolder, offset, sortKey?: string) {
+    getAllAssets(idForFolder?, offset?, sortKey?: string) {
         const formData = new FormData();
         formData.set('asset_id', idForFolder);
         formData.set('offset', offset);
         formData.set('sort_by', sortKey);
         if (!this.isNullUndefinedOrBlank(this.seletedFilType)) {
-
             formData.set('filter_type', this.seletedFilType);
         }
         if (!this.isNullUndefinedOrBlank(this.fromDate)) {
-
             formData.set('filter_from_date', this.datepipe.transform(this.fromDate, 'yyyy-MM-dd'));
         }
         if (!this.isNullUndefinedOrBlank(this.toDate)) {
-
             formData.set('filter_to_date', this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
         }
         this.allAssets = new Array<Assets>();
+        console.log('set tie called');
         this.postMethodAPI(false, this.serverVariableService.listAssetsAPI, formData, (response) => {
             if (!this.isEmptyObjectOrNullUndefiend(response)) {
                 this.allAssets = Deserialize(response, Assets);
                 // console.log(this.allPermissions);
                 const indexForRootFolder = this.arrayOfPermissionForAssets.findIndex(val1 => val1.name === '/');
                 if (idForFolder > 0) {
-
                     if (indexForRootFolder !== -1) {
                         this.allAssets.filter(val => {
                             val.isPermission = true;
@@ -1826,10 +1773,8 @@ export class UtilsService {
                         });
                     }
                 } else {
-
                     if (indexForRootFolder !== -1) {
                         this.allAssets.filter(val => {
-
                             // if (val.file_type === 'folder') {
                             val.isPermission = true;
                             // } else {
@@ -1840,7 +1785,6 @@ export class UtilsService {
                         this.allAssets.filter(val => {
                             const index = this.arrayOfPermissionForAssets.findIndex(val1 => val1.name === ('/' + val.name));
                             // console.log(index);
-
                             val.isPermission = true;
                             // if (val.file_type === 'folder' && index !== -1) {
                             //   val.isPermission = true;
@@ -1858,9 +1802,7 @@ export class UtilsService {
         this.arrayOfPermissionForAssets = new Array<Permissions>();
         const pemissions = this.getLoginUsers().role.permission;
         // console.log(pemissions);
-
         const permissionObj = JSON.parse(pemissions);
-
         for (const key in permissionObj) {
             if (permissionObj.hasOwnProperty(key)) {
                 // console.log(key);
@@ -1869,7 +1811,6 @@ export class UtilsService {
                 if (key === '/') {
                     this.allPermissions = key;
                     localStorage.setItem('permission', this.allPermissions);
-
                 }
                 perObj.isCreate = false;
                 perObj.isDelete = false;
@@ -1909,18 +1850,14 @@ export class UtilsService {
                             break;
                     }
                 });
-
                 this.arrayOfPermissionForAssets.push(perObj);
-
             }
         }
         // console.log(JSON.stringify(this.arrayOfPermissionForAssets));
-
     }
 
     setPermissionArray(arrayOfPermission) {
         // console.log(arrayOfPermission);
-
         const obj = new Permissions();
         const array: Array<string> = arrayOfPermission;
         const obj1 = array.filter(val => {
@@ -1953,15 +1890,11 @@ export class UtilsService {
                     break;
             }
         });
-
         return obj;
-
     }
 
     openFolder(obj: Assets, sort_key: string) {
-
         if (obj.asset_type === 'folder') {
-
             if (!this.isNullUndefinedOrBlank(this.arrayOfBreadCrumb)) {
                 const newObj = this.arrayOfBreadCrumb.filter(val => {
                     val.isActive = false;
@@ -1969,7 +1902,6 @@ export class UtilsService {
             }
             this.arrayOfBreadCrumb.push({ 'asset_id': obj.id, 'folder_name': obj.name, 'isActive': true });
             this.isBreadCrumb = true;
-
             this.flagForHideShowBackButton = true;
             if (!this.isNullUndefinedOrBlank(this.keyForFolderName)) {
                 this.keyForFolderName += ('/' + obj.name);
@@ -2215,13 +2147,10 @@ export class UtilsService {
             //     this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, this.offsetCount, (orderBy + (sortBy ? '.desc' : '.asc')));
             //     setTimeout(() => {
             //       if (this.allAssets.length > 4) {
-
             //         this.clickMe();
             //       } else {
             //         this.scroll = 600;
-
             //       }
-
             //     }, 1500);
             //   }
             // });
@@ -2231,7 +2160,6 @@ export class UtilsService {
 
     getList() {
         if (!this.isNullUndefinedOrBlank(this.getLoginUsers())) {
-
             const param = {};
             this.postMethodAPI(false, this.serverVariableService.listTagsAPI, param, (response) => {
                 if (!this.isNullUndefinedOrBlank(response)) {

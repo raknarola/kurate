@@ -1,130 +1,126 @@
 <nav class="navbar fixed-top">
-  <div class="d-flex align-items-center navbar-left">
-    <button class="menu-button d-none d-md-block">
-      <svg class="main" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 17">
-        <rect x="0.48" y="0.5" width="7" height="1" />
-        <rect x="0.48" y="7.5" width="7" height="1" />
-        <rect x="0.48" y="15.5" width="7" height="1" />
-      </svg>
-      <svg class="sub" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17">
-        <rect x="1.56" y="0.5" width="16" height="1" />
-        <rect x="1.56" y="7.5" width="16" height="1" />
-        <rect x="1.56" y="15.5" width="16" height="1" />
-      </svg>
-    </button>
+    <div class="d-flex align-items-center navbar-left">
+        <button class="menu-button d-none d-md-block">
+            <svg class="main" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 9 17">
+                <rect x="0.48" y="0.5" width="7" height="1" />
+                <rect x="0.48" y="7.5" width="7" height="1" />
+                <rect x="0.48" y="15.5" width="7" height="1" />
+            </svg>
+            <svg class="sub" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18 17">
+                <rect x="1.56" y="0.5" width="16" height="1" />
+                <rect x="1.56" y="7.5" width="16" height="1" />
+                <rect x="1.56" y="15.5" width="16" height="1" />
+            </svg>
+        </button>
 
-    <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none">
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 17">
-        <rect x="0.5" y="0.5" width="25" height="1" />
-        <rect x="0.5" y="7.5" width="25" height="1" />
-        <rect x="0.5" y="15.5" width="25" height="1" />
-      </svg>
-    </a>
+        <a href="#" class="menu-button-mobile d-xs-block d-sm-block d-md-none">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26 17">
+                <rect x="0.5" y="0.5" width="25" height="1" />
+                <rect x="0.5" y="7.5" width="25" height="1" />
+                <rect x="0.5" y="15.5" width="25" height="1" />
+            </svg>
+        </a>
 
-    <div class="search" data-search-path="Pages.Search.html?q=" *ngIf="utilsService.flagForHideHeaderSearch === false">
-      <div class="main-hsearchdrop" *ngIf="utilsService.flagForHideShowSearchInput === true">
+        <div class="search" data-search-path="Pages.Search.html?q="
+            *ngIf="utilsService.flagForHideHeaderSearch === false">
+            <div class="main-hsearchdrop" *ngIf="utilsService.flagForHideShowSearchInput === true">
 
-        <div class="header-searchdrop">
-          <mat-form-field class=" custom-ngselect" appearance="outline">
-            <ng-select ngSelectMat #elem placeholder="Search" (open)="onOpen(elem)" [items]="utilsService.arrayOfTags"
-              [dropdownPosition]="'bottom'" notFoundText="Not found." [clearable]="true" [multiple]="true"
-              [(ngModel)]="utilsService.searchNgModel" bindLabel="name" bindValue="name">
-            </ng-select>
-          </mat-form-field>
+                <div class="header-searchdrop">
+                    <mat-form-field class=" custom-ngselect" appearance="outline">
+                        <ng-select ngSelectMat #elem placeholder="Search" (open)="onOpen(elem)"
+                            [items]="utilsService.arrayOfTags" [dropdownPosition]="'bottom'" notFoundText="Not found."
+                            [clearable]="true" [multiple]="true" [(ngModel)]="utilsService.searchNgModel"
+                            bindLabel="name" bindValue="name">
+                        </ng-select>
+                    </mat-form-field>
 
-          <button class="btn btn-search">
-            <span class="material-icons">search</span>
-          </button>
-        </div>
-        <button class="btn btn-primary"
-          [disabled]="utilsService.isEmptyObjectOrNullUndefiend(utilsService.searchNgModel)"
-          (click)="utilsService.searchAssets('', utilsService.searchNgModel)">Go</button>
-      </div>
-      <div class="main-hsearchtext" *ngIf="utilsService.flagForHideShowSearchInput === false">
-        <div class="header-searchtext">
-          <!-- <input placeholder="Search" type="text" [(ngModel)]="mainSearchNgModel" (keyup.enter)="utilsService.searchAssets(mainSearchNgModel,null)"
+                    <button class="btn btn-search">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+                <button class="btn btn-primary"
+                    [disabled]="utilsService.isEmptyObjectOrNullUndefiend(utilsService.searchNgModel)"
+                    (click)="utilsService.searchAssets('', utilsService.searchNgModel)">Go</button>
+            </div>
+            <div class="main-hsearchtext" *ngIf="utilsService.flagForHideShowSearchInput === false">
+                <div class="header-searchtext">
+                    <!-- <input placeholder="Search" type="text" [(ngModel)]="mainSearchNgModel" (keyup.enter)="utilsService.searchAssets(mainSearchNgModel,null)"
                     class="form-control" value=""> -->
 
-          <!-- (keyup.enter)="utilsService.mainSearchNgModel?utilsService.searchAssets(utilsService.mainSearchNgModel, null):''" -->
-          <input matInput placeholder="Search" [(ngModel)]="utilsService.mainSearchNgModel" type="text"
-            class="form-control">
-          <button class="btn btn-search">
-            <span class="material-icons">search</span>
-          </button>
+                    <!-- (keyup.enter)="utilsService.mainSearchNgModel?utilsService.searchAssets(utilsService.mainSearchNgModel, null):''" -->
+                    <input matInput placeholder="Search" [(ngModel)]="utilsService.mainSearchNgModel" type="text"
+                        class="form-control">
+                    <button class="btn btn-search">
+                        <span class="material-icons">search</span>
+                    </button>
+                </div>
+                <button class="btn btn-primary"
+                    [disabled]="utilsService.isNullUndefinedOrBlank(utilsService.mainSearchNgModel)"
+                    (click)="utilsService.searchAssets(utilsService.mainSearchNgModel,null)">Go
+                </button>
+            </div>
         </div>
-        <button class="btn btn-primary" [disabled]="utilsService.isNullUndefinedOrBlank(utilsService.mainSearchNgModel)"
-          (click)="utilsService.searchAssets(utilsService.mainSearchNgModel,null)">Go</button>
-      </div>
-    </div>
 
-    <!-- <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block"
+        <!-- <a class="btn btn-sm btn-outline-primary ml-3 d-none d-md-inline-block"
             (click)="utilsService.searchAssets('New1', searchNgModel)">&nbsp;GO&nbsp;</a> -->
-    <!-- <mat-button-toggle-group name="fontStyle" *ngIf="utilsService.flagForHideHeaderSearch === false" #group="matButtonToggleGroup" [value]="selectedVal"
+        <!-- <mat-button-toggle-group name="fontStyle" *ngIf="utilsService.flagForHideHeaderSearch === false" #group="matButtonToggleGroup" [value]="selectedVal"
             aria-label="Font Style" (change)="changeSearchBoxByToogle($event)">
             <mat-button-toggle value="MainSearch">Search </mat-button-toggle>
             <mat-button-toggle value="TagWisSearch">Search By Tags</mat-button-toggle>
         </mat-button-toggle-group> -->
-    <mat-slide-toggle class="example-margin" *ngIf="utilsService.flagForHideHeaderSearch === false"
-      (toggleChange)="utilsService.flagForHideShowSearchInput = !utilsService.flagForHideShowSearchInput"
-      [checked]="utilsService.flagForHideShowSearchInput" [disabled]="false"> By Tags
-    </mat-slide-toggle>
-  </div>
+        <mat-slide-toggle class="example-margin" *ngIf="utilsService.flagForHideHeaderSearch === false"
+            (toggleChange)="utilsService.flagForHideShowSearchInput = !utilsService.flagForHideShowSearchInput"
+            [checked]="utilsService.flagForHideShowSearchInput" [disabled]="false"> By Tags
+        </mat-slide-toggle>
+    </div>
 
 
-  <a class="navbar-logo">
-    <span class="logo d-none d-xs-block"></span>
-    <span class="logo-mobile d-block d-xs-none"></span>
-  </a>
+    <a class="navbar-logo">
+        <span class="logo d-none d-xs-block"></span>
+        <span class="logo-mobile d-block d-xs-none"></span>
+    </a>
 
-  <div class="navbar-right">
-    <div class="header-icons d-inline-block align-middle">
-
-
-      <div class="position-relative d-none d-sm-inline-block uploadbox"
-        *ngIf="utilsService.getLoginUsers() && utilsService.flagforHideUploadingPlusButton">
-        <div class="dropdown-menu-right dropdown">
-          <button class="header-icon btn btn-empty" type="button" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false" id="iconMenuButton">
-            <i class="simple-icon-plus color-th"></i>
-          </button>
-          <!--  -->
-          <div class="dropdown-menu dropdown-menu-right" id="iconMenuButton">
-            <ul>
-              <li class="normalli" (click)="openCreateNewFolderModal()">
-                <img src="assets/images/create-folder.png">
-                <!-- <i class="material-icons">
-                create_new_folder
-              </i>  -->
-                Create Folder </li>
-              <li class="normalli fulldrop">
-                <!-- <i class="material-icons">
-                  insert_drive_file
-                </i> -->
-                <img src="assets/images/file-upload.png">
-                <ngx-file-drop dropZoneLabel="File Upload" class="uploadcontrol"
-                  (onFileDrop)="utilsService.dropped($event, 'Files',utilsService.keyForFolderName?utilsService.keyForFolderName+'/':undefined)"
-                  (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
-                  [showBrowseBtn]="true">
-                </ngx-file-drop>
-              </li>
-              <li class="normalli fulldrop">
-                <!-- <i class="material-icons">
-                  folder
-                </i> -->
-                <img src="assets/images/folder-upload.png">
-                <ngx-file-drop dropZoneLabel="Folder Upload" class="uploadcontrol"
-                  (onFileDrop)="utilsService.dropped($event,'Folder',utilsService.keyForFolderName?utilsService.keyForFolderName+'/':undefined)"
-                  (onFileOver)="utilsService.fileOver($event)" (onFileLeave)="utilsService.fileLeave($event)"
-                  directory="true" [showBrowseBtn]="true"> </ngx-file-drop>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-
-      </div>
-
-      <!-- <div class="position-relative d-inline-block notification">
+    <div class="navbar-right">
+        <div class="header-icons d-inline-block align-middle">
+            <div class="position-relative d-none d-sm-inline-block uploadbox"
+                *ngIf="utilsService.getLoginUsers() && utilsService.flagforHideUploadingPlusButton">
+                <div class="dropdown-menu-right dropdown">
+                    <button class="header-icon btn btn-empty" type="button" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" id="iconMenuButton">
+                        <i class="simple-icon-plus color-th"></i>
+                    </button>
+                    <!--  -->
+                    <div class="dropdown-menu dropdown-menu-right" id="iconMenuButton">
+                        <ul>
+                            <li class="normalli" (click)="openCreateNewFolderModal()">
+                                <img src="assets/images/create-folder.png">
+                                <!-- <i class="material-icons">create_new_folder</i>  -->
+                                Create Folder
+                            </li>
+                            <li class="normalli fulldrop">
+                                <!-- <i class="material-icons">insert_drive_file</i> -->
+                                <img src="assets/images/file-upload.png">
+                                <ngx-file-drop dropZoneLabel="File Upload" class="uploadcontrol"
+                                    (onFileDrop)="utilsService.dropped($event, 'Files',utilsService.keyForFolderName?utilsService.keyForFolderName+'/':undefined)"
+                                    (onFileOver)="utilsService.fileOver($event)"
+                                    (onFileLeave)="utilsService.fileLeave($event)" [showBrowseBtn]="true">
+                                </ngx-file-drop>
+                            </li>
+                            <li class="normalli fulldrop">
+                                <!-- <i class="material-icons">folder</i> -->
+                                <img src="assets/images/folder-upload.png">
+                                <ngx-file-drop dropZoneLabel="Folder Upload" class="uploadcontrol"
+                                    (onFileDrop)="utilsService.dropped($event,'Folder',utilsService.keyForFolderName?utilsService.keyForFolderName+'/':undefined)"
+                                    (onFileOver)="utilsService.fileOver($event)"
+                                    (onFileLeave)="utilsService.fileLeave($event)" directory="true"
+                                    [showBrowseBtn]="true">
+                                </ngx-file-drop>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="position-relative d-inline-block notification">
                 <div class="dropdown-menu-right dropdown">
                     <button class="header-icon btn btn-empty" type="button" id="notificationButton" data-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
@@ -185,29 +181,30 @@
                     </div>
                 </div>
             </div> -->
-    </div>
+        </div>
 
-    <div class="user d-inline-block" *ngIf="utilsService.getLoginUsers()">
-      <div class="dropdown-menu-right dropdown">
-        <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
-          aria-expanded="false">
-          <span class="name">{{utilsService.getLoginUsers()? utilsService.getLoginUsers().firstName:''}}</span>
-          <span>
-            <img alt="Profile Picture" src="assets/images/usericon.png" />
-          </span>
-        </button>
-        <div class="dropdown-menu dropdown-menu-right" tabindex="-1" role="menu" aria-hidden="false">
-          <!-- <button type="button" tabindex="0" role="menuitem" class="dropdown-item">Account</button> -->
-          <!-- <button type="button" tabindex="0" role="menuitem" class="dropdown-item">Features</button>
+        <div class="user d-inline-block" *ngIf="utilsService.getLoginUsers()">
+            <div class="dropdown-menu-right dropdown">
+                <button class="btn btn-empty p-0" type="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span
+                        class="name">{{utilsService.getLoginUsers()? utilsService.getLoginUsers().firstName:''}}</span>
+                    <span>
+                        <img alt="Profile Picture" src="assets/images/usericon.png" />
+                    </span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" tabindex="-1" role="menu" aria-hidden="false">
+                    <!-- <button type="button" tabindex="0" role="menuitem" class="dropdown-item">Account</button> -->
+                    <!-- <button type="button" tabindex="0" role="menuitem" class="dropdown-item">Features</button>
                     <button type="button" tabindex="0" role="menuitem" class="dropdown-item">History</button>
                     <button type="button" tabindex="0" role="menuitem" class="dropdown-item">Support</button> -->
-          <!-- <div tabindex="-1" class="dropdown-divider"></div> -->
-          <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
-            (click)="storageListnerService.clear()">Sign out</button>
+                    <!-- <div tabindex="-1" class="dropdown-divider"></div> -->
+                    <button type="button" tabindex="0" role="menuitem" class="dropdown-item"
+                        (click)="storageListnerService.clear()">Sign out</button>
+                </div>
+            </div>
+
+
         </div>
-      </div>
-
-
     </div>
-  </div>
 </nav>

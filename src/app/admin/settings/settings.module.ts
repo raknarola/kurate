@@ -8,24 +8,47 @@ import { RecycleBinComponent } from './recycle-bin/recycle-bin.component';
 import { RouterModule, Routes } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
 import { MetaConfigComponent } from './meta-config/meta-config.component';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'usage', pathMatch: 'full' },
-  { path: 'usage', component: UsageComponent },
-  { path: 'access-log', component: AccessLogComponent },
-  { path: 'recycle-bin', component: RecycleBinComponent },
-  { path: 'meta-config', component: MetaConfigComponent }
-
-
+    {
+        path: '',
+        redirectTo: 'usage',
+        pathMatch: 'full'
+    },
+    {
+        path: 'usage',
+        component: UsageComponent
+    },
+    {
+        path: 'access-log',
+        component: AccessLogComponent
+    },
+    {
+        path: 'recycle-bin',
+        component: RecycleBinComponent
+    },
+    {
+        path: 'meta-config',
+        component: MetaConfigComponent
+    }
 ];
 
 @NgModule({
-  declarations: [SettingsComponent, UsageComponent, AccessLogComponent, RecycleBinComponent, MetaConfigComponent],
-  imports: [
-    CommonModule,
-    SharedModule,
-    AgGridModule.withComponents([]),
-    RouterModule.forChild(routes),
-  ]
+    declarations: [
+        SettingsComponent,
+        UsageComponent,
+        AccessLogComponent,
+        RecycleBinComponent,
+        MetaConfigComponent
+    ],
+    imports: [
+        CommonModule,
+        SharedModule,
+        HighchartsChartModule,
+        AgGridModule.withComponents([]),
+        RouterModule.forChild(routes),
+    ]
 })
+
 export class SettingsModule { }

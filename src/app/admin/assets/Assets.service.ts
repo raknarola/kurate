@@ -12,6 +12,8 @@ import { Collection } from '../../models/Collection';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { HeaderService } from '../../shared/layout/header/header.service';
+import { saveAs as importedSaveAs } from 'file-saver';
+import { Observable, BehaviorSubject } from 'rxjs';
 declare var $: any;
 
 @Injectable({
@@ -19,7 +21,6 @@ declare var $: any;
 })
 
 export class AssetsService {
-
     orderByForGridView = 'created_at';
     orderByForListView = 'created_at';
     reverseFlagForGridView: boolean;
@@ -630,35 +631,28 @@ export class AssetsService {
 
     //   }
     // }
+
     refreshAssets() {
         this.utilsService.offsetCount = 0;
         // console.log(this.utilsService.assetIdForGetFolderAssetsOnDelete);
-
-
         // console.log(this.statusOfAction);
         // console.log(this.utilsService.mainSearchNgModel);
         // console.log(this.utilsService.searchNgModel);
         this.utilsService.arrayOfSelectedAssets = new Array<number>();
-
         if (!this.utilsService.isNullUndefinedOrBlank(this.statusOfAction)) {
             if (!this.utilsService.isNullUndefinedOrBlank(this.utilsService.assetIdForGetFolderAssetsOnDelete) && this.utilsService.assetIdForGetFolderAssetsOnDelete > 0) {
                 this.utilsService.scroll = 0;
                 this.utilsService.getAllAssets(this.utilsService.assetIdForGetFolderAssetsOnDelete ? this.utilsService.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
                 console.log(' this.utilsService.assetIdForGetFolderAssetsOnDelete=> ', this.utilsService.assetIdForGetFolderAssetsOnDelete);
-
                 setTimeout(() => {
                     if (this.utilsService.allAssets.length > 4) {
-
                         this.clickMe();
                     } else {
-
                         this.utilsService.scroll = 600;
                     }
-
                 }, 2000);
                 this.utilsService.offsetCount += 50;
             } else {
-
                 if (!this.utilsService.isNullUndefinedOrBlank(this.utilsService.mainSearchNgModel)) {
                     const searchparams = localStorage.getItem('search-param');
                     this.utilsService.mainSearchNgModel = searchparams;
@@ -675,20 +669,15 @@ export class AssetsService {
             this.utilsService.getAllAssets(this.utilsService.assetIdForGetFolderAssetsOnDelete ? this.utilsService.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
             setTimeout(() => {
                 if (this.utilsService.allAssets.length > 4) {
-
                     this.clickMe();
                 } else {
-
                     this.utilsService.scroll = 600;
                 }
-
             }, 2000);
             this.utilsService.offsetCount += 50;
         }
         // }
-
     }
-
 
     BackToAllAssets() {
         this.utilsService.flagForHideShowBackButton = false;
@@ -814,43 +803,40 @@ export class AssetsService {
         this.http.post(UtilsService.URL + this.utilsService.serverVariableService.downloadIndividualAssetAPI, formData, {
             headers: headers,
             reportProgress: true
-        })
-            .subscribe(res => {
-                // if (Wres.type === HttpEventType.DownloadProgress) {
-                //   // This is an download progress event. Compute and show the % done:
-                //   const percentDone = Math.round(100 * res.loaded / res.total);
-                //   console.log(`File is ${percentDone}% downloaded.`);
-                // } else if (res instanceof HttpResponse) {
-                //   console.log('File is completely downloaded!');
-                // }
-
-                // const blob = new Blob([res], { type: 'application/octet-stream' });
-                if (res['response'] === 0) {
-                    this.utilsService.loaderStart--;
-
-                    this.utilsService.toasterService.error(res['message'], '', {
-                        positionClass: 'toast-top-right',
-                        closeButton: true
-                    });
-                } else {
-
-                    if (asseType === 'folder') {
-                        docName += '.zip';
-                    }
-                    this.utilsService.download(res['download_url'], docName.replace(/[^a-zA-Z0-9.]/g));
-                    this.utilsService.loaderStart--;
-                    // FileSaver.saveAs(this.domSanitizer.bypassSecurityTrustUrl(res['download_url']), docName.replace(/[^a-zA-Z0-9.]/g, ''));
-                }
-            }, err => {
+        }).subscribe((res: any) => {
+            // if (Wres.type === HttpEventType.DownloadProgress) {
+            //   // This is an download progress event. Compute and show the % done:
+            //   const percentDone = Math.round(100 * res.loaded / res.total);
+            //   console.log(`File is ${percentDone}% downloaded.`);
+            // } else if (res instanceof HttpResponse) {
+            //   console.log('File is completely downloaded!');
+            // }
+            const blob = new Blob([res], { type: 'application/octet-stream' });
+            if (res['response'] === 0) {
                 this.utilsService.loaderStart--;
-                if (err['status'] === 403) {
-                    this.utilsService.toasterService.error('Download limit exceeded', '', {
-                        positionClass: 'toast-top-right',
-                        closeButton: true
-                    });
+                this.utilsService.toasterService.error(res['message'], '', {
+                    positionClass: 'toast-top-right',
+                    closeButton: true
+                });
+            } else {
+                if (asseType === 'folder') {
+                    docName += '.zip';
                 }
-            });
+                // FileSaver.saveAs(res['download_url'], docName.replace(/[^a-zA-Z0-9.]/g, ''));
+                this.utilsService.download(blob, docName.replace(/[^a-zA-Z0-9.]/g));
+                this.utilsService.loaderStart--;
+            }
+        }, err => {
+            this.utilsService.loaderStart--;
+            if (err['status'] === 403) {
+                this.utilsService.toasterService.error('Download limit exceeded', '', {
+                    positionClass: 'toast-top-right',
+                    closeButton: true
+                });
+            }
+        });
     }
+
     openDeleteAssetModal(id) {
         this.assetIdForDelete = id;
         this.utilsService.openModal('deleteAssetModal');

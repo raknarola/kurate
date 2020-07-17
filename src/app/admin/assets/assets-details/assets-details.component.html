@@ -48,15 +48,9 @@
                 <div class="ab-descss">
                     <ul *ngIf="!utilsService.isNullUndefinedOrBlank(utilsService.allPermissions) ">
                         <!-- <li (click)="redirectToAssetsDetails(assetObj.id)">
-                        <span class="material-icons" matTooltip="View">
-                            remove_red_eye
-                        </span>
+                             <span class="material-icons" matTooltip="View">remove_red_eye</span>
                         </li> -->
-                        <!-- <li>
-                        <span class="material-icons" matTooltip="Tag">
-                            loyalty
-                        </span>
-                        </li> -->
+                        <!-- <li><span class="material-icons" matTooltip="Tag">loyalty</span></li> -->
                         <li>
                             <span class="material-icons" matTooltip="Download"
                                 *appCanAccess="[utilsService.allPermissions, 'isView']"
@@ -64,22 +58,11 @@
                                 cloud_download
                             </span>
                         </li>
-                        <!-- <li>
-                  <span class="material-icons" matTooltip="Attachment">
-                    attachment
-                  </span>
-                </li> -->
+                        <!-- <li><span class="material-icons" matTooltip="Attachment">attachment</span></li> -->
                         <li (click)="openShareModal(assetObj)" *appCanAccess="[utilsService.allPermissions,'isCreate']">
-                            <span class="material-icons" matTooltip="Share">
-                                share
-                            </span>
-
+                            <span class="material-icons" matTooltip="Share">share</span>
                         </li>
-                        <!-- <li>
-                  <span class="material-icons" matTooltip="Copy">
-                    file_copy
-                  </span>
-                </li> -->
+                        <!-- <li><span class="material-icons" matTooltip="Copy">file_copy</span></li> -->
                         <li *appCanAccess="[utilsService.allPermissions,'isCreate']">
                             <span class="material-icons" matTooltip="Assign" (click)="openAssignModal(assetObj.id)">
                                 exit_to_app
