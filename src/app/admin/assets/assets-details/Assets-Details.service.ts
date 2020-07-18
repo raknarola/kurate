@@ -15,7 +15,7 @@ import { Collection } from '../../../models/Collection';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material';
 import { MetaData } from '../../../models/Meta-Data';
-
+import { saveAs } from 'file-saver';
 export interface Tag {
     name: string;
 }
@@ -428,7 +428,7 @@ export class AssetsDetailsService {
         this.utilsService.loaderStart++;
         this.http.post(UtilsService.URL +
             this.utilsService.serverVariableService.downloadIndividualAssetAPI,
-            formData, { headers: headers }).subscribe(res => {
+            formData, { headers: headers }).subscribe((res: any) => {
                 if (res['response'] === 0) {
                     this.utilsService.loaderStart--;
                     this.utilsService.toasterService.error(res['message'], '', {
@@ -436,9 +436,7 @@ export class AssetsDetailsService {
                         closeButton: true
                     });
                 } else {
-                    // const blob = new Blob([res], { type: 'application/octet-stream' });
-                    // FileSaver.saveAs(blob, docName);
-                    this.utilsService.download(res['download_url'], docName.replace(/[^a-zA-Z0-9.]/g));
+                    this.utilsService.download(res['download_url'], docName.replace(/[^a-zA-Z0-9.]/g)).subscribe();
                     this.utilsService.loaderStart--;
                 }
             }, err => {

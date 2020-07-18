@@ -834,6 +834,20 @@ export class AssetsService {
 
                 if (asseType === 'folder') {
                     docName += '.zip';
+                } else if (asseType === 'file') {
+                    console.log('in file');
+                    this.utilsService.download(res['download_url'], docName).subscribe();
+                    this.utilsService.loaderStart--;
+                    // var element = document.createElement('a');
+                    // element.setAttribute('href', res['download_url']);
+                    // element.setAttribute('download', docName);
+
+                    // element.style.display = 'none';
+                    // document.body.appendChild(element);
+
+                    // element.click();
+
+                    // document.body.removeChild(element);
                 }
                 // const blob = new Blob([res], { type: 'application/jpg' });
                 // saveAs(blob, docName);
@@ -849,8 +863,7 @@ export class AssetsService {
                 // // a.href = blobUrl;
                 // a.download = blob + docName;
                 // document.body.appendChild(a);
-                // this.utilsService.download(blob, docName);
-                // this.utilsService.loaderStart--;
+
             }
         }, err => {
             this.utilsService.loaderStart--;

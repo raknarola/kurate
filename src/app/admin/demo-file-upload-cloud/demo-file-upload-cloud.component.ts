@@ -64,27 +64,22 @@ export class DemoFileUploadCloudComponent implements OnInit {
   }
 
   public dropped(files: NgxFileDropEntry[]) {
-
+console.log('in dropped file')
     const fileSize = 104857600;
     this.files = files;
     this.flagForShowErrorMsg = false;
     this.flagForInvalidSizeMsg = false;
     this.flagForDuplicateFileMsg = false;
     // this.errorMsgArray = new Array<{ errormsg: string }>();
-
-
     for (const droppedFile of files) {
       // console.log(droppedFile);
-
       // Is it a file?
       if (droppedFile.fileEntry.isFile) {
         const ext = droppedFile.relativePath.split('.').pop();
         const ext1 = (ext).toLowerCase();
         if (ext1) {
-
           const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
           // console.log(fileEntry);
-
           fileEntry.file((file: File) => {
             let flagForDuplicateFile: boolean;
             let totalFileSize = 0;
@@ -92,7 +87,6 @@ export class DemoFileUploadCloudComponent implements OnInit {
               // console.log(this.arrayOfSelectedFiles);
               const flag1 = this.arrayOfSelectedFiles.filter(val => {
                 // console.log(typeof val.asset_size);
-
                 totalFileSize += val.asset_size;
                 if (val.file.name === file.name) {
                   // console.log('match');
@@ -103,26 +97,18 @@ export class DemoFileUploadCloudComponent implements OnInit {
               });
             }
             // console.log(totalFileSize);
-
             if (!flagForDuplicateFile) {
               // if (totalFileSize + file.size <= fileSize) {
-
-
               // Here you can access the real file
-              // console.log(droppedFile.relativePath, file);
               const file1 = new Blob([file], { type: 'application/pdf' });
               const fileURL = URL.createObjectURL(file1);
               // this.attchementUrl = fileURL;
-
               // const index = this.utilsService.isNullUndefinedOrBlank(this.arrayOfAttachments) ? '0' : this.arrayOfAttachments.length;
               // console.log('fileIndex: ' + index);
               // console.log('fileLength: ' + files.length);
               // console.log('arrayOfAttachmentLength: ' + this.arrayOfAttachments.length);
-
-
               // const fileName = String(index).concat(EnumForDocument.ATTACHMENT, '.', droppedFile.relativePath.split('.').pop());
               const fileName = file.name;
-
               // this.formData.append('document', file, fileName);
               const attachment = new Assets();
               attachment.key = droppedFile.relativePath;
@@ -133,7 +119,6 @@ export class DemoFileUploadCloudComponent implements OnInit {
               attachment.file_type = file.type;
               this.arrayOfSelectedFiles.push(attachment);
               // this.uploadFile(file, 'origin/assets/' + droppedFile.relativePath);
-
               // }
               // else {
               //   this.flagForInvalidSizeMsg = true;
@@ -142,7 +127,6 @@ export class DemoFileUploadCloudComponent implements OnInit {
               // console.log('File Size Error');
               const index = files.findIndex(val => val.fileEntry === droppedFile.fileEntry);
               // console.log(index);
-
               files.splice(index, 1);
               this.flagForDuplicateFileMsg = true;
             }
@@ -400,6 +384,7 @@ export class DemoFileUploadCloudComponent implements OnInit {
   }
 
   createAssetAPI(uploadResponse, document: Assets) {
+    console.log('First');
     let assetObj = new Assets();
     assetObj = document;
     assetObj.key = uploadResponse.Key;

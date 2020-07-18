@@ -22,6 +22,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Tags } from '../models/Tags';
 import * as fileSaver from 'file-saver';
+import { catchError, map } from 'rxjs/operators';
+import { Console } from 'console';
 
 @Injectable({
     providedIn: 'root'
@@ -37,6 +39,7 @@ export class UtilsService {
 
     flagForHideMenuForShareLinkPage: boolean;
     flagForhideShowUploadingFiles: boolean;
+    flagForRefreshPage = 0;
     arrayOfSelectedFiles: Array<Assets> = new Array<Assets>();
     copyOrReplaceAssetArray: Array<Assets> = new Array<Assets>();
     public files: NgxFileDropEntry[] = [];
@@ -211,26 +214,15 @@ export class UtilsService {
     }
 
     download(downurl, docName) {
-        console.log('downurl => ', downurl);
-        console.log('docName => ', docName);
-
-
-        console.log('in here');
-
-        fileSaver(downurl, docName);
-        // const url = UtilsService.URL + this.serverVariableService.downloadIndividualAssetAPI + '?asset_id=' + docId;
-        // const url = downurl;
-        // const dlLink = document.createElement('a');
-        // dlLink.setAttribute('crossOrigin', 'anonymous');
-        // dlLink.setAttribute('data-downloadurl', url);
-        // dlLink.setAttribute('download', url);
-        // dlLink.href = url;
-        // // dlLink.target = '_blank';
-        // dlLink.dataset.downloadurl = [dlLink.download, url['href']].join(':');
-        // document.body.appendChild(dlLink);
-        // dlLink.click();
-        // // console.log(dlLink);
-        // document.body.removeChild(dlLink);
+        return this.http.get(downurl, {
+            reportProgress: true,
+            responseType: 'blob'
+        }).pipe(map((res) => {
+            fileSaver(res, docName);
+        }), catchError((err) => {
+            console.log(err);
+            return err;
+        }));
     }
 
     /**
@@ -373,6 +365,7 @@ export class UtilsService {
     }
 
     async dropped(files: NgxFileDropEntry[], type: string, folderDropedKey: string, assets: Assets) {
+        console.log('dropped')
         const fileSize = 104857600;
         this.files = files;
         this.flagForShowErrorMsg = false;
@@ -942,6 +935,7 @@ export class UtilsService {
     }
 
     uploadFile(assetObj: Assets, key, index) {
+        console.log('Fifth')
         const contentType = assetObj.file.type;
         console.log(this.arrayOfSelectedFiles[index].progress);
         const bucket = new S3(
@@ -975,9 +969,9 @@ export class UtilsService {
         };
         const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
             this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
-            console.log(this.arrayOfSelectedFiles[index].progress);
+            // console.log(this.arrayOfSelectedFiles[index].progress);
             // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
-            console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
+            // console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
             // this.clickMe();
         }).send((err, data) => {
             if (err) {
@@ -1085,6 +1079,7 @@ export class UtilsService {
     }
 
     createAssetAPI(uploadResponse, document: Assets) {
+        console.log('third')
         let assetObj = new Assets();
         assetObj = document;
         const splitArray = assetObj.name.split('.');
@@ -1645,15 +1640,20 @@ export class UtilsService {
         assetObj.version_key = uploadResponse.VersionId;
         const formData = new FormData();
         const obj = Serialize(assetObj, Assets);
+        console.log('obj', obj)
         formData.set('asset_data', JSON.stringify(obj));
         formData.set('parent_id', this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete.toString() : '0');
+        console.log('formData', formData);
         this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
             if (!this.isNullUndefinedOrBlank(response)) {
+                this.flagForRefreshPage += 1;
                 console.log('File Saved SuccessFully');
-                // this.getAllAssets(0, 0, 'created_at.desc');
+                if (this.flagForRefreshPage === this.arrayOfSelectedFiles.length) {
+                    this.refreshAssets();
+                    this.flagForRefreshPage = 0;
+                }
             }
         });
-        this.refreshAssets();
     }
 
     refreshAssets() {
@@ -1728,7 +1728,8 @@ export class UtilsService {
         });
     }
 
-    getAllAssets(idForFolder?, offset?, sortKey?: string) {
+    getAllAssets(idForFolder, offset, sortKey: string) {
+        console.log('fourth');
         const formData = new FormData();
         formData.set('asset_id', idForFolder);
         formData.set('offset', offset);
@@ -1743,7 +1744,6 @@ export class UtilsService {
             formData.set('filter_to_date', this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
         }
         this.allAssets = new Array<Assets>();
-        console.log('set tie called');
         this.postMethodAPI(false, this.serverVariableService.listAssetsAPI, formData, (response) => {
             if (!this.isEmptyObjectOrNullUndefiend(response)) {
                 this.allAssets = Deserialize(response, Assets);
