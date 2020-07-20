@@ -6,7 +6,9 @@
                     <h1>{{assetObj.name}}</h1>
                     <ul class="folder-breadcrumbs" *ngIf="flagForBreadCrumb">
                         <li class="cursor-pointer" (click)="BackToAllAssets()">Assets</li>
-                        <li class="cursor-pointer" [ngClass]="{'active':item.isActive }" *ngFor="let item of utilsService.arrayOfBreadCrumb;let i = index" (click)="gotoBreadCrumb(item.asset_id, i, item.folder_name)">{{item.folder_name}}</li>
+                        <li class="cursor-pointer" [ngClass]="{'active':item.isActive }"
+                            *ngFor="let item of utilsService.arrayOfBreadCrumb;let i = index"
+                            (click)="gotoBreadCrumb(item.asset_id, i, item.folder_name)">{{item.folder_name}}</li>
                     </ul>
                 </div>
                 <div class="top-right-button-container dj">
@@ -31,9 +33,12 @@
     <div class="row mt-2">
         <div class="col-12 col-md-4">
             <div class="assets-box card">
-                <div class="ab-img32" *ngIf="assetObj.thumb_url" [ngStyle]="{'background-image': 'url('+assetObj.thumb_url+')'}">
+                <div class="ab-img32" *ngIf="assetObj.thumb_url"
+                    [ngStyle]="{'background-image': 'url('+assetObj.thumb_url+')'}">
                 </div>
-                <div class="ab-img32" *ngIf="utilsService.isNullUndefinedOrBlank(assetObj.thumb_url) && utilsService.isNullUndefinedOrBlank(assetObj.video_url)" [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (assetObj.name?.includes('.')?getFileExtension(assetObj.name):assetObj.file_type)?.toLowerCase() + '.jpg)'}">
+                <div class="ab-img32"
+                    *ngIf="utilsService.isNullUndefinedOrBlank(assetObj.thumb_url) && utilsService.isNullUndefinedOrBlank(assetObj.video_url)"
+                    [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (assetObj.name?.includes('.')?getFileExtension(assetObj.name):assetObj.file_type)?.toLowerCase() + '.jpg)'}">
                 </div>
                 <video width="100%" height="240" controls *ngIf="assetObj.video_url" autoplay>
                     <source [src]="assetObj.video_url" type="video/mp4">
@@ -47,8 +52,9 @@
                         </li> -->
                         <!-- <li><span class="material-icons" matTooltip="Tag">loyalty</span></li> -->
                         <li>
-                            <!-- {{assetObj | json}} -->
-                            <span class="material-icons" matTooltip="Download" *appCanAccess="[utilsService.allPermissions, 'isView']" (click)="download(assetObj.id, assetObj.name)">
+                            <span class="material-icons" matTooltip="Download"
+                                *appCanAccess="[utilsService.allPermissions, 'isView']"
+                                (click)="download(assetObj.id, assetObj.name)">
                                 cloud_download
                             </span>
                         </li>
@@ -63,7 +69,8 @@
                             </span>
                         </li>
                         <li *appCanAccess="[utilsService.allPermissions,'isDelete']">
-                            <span class="material-icons" matTooltip="Delete" (click)="openDeleteAssetModal(assetObj.id)">
+                            <span class="material-icons" matTooltip="Delete"
+                                (click)="openDeleteAssetModal(assetObj.id)">
                                 delete
                             </span>
                         </li>
@@ -80,7 +87,8 @@
               </span>
             </li> -->
                         <li>
-                            <span class="material-icons" matTooltip="Download" (click)="download(assetObj.id, assetObj.name)">
+                            <span class="material-icons" matTooltip="Download"
+                                (click)="download(assetObj.id, assetObj.name)">
                                 cloud_download
                             </span>
                         </li>
@@ -106,7 +114,8 @@
                             </span>
                         </li>
                         <li>
-                            <span class="material-icons" matTooltip="Delete" (click)="openDeleteAssetModal(assetObj.id)">
+                            <span class="material-icons" matTooltip="Delete"
+                                (click)="openDeleteAssetModal(assetObj.id)">
                                 delete
                             </span>
                         </li>
@@ -164,21 +173,30 @@
         <div class="col-12 col-md-7">
             <div class="asset-inner card asdetails-tab">
                 <ul class="nav nav-tabs card-header-tabs ml-0 mr-0 mb-1" role="tablist">
-                    <li class="nav-item text-center" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)">
-                        <a class="nav-link" [ngClass]="{'active': !utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)}" id="meta-info-tab" data-toggle="tab" href="#meta-info" role="tab" aria-selected="true">Meta
+                    <li class="nav-item text-center"
+                        *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)">
+                        <a class="nav-link"
+                            [ngClass]="{'active': !utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)}"
+                            id="meta-info-tab" data-toggle="tab" href="#meta-info" role="tab" aria-selected="true">Meta
                             info
                         </a>
                     </li>
                     <li class="nav-item text-center">
-                        <a class="nav-link" *ngIf="isVersionPermission" [ngClass]="{'active': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData) && isVersionPermission === true}" id="version-tab" data-toggle="tab" href="#versiontab" role="tab" aria-selected="false">Version
+                        <a class="nav-link" *ngIf="isVersionPermission"
+                            [ngClass]="{'active': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData) && isVersionPermission === true}"
+                            id="version-tab" data-toggle="tab" href="#versiontab" role="tab"
+                            aria-selected="false">Version
                         </a>
                     </li>
                     <li class="nav-item text-center">
-                        <a class="nav-link" [ngClass]="{'active': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData) && isVersionPermission === false}" id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-selected="false">Tags
+                        <a class="nav-link"
+                            [ngClass]="{'active': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData) && isVersionPermission === false}"
+                            id="tags-tab" data-toggle="tab" href="#tags" role="tab" aria-selected="false">Tags
                         </a>
                     </li>
                     <li class="nav-item text-center" *ngIf="!utilsService.isNullUndefinedOrBlank(assetObj.meta_data)">
-                        <a class="nav-link" id="meta-data-tab" data-toggle="tab" href="#meta1" role="tab" aria-selected="true">Meta Data
+                        <a class="nav-link" id="meta-data-tab" data-toggle="tab" href="#meta1" role="tab"
+                            aria-selected="true">Meta Data
                         </a>
                     </li>
                     <!-- <li class="nav-item text-center"><a class="nav-link" id="print-tab" data-toggle="tab" href="#print1"
@@ -191,7 +209,9 @@
                         role="tab" aria-selected="false">IPTC <i class="simple-icon-question"></i></a></li> -->
                 </ul>
                 <div class="tab-content h-100 bgg">
-                    <div class="tab-pane fade h-100" *ngIf="!utilsService.isNullUndefinedOrBlank(arrayOfMetaData)" [ngClass]="{'active show': !utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)}" id="meta-info" role="tabpanel" aria-labelledby="meta-info-tab">
+                    <div class="tab-pane fade h-100" *ngIf="!utilsService.isNullUndefinedOrBlank(arrayOfMetaData)"
+                        [ngClass]="{'active show': !utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)}"
+                        id="meta-info" role="tabpanel" aria-labelledby="meta-info-tab">
                         <div class="row" [formGroup]="metaFieldsForm">
                             <!-- <div class="col-md-8 col-sm-12">
                                 <mat-form-field appearance="outline" fxFlex="100">
@@ -202,34 +222,45 @@
                             <div class="col-md-8 col-sm-12" *ngFor="let item of arrayOfMetaData;let i = index;">
                                 <mat-form-field appearance="outline" *ngIf="item.input_type==='InputBox'" fxFlex="100">
                                     <mat-label>{{item.field_name}}</mat-label>
-                                    <input [(ngModel)]="item.ngModel" matInput formControlName="title" autocomplete="off">
-                                    <mat-error *ngIf="metaFieldsForm.controls['title'].hasError('required') &&  metaFieldsForm.controls['title'].touched">
+                                    <input [(ngModel)]="item.ngModel" matInput formControlName="title"
+                                        autocomplete="off">
+                                    <mat-error
+                                        *ngIf="metaFieldsForm.controls['title'].hasError('required') &&  metaFieldsForm.controls['title'].touched">
                                         {{item.field_name}} is required!
                                     </mat-error>
-                                    <mat-error *ngIf="!metaFieldsForm.controls['title'].hasError('required') && !metaFieldsForm.controls['title'].valid && metaFieldsForm.controls['title'].touched">
+                                    <mat-error
+                                        *ngIf="!metaFieldsForm.controls['title'].hasError('required') && !metaFieldsForm.controls['title'].valid && metaFieldsForm.controls['title'].touched">
                                         Please enter a valid {{item.field_name}}.
                                     </mat-error>
                                 </mat-form-field>
                                 <mat-form-field appearance="outline" *ngIf="item.input_type==='TextArea'" fxFlex="100">
                                     <mat-label>{{item.field_name}}</mat-label>
-                                    <textarea matInput autocomplete="off" formControlName="description" [(ngModel)]="item.ngModel">
+                                    <textarea matInput autocomplete="off" formControlName="description"
+                                        [(ngModel)]="item.ngModel">
                                     </textarea>
                                 </mat-form-field>
-                                <mat-form-field appearance="outline" fxFlex="100" *ngIf="item.input_type==='DatePicker'">
+                                <mat-form-field appearance="outline" fxFlex="100"
+                                    *ngIf="item.input_type==='DatePicker'">
                                     <mat-label>{{item.field_name}}</mat-label>
-                                    <input matInput [matDatepicker]="assetDateTill" formControlName="useTiilDate" [(ngModel)]="item.ngModel" autocomplete="off" placeholder="Choose a date">
+                                    <input matInput [matDatepicker]="assetDateTill" formControlName="useTiilDate"
+                                        [(ngModel)]="item.ngModel" autocomplete="off" placeholder="Choose a date">
                                     <mat-datepicker-toggle matSuffix [for]="assetDateTill"></mat-datepicker-toggle>
                                     <mat-datepicker #assetDateTill></mat-datepicker>
-                                    <mat-error *ngIf="metaFieldsForm.controls['useTiilDate'].hasError('required') &&  metaFieldsForm.controls['useTiilDate'].touched">
+                                    <mat-error
+                                        *ngIf="metaFieldsForm.controls['useTiilDate'].hasError('required') &&  metaFieldsForm.controls['useTiilDate'].touched">
                                         {{item.field_name}} is required!
                                     </mat-error>
                                 </mat-form-field>
-                                <mat-form-field class="custom-ngselect" appearance="outline" fxFlex="100" *ngIf="item.input_type==='CheckBox'">
+                                <mat-form-field class="custom-ngselect" appearance="outline" fxFlex="100"
+                                    *ngIf="item.input_type==='CheckBox'">
                                     <mat-label>{{item.field_name}}</mat-label>
-                                    <ng-select ngSelectMat [items]="item.values" formControlName="assetKeys" [dropdownPosition]="'bottom'" notFoundText="Asset Keys not found." [clearable]="false" (change)="onChangeAssetKeys()" [(ngModel)]="item.ngModel" bindLabel="name" bindValue="name"
-                                        [multiple]="true">
+                                    <ng-select ngSelectMat [items]="item.values" formControlName="assetKeys"
+                                        [dropdownPosition]="'bottom'" notFoundText="Asset Keys not found."
+                                        [clearable]="false" (change)="onChangeAssetKeys()" [(ngModel)]="item.ngModel"
+                                        bindLabel="name" bindValue="name" [multiple]="true">
                                     </ng-select>
-                                    <mat-error *ngIf="metaFieldsForm.controls['assetKeys'].hasError('required') &&  metaFieldsForm.controls['assetKeys'].touched">
+                                    <mat-error
+                                        *ngIf="metaFieldsForm.controls['assetKeys'].hasError('required') &&  metaFieldsForm.controls['assetKeys'].touched">
                                         {{item.field_name}} is required!</mat-error>
                                 </mat-form-field>
                             </div>
@@ -275,18 +306,25 @@
                             </ng-select>
                             </mat-form-field>
                             </div> -->
-                            <div class="col-md-8 col-12" *ngIf="!utilsService.isNullUndefinedOrBlank(utilsService.allPermissions)">
-                                <button class="btn btn-primary" type="submit" *appCanAccess="[utilsService.allPermissions,'isCreate']" [disabled]="metaFieldsForm.invalid" (click)="addMetaVlues(assetObj.id)">Save
+                            <div class="col-md-8 col-12"
+                                *ngIf="!utilsService.isNullUndefinedOrBlank(utilsService.allPermissions)">
+                                <button class="btn btn-primary" type="submit"
+                                    *appCanAccess="[utilsService.allPermissions,'isCreate']"
+                                    [disabled]="metaFieldsForm.invalid" (click)="addMetaVlues(assetObj.id)">Save
                                 </button>
                             </div>
-                            <div class="col-md-8 col-12" *ngIf="utilsService.isNullUndefinedOrBlank(utilsService.allPermissions)">
-                                <button class="btn btn-primary" type="submit" [disabled]="metaFieldsForm.invalid" (click)="addMetaVlues(assetObj.id)">Save
+                            <div class="col-md-8 col-12"
+                                *ngIf="utilsService.isNullUndefinedOrBlank(utilsService.allPermissions)">
+                                <button class="btn btn-primary" type="submit" [disabled]="metaFieldsForm.invalid"
+                                    (click)="addMetaVlues(assetObj.id)">Save
                                 </button>
                             </div>
                         </div>
 
                     </div>
-                    <div class="tab-pane fade h-100 " id="meta1" role="tabpanel" *ngIf="!utilsService.isNullUndefinedOrBlank(assetObj.meta_data)" aria-labelledby="meta-data-tab">
+                    <div class="tab-pane fade h-100 " id="meta1" role="tabpanel"
+                        *ngIf="!utilsService.isNullUndefinedOrBlank(assetObj.meta_data)"
+                        aria-labelledby="meta-data-tab">
                         <!-- <div *ngIf="!utilsService.isNullUndefinedOrBlank(assetObj.meta_data)">
                         <div *ngFor="let item of objectEntries(assetObj.meta_data['image'])">{{item}}:
                             {{assetObj.meta_data['image'][item]}}</div>
@@ -397,15 +435,22 @@
                             </div>
                         </div>
                     </div>
-                    <div class="tab-pane fade h-100" [ngClass]="{'active show': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData) && isVersionPermission === false}" id="tags" role="tabpanel" aria-labelledby="tags-tab">
+                    <div class="tab-pane fade h-100"
+                        [ngClass]="{'active show': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData) && isVersionPermission === false}"
+                        id="tags" role="tabpanel" aria-labelledby="tags-tab">
                         <div class="d-flex align-item-center justify-content-between mb-2">
                             <h6 class="nowrap text-theme">User Tags</h6>
                             <div *ngIf="!utilsService.isNullUndefinedOrBlank(utilsService.allPermissions)">
-                                <button type="button" class="btn btn-primary" *appCanAccess="[utilsService.allPermissions,'isCreate']" [disabled]="utilsService.isEmptyObjectOrNullUndefiend(arrayOfUserTag)" (click)="saveTags()">Save
+                                <button type="button" class="btn btn-primary"
+                                    *appCanAccess="[utilsService.allPermissions,'isCreate']"
+                                    [disabled]="utilsService.isEmptyObjectOrNullUndefiend(arrayOfUserTag)"
+                                    (click)="saveTags()">Save
                                 </button>
                             </div>
                             <div *ngIf="utilsService.isNullUndefinedOrBlank(utilsService.allPermissions)">
-                                <button type="button" class="btn btn-primary" [disabled]="utilsService.isEmptyObjectOrNullUndefiend(arrayOfUserTag)" (click)="saveTags()">Save
+                                <button type="button" class="btn btn-primary"
+                                    [disabled]="utilsService.isEmptyObjectOrNullUndefiend(arrayOfUserTag)"
+                                    (click)="saveTags()">Save
                                 </button>
                             </div>
                         </div>
@@ -419,11 +464,15 @@
                             </ul> -->
                             <mat-form-field appearance="outline" fxFlex="100" class="example-chip-list mat-tag-list">
                                 <mat-chip-list class="my-chip-list" #chipList1 aria-label="Tag Selection">
-                                    <mat-chip *ngFor="let usrTag of arrayOfUserTag" [selectable]="selectable" [removable]="removable" (removed)="remove(usrTag,'User Tag')">
+                                    <mat-chip *ngFor="let usrTag of arrayOfUserTag" [selectable]="selectable"
+                                        [removable]="removable" (removed)="remove(usrTag,'User Tag')">
                                         {{usrTag.name}}
                                         <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
                                     </mat-chip>
-                                    <input placeholder="New User Tag..." [matChipInputFor]="chipList1" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event, 'User Tag')">
+                                    <input placeholder="New User Tag..." [matChipInputFor]="chipList1"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                        [matChipInputAddOnBlur]="addOnBlur"
+                                        (matChipInputTokenEnd)="add($event, 'User Tag')">
                                 </mat-chip-list>
                             </mat-form-field>
                         </div>
@@ -439,11 +488,15 @@
                             </ul> -->
                             <mat-form-field appearance="outline" fxFlex="100" class="example-chip-list mat-tag-list">
                                 <mat-chip-list class="my-chip-list" #chipList aria-label="Tag Selection">
-                                    <mat-chip *ngFor="let smrtTag of arrayOfSmartTag" [selectable]="selectable" [removable]="removable" (removed)="remove(smrtTag,'Smart Tag')">
+                                    <mat-chip *ngFor="let smrtTag of arrayOfSmartTag" [selectable]="selectable"
+                                        [removable]="removable" (removed)="remove(smrtTag,'Smart Tag')">
                                         {{smrtTag.name}}
                                         <!-- <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon> -->
                                     </mat-chip>
-                                    <input [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" disabled [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event, 'Smart Tag')">
+                                    <input [matChipInputFor]="chipList"
+                                        [matChipInputSeparatorKeyCodes]="separatorKeysCodes" disabled
+                                        [matChipInputAddOnBlur]="addOnBlur"
+                                        (matChipInputTokenEnd)="add($event, 'Smart Tag')">
                                 </mat-chip-list>
                             </mat-form-field>
                         </div>
@@ -466,9 +519,12 @@
           <div class="tab-pane fade h-100" id="iptctab" role="tabpanel" aria-labelledby="iptc-tab">
             iptc-tab
           </div> -->
-                    <div class="tab-pane version fade h-100" *ngIf="isVersionPermission" [ngClass]="{'active show': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)}" id="versiontab" role="tabpanel" aria-labelledby="version-tab">
+                    <div class="tab-pane version fade h-100" *ngIf="isVersionPermission"
+                        [ngClass]="{'active show': utilsService.isEmptyObjectOrNullUndefiend(arrayOfMetaData)}"
+                        id="versiontab" role="tabpanel" aria-labelledby="version-tab">
                         <ul class="versionlist">
-                            <li *ngFor="let item of assetsVersionArray;let i =index" (click)="viewVersionDetails(i)" [ngClass]="{'active': assetObj.version === item.version}">
+                            <li *ngFor="let item of assetsVersionArray;let i =index" (click)="viewVersionDetails(i)"
+                                [ngClass]="{'active': assetObj.version === item.version}">
                                 <span>{{item.version}}</span>
                                 <span>{{item.updated_at|date}}</span>
                             </li>
@@ -499,20 +555,23 @@
                 <div class="row">
                     <div class="col-md-3 col-sm-12 mb-2" *ngFor="let item of allCollections;let i = index;">
                         <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="checkbox{{i}}" #checkbox{{i}} [(ngModel)]="item.isSelected" (change)="addOrRemoveCollection(item.isSelected,item)">
+                            <input type="checkbox" class="custom-control-input" id="checkbox{{i}}" #checkbox{{i}}
+                                [(ngModel)]="item.isSelected" (change)="addOrRemoveCollection(item.isSelected,item)">
                             <label class="custom-control-label" for="checkbox{{i}}">
                                 <!-- class="color-checkbox" [ngStyle]="{'background-color': item.background_color }" -->
                                 <div>{{item.name}}</div>
                             </label>
                         </div>
                     </div>
-                    <div *ngIf="utilsService.isEmptyObjectOrNullUndefiend(allCollections)" class="col-sm-12 text-center msg-position">
+                    <div *ngIf="utilsService.isEmptyObjectOrNullUndefiend(allCollections)"
+                        class="col-sm-12 text-center msg-position">
                         No Collections Available.
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" (click)="assignColllections(assetsIdForAssignCollection)">Save</button>
+                <button type="button" class="btn btn-primary"
+                    (click)="assignColllections(assetsIdForAssignCollection)">Save</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
             </div>
         </div>
@@ -538,10 +597,13 @@
                     <div class="col-md-12 col-12">
                         <mat-form-field appearance="outline" fxFlex="100">
                             <mat-label>Share Name</mat-label>
-                            <input [(ngModel)]="shareObj.name" formControlName="shareName" matInput required autocomplete="off">
-                            <mat-error *ngIf="shareForm.controls['shareName'].hasError('required') &&  shareForm.controls['shareName'].touched">
+                            <input [(ngModel)]="shareObj.name" formControlName="shareName" matInput required
+                                autocomplete="off">
+                            <mat-error
+                                *ngIf="shareForm.controls['shareName'].hasError('required') &&  shareForm.controls['shareName'].touched">
                                 {{utilsService.validationService.SHARE_NAME_REQUIRED}}</mat-error>
-                            <mat-error *ngIf="!shareForm.controls['shareName'].hasError('required') && !shareForm.controls['shareName'].valid && shareForm.controls['shareName'].touched">
+                            <mat-error
+                                *ngIf="!shareForm.controls['shareName'].hasError('required') && !shareForm.controls['shareName'].valid && shareForm.controls['shareName'].touched">
                                 {{utilsService.validationService.SHARE_NAME_INVALID}}
                             </mat-error>
                         </mat-form-field>
@@ -550,12 +612,16 @@
                     <div class="col-md-6 col-12">
                         <mat-form-field appearance="outline" fxFlex="100">
                             <mat-label>Expiry On</mat-label>
-                            <input matInput [matDatepicker]="expiry" [(ngModel)]="shareObj.expire_date" formControlName="expiry" [min]="todayDate" autocomplete="off" [(ngModel)]="expiryDate" placeholder="Choose a date" appendTo="body">
+                            <input matInput [matDatepicker]="expiry" [(ngModel)]="shareObj.expire_date"
+                                formControlName="expiry" [min]="todayDate" autocomplete="off" [(ngModel)]="expiryDate"
+                                placeholder="Choose a date" appendTo="body">
                             <mat-datepicker-toggle matSuffix [for]="expiry"></mat-datepicker-toggle>
                             <mat-datepicker #expiry></mat-datepicker>
-                            <mat-error *ngIf="shareForm.controls['expiry'].hasError('required') &&  shareForm.controls['expiry'].touched">
+                            <mat-error
+                                *ngIf="shareForm.controls['expiry'].hasError('required') &&  shareForm.controls['expiry'].touched">
                                 {{utilsService.validationService.EXPIRE_DATE_REQUIRED}}</mat-error>
-                            <mat-error *ngIf="!shareForm.controls['expiry'].hasError('required') && !shareForm.controls['expiry'].valid && shareForm.controls['expiry'].touched">
+                            <mat-error
+                                *ngIf="!shareForm.controls['expiry'].hasError('required') && !shareForm.controls['expiry'].valid && shareForm.controls['expiry'].touched">
                                 {{utilsService.validationService.EXPIRE_DATE_INVALID}}
                             </mat-error>
                         </mat-form-field>
@@ -563,11 +629,14 @@
                     <div class="col-md-6 col-12">
                         <mat-form-field appearance="outline" fxFlex="100">
                             <mat-label># Download Allowed</mat-label>
-                            <input matInput [(ngModel)]="shareObj.allow_downloads" formControlName="downloadAllowed" required autocomplete="off">
-                            <mat-error *ngIf="shareForm.controls['downloadAllowed'].hasError('required') &&  shareForm.controls['downloadAllowed'].touched">
+                            <input matInput [(ngModel)]="shareObj.allow_downloads" formControlName="downloadAllowed"
+                                required autocomplete="off">
+                            <mat-error
+                                *ngIf="shareForm.controls['downloadAllowed'].hasError('required') &&  shareForm.controls['downloadAllowed'].touched">
                                 {{utilsService.validationService.DOWNLOAD_ALLOWED_REQUIRED}}
                             </mat-error>
-                            <mat-error *ngIf="!shareForm.controls['downloadAllowed'].hasError('required') && !shareForm.controls['downloadAllowed'].valid && shareForm.controls['downloadAllowed'].touched">
+                            <mat-error
+                                *ngIf="!shareForm.controls['downloadAllowed'].hasError('required') && !shareForm.controls['downloadAllowed'].valid && shareForm.controls['downloadAllowed'].touched">
                                 {{utilsService.validationService.DOWNLOAD_ALLOWED_INVALID}}
                             </mat-error>
                         </mat-form-field>
@@ -575,7 +644,9 @@
                     <div class="col-md-6 col-12">
                         <div class="form-group">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" formControlName="downloadcheckBox" [(ngModel)]="flagForAccessType" (change)="changeAccessType(flagForAccessType)" id="download">
+                                <input type="checkbox" class="custom-control-input" formControlName="downloadcheckBox"
+                                    [(ngModel)]="flagForAccessType" (change)="changeAccessType(flagForAccessType)"
+                                    id="download">
                                 <label class="custom-control-label" for="download">Allow Download</label>
                             </div>
                         </div>
@@ -583,7 +654,8 @@
                     <div class="col-md-12 col-12" *ngIf="shareLink">
                         <mat-form-field appearance="outline" class="inputbutton" fxFlex="100">
                             <mat-label>Share Link</mat-label>
-                            <input matInput autocomplete="off" formControlName="sharelink" [(ngModel)]="shareLink" #userInput>
+                            <input matInput autocomplete="off" formControlName="sharelink" [(ngModel)]="shareLink"
+                                #userInput>
                             <button mat-button matSuffix (click)="utilsService.copyInputMessage(userInput)">
                                 COPY LINK
                             </button>
@@ -594,8 +666,10 @@
                     <b>Note :</b> 999999 indicates unlimited downloading</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" [disabled]="shareForm.invalid" (click)="createShare(assetsIdForCreateShare)">Save</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetShareModal()">Cancel</button>
+                <button type="button" class="btn btn-primary" [disabled]="shareForm.invalid"
+                    (click)="createShare(assetsIdForCreateShare)">Save</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"
+                    (click)="resetShareModal()">Cancel</button>
             </div>
         </div>
     </div>

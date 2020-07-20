@@ -32,10 +32,10 @@
             [ngStyle]="{'background-image': 'url('+assetObj.thumb_url+')'}">
 
           </div>
-          <div class="ab-img32"
+          <!-- <div class="ab-img32"
             *ngIf="utilsService.isNullUndefinedOrBlank(assetObj.thumb_url) && utilsService.isNullUndefinedOrBlank(assetObj.video_url)"
             [ngStyle]="{'background-image': 'url(assets/images/fileicon/' + (assetObj.name.includes('.')?getFileExtension(assetObj.name):assetObj.file_type).toLowerCase() + '.jpg)'}">
-          </div>
+          </div> -->
           <video width="430" height="240" controls *ngIf="assetObj.video_url" autoplay>
             <source [src]="assetObj.video_url" type="video/mp4">
             <!-- <source src="movie.ogg" type="video/ogg"> -->
@@ -51,7 +51,7 @@
 
               <li>
                 <span class="material-icons" matTooltip="Download" *ngIf="shareObj.access_type === 1"
-                  (click)="download(assetObj.id, assetObj.name)assets-box card">
+                  (click)="download(assetObj.id, assetObj.name)">
                   cloud_download
                 </span>
               </li>
