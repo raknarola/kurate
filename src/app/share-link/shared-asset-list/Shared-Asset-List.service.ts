@@ -92,8 +92,6 @@ export class SharedAssetListService {
     }
 
     getAllAssets(token, idForFolder) {
-        console.log('token => ', token);
-        console.log('isForFolder => ', idForFolder);
         const formData = new FormData();
         formData.set('token', token);
         if (!this.utilsService.isNullUndefinedOrBlank(idForFolder)) {
@@ -134,7 +132,6 @@ export class SharedAssetListService {
         const formData = new FormData();
         formData.set('asset_id', idOfAsset);
         formData.set('token', this.statusOfAction);
-
         this.utilsService.postMethodAPI(false, this.utilsService.serverVariableService.downloadShareIndividualAssetAPI, formData, (response) => {
             if (!this.utilsService.isNullUndefinedOrBlank(response)) {
                 console.log('downloaded');
@@ -154,37 +151,32 @@ export class SharedAssetListService {
         formData.set('token', this.statusOfAction);
         formData.set('asset_id', docId);
         this.utilsService.loaderStart++;
-
-        this.http.post(UtilsService.URL + this.utilsService.serverVariableService.downloadShareIndividualAssetAPI, formData)
-            .subscribe(res => {
-
-                if (res['response'] === 0) {
-                    this.utilsService.loaderStart--;
-
-                    this.utilsService.toasterService.error(res['message'], '', {
-                        positionClass: 'toast-top-right',
-                        closeButton: true
-                    });
-                } else {
-
-                    if (assetType === 'folder') {
-                        docName += '.zip';
-                    }
-                    this.utilsService.download(res['download_url'], docName.replace(/[^a-zA-Z0-9.]/g));
-                    this.utilsService.loaderStart--;
-                    // FileSaver.saveAs(this.domSanitizer.bypassSecurityTrustUrl(res['download_url']), docName.replace(/[^a-zA-Z0-9.]/g, ''));
-                }
-
-            }, err => {
+        this.http.post(UtilsService.URL + this.utilsService.serverVariableService.downloadShareIndividualAssetAPI, formData).subscribe(res => {
+            if (res['response'] === 0) {
                 this.utilsService.loaderStart--;
-                if (err['status'] === 403) {
-                    this.utilsService.toasterService.error('Download limit exceeded', '', {
-                        positionClass: 'toast-top-right',
-                        closeButton: true
-                    });
+                this.utilsService.toasterService.error(res['message'], '', {
+                    positionClass: 'toast-top-right',
+                    closeButton: true
+                });
+            } else {
+                if (assetType === 'folder') {
+                    docName += '.zip';
                 }
-            });
+                this.utilsService.download(res['download_url'], docName).subscribe();
+                this.utilsService.loaderStart--;
+                // FileSaver.saveAs(this.domSanitizer.bypassSecurityTrustUrl(res['download_url']), docName.replace(/[^a-zA-Z0-9.]/g, ''));
+            }
+        }, err => {
+            this.utilsService.loaderStart--;
+            if (err['status'] === 403) {
+                this.utilsService.toasterService.error('Download limit exceeded', '', {
+                    positionClass: 'toast-top-right',
+                    closeButton: true
+                });
+            }
+        });
     }
+
     openDeleteAssetModal(id) {
         this.assetIdForDelete = id;
         this.utilsService.openModal('deleteAssetModal');
@@ -193,7 +185,6 @@ export class SharedAssetListService {
     deleteAssetById(assetId) {
         const formData = new FormData();
         formData.set('asset_ids', assetId);
-
         this.utilsService.postMethodAPI(true, this.utilsService.serverVariableService.deleteAssetAPI, formData, (response) => {
             if (!this.utilsService.isEmptyObjectOrNullUndefiend(response)) {
                 console.log('Assets Deleted Successfully');
@@ -204,23 +195,20 @@ export class SharedAssetListService {
     }
 
     addOrRemoveCollection(isSelected, obj: Collection) {
-
         if (isSelected === true) {
             this.selectedCollectionsIds.push(obj.id);
         } else if (isSelected === false) {
             const index = this.selectedCollectionsIds.findIndex(val => val === obj.id);
             this.selectedCollectionsIds.splice(index, 1);
         }
-
     }
 
     sortBy(key) {
-        console.log(key);
-
         this.orderBy = key;
         // this.reverseFlag = false;
         // this.utilsService.allAssets.sort((a, b) => a.created_at.localeCompare(b.created_at));
     }
+
     orderByASCDESC(key) {
         if (key === 'ASC') {
             this.reverseFlag = false;

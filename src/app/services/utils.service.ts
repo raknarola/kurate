@@ -99,6 +99,7 @@ export class UtilsService {
     orderByForListView = 'created_at';
     reverseFlagForGridView: boolean;
     reverseFlagForListView: boolean;
+
     constructor(
         public http: HttpClient,
         public router: Router,
@@ -106,7 +107,8 @@ export class UtilsService {
         public serverVariableService: ServerVariableService,
         public toasterService: ToastrService,
         public datepipe: DatePipe,
-        public validationService: ValidationsService) {
+        public validationService: ValidationsService
+    ) {
         this.flagForHideMenuForShareLinkPage = false;
         this.flagForhideShowUploadingFiles = false;
         this.flagForHideHeaderSearch = false;
@@ -256,7 +258,6 @@ export class UtilsService {
         const arr_length = test_array ? test_array.length : 0;
         let resIndex = -1;
         const result = [];
-
         while (++index < arr_length) {
             const id = test_array[index];
             if (id) {
@@ -365,7 +366,6 @@ export class UtilsService {
     }
 
     async dropped(files: NgxFileDropEntry[], type: string, folderDropedKey: string, assets: Assets) {
-        console.log('dropped')
         const fileSize = 104857600;
         this.files = files;
         this.flagForShowErrorMsg = false;
@@ -935,9 +935,7 @@ export class UtilsService {
     }
 
     uploadFile(assetObj: Assets, key, index) {
-        console.log('Fifth')
         const contentType = assetObj.file.type;
-        console.log(this.arrayOfSelectedFiles[index].progress);
         const bucket = new S3(
             {
                 // accessKeyId: '6LFGSALG327SOVD2WLEV', // for digital ocean spaces
@@ -965,14 +963,31 @@ export class UtilsService {
             Key: key,
             Body: assetObj.file,
             ACL: 'public-read',
-            ContentType: contentType
+            ContentType: contentType,
+            queueSize: 2
         };
+        // const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
+        //     this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
+        //     // console.log(this.arrayOfSelectedFiles[index].progress);
+        //     // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
+        //     // console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
+        //     // this.clickMe();
+        // }).send((err, data) => {
+        //     if (err) {
+        //         assetObj.status = 'Failed';
+        //         console.log('There was an error uploading your file: ', err);
+        //         return false;
+        //     }
+        //     assetObj.status = 'Success';
+        //     console.log('Successfully uploaded file.', data);
+        //     // this.uploadCompleteCount = this.arrayOfSelectedFiles.length - 1;
+        //     this.createAssetAPI(data, assetObj);
+        //     return true;
+        // });
+        // setTimeout(params.abort.bind(req), 1000);
         const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
             this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
-            // console.log(this.arrayOfSelectedFiles[index].progress);
             // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
-            // console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
-            // this.clickMe();
         }).send((err, data) => {
             if (err) {
                 assetObj.status = 'Failed';
@@ -980,30 +995,10 @@ export class UtilsService {
                 return false;
             }
             assetObj.status = 'Success';
-            console.log('Successfully uploaded file.', data);
             // this.uploadCompleteCount = this.arrayOfSelectedFiles.length - 1;
             this.createAssetAPI(data, assetObj);
             return true;
         });
-        // setTimeout(params.abort.bind(req), 1000);
-        // const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
-        //   this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
-        //   console.log(this.arrayOfSelectedFiles[index].progress);
-        //   // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
-        //   console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
-        // }).send((err, data) => {
-        //   if (err) {
-        //     assetObj.status = 'Failed';
-        //     console.log('There was an error uploading your file: ', err);
-        //     return false;
-        //   }
-        //   assetObj.status = 'Success';
-        //   console.log('Successfully uploaded file.', data);
-
-        //   // this.uploadCompleteCount = this.arrayOfSelectedFiles.length - 1;
-        //   this.createAssetAPI(data, assetObj);
-        //   return true;
-        // });
     }
 
     clickMe() {
@@ -1012,7 +1007,6 @@ export class UtilsService {
         if (!this.isNullUndefinedOrBlank(test1)) {
             this.scroll = test1;
         }
-        // console.log(test1);
     }
 
     searchAssets(searchParam: string, tags) {
@@ -1023,7 +1017,6 @@ export class UtilsService {
             formData.set('search_query', searchParam);
         }
         if (!this.isNullUndefinedOrBlank(tags)) {
-
             formData.set('tag_name', tags);
         }
         this.searchNgModel = tags;
@@ -1035,15 +1028,12 @@ export class UtilsService {
         this.flagForHideShowBackButton = false;
         this.scroll = 0;
         localStorage.removeItem('breadCrumbs');
-
         localStorage.removeItem('folderKey');
-
         this.postMethodAPI(false, this.serverVariableService.searchAssetsAPI, formData, (response) => {
             if (!this.isNullUndefinedOrBlank(response)) {
                 this.allAssets = Deserialize(response, Assets);
                 this.isSearch = true;
                 const indexForRootFolder = this.arrayOfPermissionForAssets.findIndex(val1 => val1.name === '/');
-
                 if (indexForRootFolder !== -1) {
                     this.allAssets.filter(val => {
 
@@ -1057,7 +1047,6 @@ export class UtilsService {
                     this.allAssets.filter(val => {
                         const index = this.arrayOfPermissionForAssets.findIndex(val1 => val1.name === ('/' + val.name));
                         // console.log(index);
-
                         if (val.file_type === 'folder' && index !== -1) {
                             val.isPermission = true;
                         } else {
@@ -1078,13 +1067,11 @@ export class UtilsService {
         }, false, undefined, '/admin/work_area/assets/search-assets/search');
     }
 
-    createAssetAPI(uploadResponse, document: Assets) {
-        console.log('third')
+    async createAssetAPI(uploadResponse, document: Assets) {
         let assetObj = new Assets();
         assetObj = document;
         const splitArray = assetObj.name.split('.');
         const extension = splitArray[splitArray.length - 1].toLowerCase();
-        // console.log(extension);
         switch (extension) {
             case EnumforExtension.JPG: {
                 assetObj.file_type = 'image/jpg';
@@ -1640,15 +1627,13 @@ export class UtilsService {
         assetObj.version_key = uploadResponse.VersionId;
         const formData = new FormData();
         const obj = Serialize(assetObj, Assets);
-        console.log('obj', obj)
-        formData.set('asset_data', JSON.stringify(obj));
-        formData.set('parent_id', this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete.toString() : '0');
-        console.log('formData', formData);
-        this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
+        await formData.set('asset_data', JSON.stringify(obj));
+        await formData.set('parent_id', this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete.toString() : '0');
+        await this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
             if (!this.isNullUndefinedOrBlank(response)) {
                 this.flagForRefreshPage += 1;
-                console.log('File Saved SuccessFully');
                 if (this.flagForRefreshPage === this.arrayOfSelectedFiles.length) {
+                    console.log(' => ', this.flagForRefreshPage, this.arrayOfSelectedFiles.length);
                     this.refreshAssets();
                     this.flagForRefreshPage = 0;
                 }
@@ -1656,7 +1641,7 @@ export class UtilsService {
         });
     }
 
-    refreshAssets() {
+    async refreshAssets() {
         this.offsetCount = 0;
         // console.log(this.assetIdForGetFolderAssetsOnDelete);
         // console.log(this.statusOfAction);
@@ -1666,8 +1651,8 @@ export class UtilsService {
         if (!this.isNullUndefinedOrBlank(this.statusOfAction)) {
             if (!this.isNullUndefinedOrBlank(this.assetIdForGetFolderAssetsOnDelete) && this.assetIdForGetFolderAssetsOnDelete > 0) {
                 this.scroll = 0;
-                this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
-                console.log(' this.assetIdForGetFolderAssetsOnDelete=> ', this.assetIdForGetFolderAssetsOnDelete);
+                // this.getAllAssets(0, 0, 'created_at.desc');
+                this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.asc' : '.desc')));
                 setTimeout(() => {
                     if (this.allAssets.length > 4) {
                         this.clickMe();
@@ -1680,7 +1665,6 @@ export class UtilsService {
                 if (!this.isNullUndefinedOrBlank(this.mainSearchNgModel)) {
                     const searchparams = localStorage.getItem('search-param');
                     this.mainSearchNgModel = searchparams;
-                    // console.log(searchparams);
                     this.searchAssets(searchparams, null);
                 } else if (!this.isEmptyObjectOrNullUndefiend(this.searchNgModel)) {
                     const searchTagsparams = JSON.parse(localStorage.getItem('search-tags-param'));
@@ -1690,7 +1674,8 @@ export class UtilsService {
             }
         } else {
             this.scroll = 0;
-            this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
+            // this.getAllAssets(0,0,'created_at.desc');
+            this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.asc' : '.desc')));
             setTimeout(() => {
                 if (this.allAssets.length > 4) {
                     this.clickMe();
@@ -1728,23 +1713,28 @@ export class UtilsService {
         });
     }
 
-    getAllAssets(idForFolder, offset, sortKey: string) {
-        console.log('fourth');
+    async getAllAssets(idForFolder, offset, sortKey: string) {
+        console.log('in get all ');
+        console.log('idForFolder => ', idForFolder);
+        console.log('offset => ', offset);
+
+        console.log('sortKey => ', sortKey);
+
         const formData = new FormData();
-        formData.set('asset_id', idForFolder);
-        formData.set('offset', offset);
-        formData.set('sort_by', sortKey);
+        await formData.set('asset_id', idForFolder);
+        await formData.set('offset', offset);
+        await formData.set('sort_by', sortKey);
         if (!this.isNullUndefinedOrBlank(this.seletedFilType)) {
-            formData.set('filter_type', this.seletedFilType);
+            formData.set('filter_type', await this.seletedFilType);
         }
         if (!this.isNullUndefinedOrBlank(this.fromDate)) {
-            formData.set('filter_from_date', this.datepipe.transform(this.fromDate, 'yyyy-MM-dd'));
+            formData.set('filter_from_date', await this.datepipe.transform(this.fromDate, 'yyyy-MM-dd'));
         }
         if (!this.isNullUndefinedOrBlank(this.toDate)) {
-            formData.set('filter_to_date', this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
+            formData.set('filter_to_date', await this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
         }
         this.allAssets = new Array<Assets>();
-        this.postMethodAPI(false, this.serverVariableService.listAssetsAPI, formData, (response) => {
+        await this.postMethodAPI(false, this.serverVariableService.listAssetsAPI, formData, (response) => {
             if (!this.isEmptyObjectOrNullUndefiend(response)) {
                 this.allAssets = Deserialize(response, Assets);
                 // console.log(this.allPermissions);
@@ -2012,6 +2002,8 @@ export class UtilsService {
     }
 
     hideShowUploadingFiles() {
+        console.log('in here');
+
         this.flagForhideShowUploadingFiles = !this.flagForhideShowUploadingFiles;
     }
 

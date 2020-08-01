@@ -12,39 +12,38 @@
 </div> -->
 
 <div class="upload-media" *ngIf="utilsService.getLoginUsers()"
-  [ngClass]="{'hide': utilsService.flagForhideShowUploadingFiles === false }">
-  <div id="accordion">
-    <div class="card">
-      <div class="card-header" id="headingOne">
-        <div class="upload-count">
-          <span>{{utilsService.uploadCompleteCount === 0? 'Uploaded ' + utilsService.arrayOfSelectedFiles.length + (utilsService.arrayOfSelectedFiles.length > 1? ' Items ':' Item ') : 'Uploading/Pending ' + utilsService.uploadCompleteCount + (utilsService.uploadCompleteCount > 1? ' Items ':' Item ') }}</span>
-          <span *ngIf="sad">1 uploads complete</span>
-        </div>
-        <div class="upload-icon">
-          <i class="material-icons more" (click)="utilsService.togglemore = !utilsService.togglemore"
-            *ngIf="utilsService.togglemore">
-            expand_more
-          </i>
-          <i class="material-icons less" (click)="utilsService.togglemore = !utilsService.togglemore"
-            *ngIf="!utilsService.togglemore">
-            expand_less
-          </i>
-          <i class="material-icons" (click)="utilsService.hideShowUploadingFiles()">
-            close
-          </i>
-        </div>
-      </div>
+    [ngClass]="{'hide': utilsService.flagForhideShowUploadingFiles === false }">
+    <div id="accordion">
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <div class="upload-count">
+                    <span>{{utilsService.uploadCompleteCount === 0? 'Uploaded ' + utilsService.arrayOfSelectedFiles.length + (utilsService.arrayOfSelectedFiles.length > 1? ' Items ':' Item ') : 'Uploading/Pending ' + utilsService.uploadCompleteCount + (utilsService.uploadCompleteCount > 1? ' Items ':' Item ') }}</span>
+                    <span *ngIf="sad">1 uploads complete</span>
+                </div>
+                <div class="upload-icon">
+                    <i class="material-icons more" (click)="utilsService.togglemore = !utilsService.togglemore"
+                        *ngIf="utilsService.togglemore">
+                        expand_more
+                    </i>
+                    <i class="material-icons less" (click)="utilsService.togglemore = !utilsService.togglemore"
+                        *ngIf="!utilsService.togglemore">
+                        expand_less
+                    </i>
+                    <i class="material-icons" (click)="utilsService.hideShowUploadingFiles()">
+                        close
+                    </i>
+                </div>
+            </div>
 
-      <div id="collapseOne" class="collapse " [ngClass]="{'show': utilsService.togglemore===true}">
-        <div class="card-body">
-          <ul class="list-group">
-            <!-- <li class="list-group-item">
+            <div id="collapseOne" class="collapse " [ngClass]="{'show': utilsService.togglemore===true}">
+                <div class="card-body">
+                    <ul class="list-group">
+                        <!-- <li class="list-group-item">
                             <div class="filegroup">
                                 <i class="material-icons mr-2">
                                     insert_drive_file
                                 </i>
                                 <span class="filename">File Name File Name File Name</span>
-
                             </div>
                             <div class="">
                                 <i class="material-icons" matTooltip="File Copy">
@@ -55,139 +54,138 @@
                                 </i>
                             </div>
                         </li> -->
-            <li class="list-group-item" *ngFor="let item of utilsService.arrayOfSelectedFiles;let i = index">
-              <div class="filegroup">
-                <i class="material-icons mr-2">
-                  {{item.file.type === 'image/jpeg' ? 'image':'insert_drive_file'}}
-                </i>
-                <span class="filename">{{item.name}}</span>
-                <span class="fileexits" *ngIf="item.isCopyReplace">Already exist.</span>
-              </div>
-              <div class="fileuploadstatus">
-                <div class="matprogress" *ngIf="item.progress > 0 && item.progress < 100 && item.isCanceled === false">
-
-                  <mat-progress-spinner [diameter]="20" class="example-margin" color="primary" mode="determinate"
-                    [value]="item.progress">
-
-                  </mat-progress-spinner>
-                  <span class="spinnercount">{{item.progress}}</span>
-
+                        <li class="list-group-item"
+                            *ngFor="let item of utilsService.arrayOfSelectedFiles;let i = index">
+                            <div class="filegroup">
+                                <i class="material-icons mr-2">
+                                    {{item.file.type === 'image/jpeg' ? 'image':'insert_drive_file'}}
+                                </i>
+                                <span class="filename">{{item.name}}</span>
+                                <span class="fileexits" *ngIf="item.isCopyReplace">Already exist.</span>
+                            </div>
+                            <div class="fileuploadstatus">
+                                <div class="matprogress" *ngIf="item.progress < 100 || item.isCanceled === false">
+                                    <mat-progress-spinner [diameter]="20" class="example-margin" color="primary"
+                                        mode="determinate" [value]="item.progress">
+                                    </mat-progress-spinner>
+                                    <span class="spinnercount">{{item.progress}}</span>
+                                </div>
+                                <div class="" *ngIf="item.isCopyReplace">
+                                    <i class="material-icons" matTooltip="Create Copy"
+                                        (click)="utilsService.copyOrReplaceAsset('Copy', item,i)">
+                                        file_copy
+                                    </i>
+                                    <i class="material-icons ml-2" matTooltip="Replace"
+                                        (click)="utilsService.copyOrReplaceAsset('Replace', item,i)">
+                                        find_replace
+                                    </i>
+                                </div>
+                                <i class="material-icons filesuccess" *ngIf="item.status === 'Success'">
+                                    check_circle
+                                </i>
+                                <i class="material-icons filedanger" *ngIf="item.status === 'Failed'">
+                                    cancel
+                                </i>
+                                <i class="material-icons" matTooltip="Start" *ngIf="item.isCanceled"
+                                    (click)="utilsService.uploadFile(item,item.key,i)">
+                                    backup
+                                </i>
+                                <i class="material-icons" matTooltip="Cancel"
+                                    *ngIf="item.uploadId && item.isCanceled === false && utilsService.isNullUndefinedOrBlank(item.status)"
+                                    (click)="utilsService.abortUploading(item.uploadId,item.key,i)">
+                                    clear
+                                </i>
+                            </div>
+                        </li>
+                    </ul>
                 </div>
-                <div class="" *ngIf="item.isCopyReplace">
-                  <i class="material-icons" matTooltip="Create Copy"
-                    (click)="utilsService.copyOrReplaceAsset('Copy', item,i)">
-                    file_copy
-                  </i>
-                  <i class="material-icons ml-2" matTooltip="Replace"
-                    (click)="utilsService.copyOrReplaceAsset('Replace', item,i)">
-                    find_replace
-                  </i>
-                </div>
-                <i class="material-icons filesuccess" *ngIf="item.status === 'Success'">
-                  check_circle
-                </i>
-                <i class="material-icons filedanger" *ngIf="item.status === 'Failed'">
-                  cancel
-                </i>
-                <i class="material-icons" matTooltip="Start" *ngIf="item.isCanceled"
-                  (click)="utilsService.uploadFile(item,item.key,i)">
-                  backup
-                </i>
-                <i class="material-icons" matTooltip="Cancel"
-                  *ngIf="item.uploadId && item.isCanceled === false && utilsService.isNullUndefinedOrBlank(item.status)"
-                  (click)="utilsService.abortUploading(item.uploadId,item.key,i)">
-                  clear
-                </i>
-              </div>
-            </li>
-          </ul>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
 
 <div class="modal" id="copyOrReplaceAssetModal">
 
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body text-center p-20">
-        <h3> Asset already exist do you want to make copy of it or Replace it by new ?</h3>
-        <li *ngFor="let item of utilsService.copyOrReplaceAssetArray">
-          {{item.key}}
-          <div class="btngroup">
-            <button class="btn btn-primary mr-3" (click)="utilsService.copyOrReplaceAsset('Copy')">Copy</button>
-            <button class="btn btn-light" (click)="utilsService.copyOrReplaceAsset('Replace')">Replace</button>
-          </div>
-        </li>
-        <div class="btngroup">
-          <button class="btn btn-primary mr-3" (click)="utilsService.copyOrReplaceAsset('Copy')">Copy</button>
-          <button class="btn btn-light" (click)="utilsService.copyOrReplaceAsset('Replace')">Replace</button>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-20">
+                <h3> Asset already exist do you want to make copy of it or Replace it by new ?</h3>
+                <li *ngFor="let item of utilsService.copyOrReplaceAssetArray">
+                    {{item.key}}
+                    <div class="btngroup">
+                        <button class="btn btn-primary mr-3"
+                            (click)="utilsService.copyOrReplaceAsset('Copy')">Copy</button>
+                        <button class="btn btn-light"
+                            (click)="utilsService.copyOrReplaceAsset('Replace')">Replace</button>
+                    </div>
+                </li>
+                <div class="btngroup">
+                    <button class="btn btn-primary mr-3" (click)="utilsService.copyOrReplaceAsset('Copy')">Copy</button>
+                    <button class="btn btn-light" (click)="utilsService.copyOrReplaceAsset('Replace')">Replace</button>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 </div>
-
 
 <!-- Create Folder Modal -->
 <div class="modal" id="createFolderModal">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h4 class="modal-title">New Folder</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="modal-body" [formGroup]="utilsService.formForCreateFolder">
-        <div class="row">
-          <div class="col-md-12 col-sm-12">
-            <mat-form-field appearance="outline" fxFlex="100">
-              <mat-label>Folder Name</mat-label>
-              <input matInput formControlName="folder_name" [(ngModel)]="utilsService.folderNameForCreateNewFolderAPI"
-                (input)="utilsService.replaceSpecialCharacterWithUnderScore(utilsService.folderNameForCreateNewFolderAPI)"
-                required>
-              <mat-error
-                *ngIf="utilsService.formForCreateFolder.controls['folder_name'].hasError('required') &&  utilsService.formForCreateFolder.controls['folder_name'].touched">
-                {{utilsService.validationService.FOLDER_NAME_REQUIRED}}</mat-error>
-              <mat-error
-                *ngIf="!utilsService.formForCreateFolder.controls['folder_name'].hasError('required') && !utilsService.formForCreateFolder.controls['folder_name'].valid && utilsService.formForCreateFolder.controls['folder_name'].touched">
-                {{utilsService.validationService.FOLDER_NAME_INVALID}}
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="col-md-12 col-sm-12">
-              <div class="form-group">
-                  <p><b>Note : </b> Special characters like 'space' will be replaced by "_" underscore.</p>
-              </div>
-          </div>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">New Folder</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" [formGroup]="utilsService.formForCreateFolder">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <mat-form-field appearance="outline" fxFlex="100">
+                            <mat-label>Folder Name</mat-label>
+                            <input matInput formControlName="folder_name"
+                                [(ngModel)]="utilsService.folderNameForCreateNewFolderAPI"
+                                (input)="utilsService.replaceSpecialCharacterWithUnderScore(utilsService.folderNameForCreateNewFolderAPI)"
+                                required>
+                            <mat-error
+                                *ngIf="utilsService.formForCreateFolder.controls['folder_name'].hasError('required') &&  utilsService.formForCreateFolder.controls['folder_name'].touched">
+                                {{utilsService.validationService.FOLDER_NAME_REQUIRED}}</mat-error>
+                            <mat-error
+                                *ngIf="!utilsService.formForCreateFolder.controls['folder_name'].hasError('required') && !utilsService.formForCreateFolder.controls['folder_name'].valid && utilsService.formForCreateFolder.controls['folder_name'].touched">
+                                {{utilsService.validationService.FOLDER_NAME_INVALID}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-12 col-sm-12">
+                        <div class="form-group">
+                            <p><b>Note : </b> Special characters like 'space' will be replaced by "_" underscore.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" [disabled]="utilsService.formForCreateFolder.invalid"
+                    (click)="utilsService.createNewFolder(utilsService.assetIdForGetFolderAssetsOnDelete?utilsService.assetIdForGetFolderAssetsOnDelete: 0,utilsService.folderNameForCreateNewFolderAPI)">Create</button>
+                <button class="btn btn-light" data-dismiss="modal"
+                    (click)="utilsService.applyCreateFolderValidations()">Cancel</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-primary" [disabled]="utilsService.formForCreateFolder.invalid"
-          (click)="utilsService.createNewFolder(utilsService.assetIdForGetFolderAssetsOnDelete?utilsService.assetIdForGetFolderAssetsOnDelete: 0,utilsService.folderNameForCreateNewFolderAPI)">Create</button>
-        <button class="btn btn-light" data-dismiss="modal"
-          (click)="utilsService.applyCreateFolderValidations()">Cancel</button>
-      </div>
     </div>
-  </div>
 </div>
 
 
 <!-- The Modal -->
 <div class="modal delete-modal warning-modal" id="warningModal">
-
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body text-center p-20">
-        <div class="warning-icon">
-          <span class="material-icons">warning</span>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-20">
+                <div class="warning-icon">
+                    <span class="material-icons">warning</span>
+                </div>
+                <!-- <h3> You have no permission to upload assets.</h3> -->
+                <p> You have no permission to upload assets. Please contact Administrator.</p>
+                <div class="btngroup">
+                    <button class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
         </div>
-        <!-- <h3> You have no permission to upload assets.</h3> -->
-        <p> You have no permission to upload assets. Please contact Administrator.</p>
-        <div class="btngroup">
-          <button class="btn btn-primary" data-dismiss="modal">OK</button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

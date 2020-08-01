@@ -805,24 +805,6 @@ export class AssetsService {
             headers: headers,
             reportProgress: true
         }).subscribe((res: any) => {
-            console.log('res => ', res);
-
-            // if (Wres.type === HttpEventType.DownloadProgress) {
-            //   // This is an download progress event. Compute and show the % done:
-            //   const percentDone = Math.round(100 * res.loaded / res.total);
-            //   console.log(`File is ${percentDone}% downloaded.`);
-            // } else if (res instanceof HttpResponse) {
-            //   console.log('File is completely downloaded!');
-            // }
-            // importedSaveAs(res.download_url, docName);
-            // const a = document.createElement("a");
-            // document.body.appendChild(a);
-            // a.href = res.download_url;
-            // a.download = docName;
-            // a.click();
-            // document.body.removeChild(a);
-            // const blob = new Blob([res], { type: 'application/jpeg' });
-            // console.log('blob => ', blob);
             if (res['response'] === 0) {
                 this.utilsService.loaderStart--;
                 this.utilsService.toasterService.error(res['message'], '', {
@@ -830,40 +812,12 @@ export class AssetsService {
                     closeButton: true
                 });
             } else {
-                console.log('in else');
-
                 if (asseType === 'folder') {
                     docName += '.zip';
-                } else if (asseType === 'file') {
-                    console.log('in file');
-                    this.utilsService.download(res['download_url'], docName).subscribe();
-                    this.utilsService.loaderStart--;
-                    // var element = document.createElement('a');
-                    // element.setAttribute('href', res['download_url']);
-                    // element.setAttribute('download', docName);
-
-                    // element.style.display = 'none';
-                    // document.body.appendChild(element);
-
-                    // element.click();
-
-                    // document.body.removeChild(element);
+                    // } else if (asseType === 'file') {
                 }
-                // const blob = new Blob([res], { type: 'application/jpg' });
-                // saveAs(blob, docName);
-
-                // document.body.appendChild(a);
-                // a.href = res.download_url;
-                // a.download = docName;
-                // a.click();
-                // document.body.removeChild(a);
-
-                // const blobUrl = URL.createObjectURL(blob);
-                // const a = document.createElement('a');
-                // // a.href = blobUrl;
-                // a.download = blob + docName;
-                // document.body.appendChild(a);
-
+                this.utilsService.download(res['download_url'], docName).subscribe();
+                this.utilsService.loaderStart--;
             }
         }, err => {
             this.utilsService.loaderStart--;
