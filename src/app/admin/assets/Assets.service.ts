@@ -7,13 +7,12 @@ import { Validators } from '@angular/forms';
 import { FormBuilder } from '@angular/forms';
 import { FormGroup } from '@angular/forms';
 import { Injectable, ViewChild, ElementRef } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpEventType } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Collection } from '../../models/Collection';
 import { ActivatedRoute } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { HeaderService } from '../../shared/layout/header/header.service';
-import { saveAs } from 'file-saver';
-import { Observable, BehaviorSubject } from 'rxjs';
+
 declare var $: any;
 
 @Injectable({
@@ -536,6 +535,7 @@ export class AssetsService {
     }
 
     gotoAllAssets() {
+        console.log('in go to all assets');
         this.utilsService.arrayOfBreadCrumb = new Array<{ 'asset_id': number, 'folder_name': string, 'isActive': boolean }>();
         this.BackToAllAssets();
     }
@@ -709,14 +709,10 @@ export class AssetsService {
         } else {
             this.utilsService.allPermissions = undefined;
         }
-
         // console.log(this.statusOfAction);
         // console.log(this.utilsService.mainSearchNgModel);
         // console.log(this.utilsService.searchNgModel);
-
-
         if (!this.utilsService.isNullUndefinedOrBlank(this.statusOfAction)) {
-
             if (!this.utilsService.isNullUndefinedOrBlank(this.utilsService.mainSearchNgModel) || !this.utilsService.isNullUndefinedOrBlank(localStorage.getItem('search-param'))) {
                 const searchparams = localStorage.getItem('search-param');
                 this.utilsService.mainSearchNgModel = searchparams;
@@ -738,17 +734,15 @@ export class AssetsService {
             this.utilsService.getAllAssets(0, this.utilsService.offsetCount, (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
             setTimeout(() => {
                 if (this.utilsService.allAssets.length > 4) {
-
                     this.clickMe();
                 } else {
                     this.utilsService.scroll = 600;
                 }
-
             }, 2000);
             this.utilsService.offsetCount += 50;
         }
-
     }
+
     getFileExtension(fileName) {
         const splifileName = fileName.split('.');
         const splitArrayLength = splifileName.length - 1;
@@ -824,15 +818,14 @@ export class AssetsService {
                     closeButton: true
                 });
             } else {
-                console.log('in foldeer in else');
                 if (asseType === 'folder') {
                     docName += '.zip';
-                    console.log('in folder');
                     // this.utilsService.download(res['download_url'], docName).subscribe();
-                    // } else if (asseType === 'file') {
+                } else if (asseType === 'file') {
+                    console.log('in file');
+                    this.utilsService.download(res['download_url'], docName).subscribe();
+                    this.utilsService.loaderStart--;
                 }
-                this.utilsService.download(res['download_url'], docName).subscribe();
-                this.utilsService.loaderStart--;
             }
         }, err => {
             this.utilsService.loaderStart--;
@@ -960,7 +953,6 @@ export class AssetsService {
     }
 
     addOrRemoveCollection(isSelected, obj: Collection) {
-
         if (isSelected === true) {
             this.selectedCollectionsIds.push(obj.id);
         } else if (isSelected === false) {
@@ -968,4 +960,5 @@ export class AssetsService {
             this.selectedCollectionsIds.splice(index, 1);
         }
     }
+
 }

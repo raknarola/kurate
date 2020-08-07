@@ -15,7 +15,7 @@ import { Collection } from '../../../models/Collection';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatChipInputEvent } from '@angular/material';
 import { MetaData } from '../../../models/Meta-Data';
-import { saveAs } from 'file-saver';
+
 export interface Tag {
     name: string;
 }

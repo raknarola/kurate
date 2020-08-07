@@ -1,7 +1,7 @@
 import { UtilsService } from './services/utils.service';
-import { NavigationStart, RouterOutlet, ActivationStart } from '@angular/router';
+import { NavigationStart, RouterOutlet } from '@angular/router';
 import { Router } from '@angular/router';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 @Component({
     selector: 'app-root',
@@ -9,26 +9,25 @@ import { Component, OnInit, ViewChild } from '@angular/core';
     styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
 
     @ViewChild(RouterOutlet) outlet: RouterOutlet;
 
     title = 'kurate-angular';
     tooglemore = false;
 
-
     constructor(
         public router: Router,
         public utilsService: UtilsService
     ) {
-
         this.utilsService.applyCreateFolderValidations();
         router.events.forEach(val => {
             if (val instanceof NavigationStart) {
-                console.log(' Current Url : ' + val.url);
+                console.log('Current Url : ' + val.url);
                 if (this.utilsService.isNullUndefinedOrBlank(this.utilsService.getLoginUsers())) {
                     // if not data in session // val.url !== '/home/work_area/landing' &&
-                    if (val.url !== '/' && val.url !== '/kurate/login' && val.url !== '/kurate/forgot-password' && !val.url.includes('/share/sharedAssets/') && !val.url.includes('/share/assets-details/')) {
+                    if (val.url !== '/' && val.url !== '/kurate/login' && val.url !== '/kurate/forgot-password'
+                        && !val.url.includes('/share/sharedAssets/') && !val.url.includes('/share/assets-details/')) {
                         // this.utilsService.redirectTo('/home/work_area/landing');
                         this.utilsService.redirectTo('/kurate/login');
                     }
@@ -49,14 +48,5 @@ export class AppComponent implements OnInit {
             this.utilsService.setArrayPermssiontoAssets();
         }
     }
-    ngOnInit() {
 
-        this.router.events.subscribe(e => {
-            console.log('e => ', e);
-
-            if (e instanceof ActivationStart && e.snapshot.outlet === "/admin/work_area/assets/all-assets") {
-                this.outlet.deactivate();
-            }
-        });
-    }
 }

@@ -24,6 +24,7 @@ import { Tags } from '../models/Tags';
 import * as fileSaver from 'file-saver';
 import { catchError, map } from 'rxjs/operators';
 import { Console } from 'console';
+import { Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
@@ -216,15 +217,25 @@ export class UtilsService {
         return localStorage.getItem('token') ? localStorage.getItem('token') : null;
     }
 
-    download(downurl, docName) {
-        return this.http.get(downurl, {
-            reportProgress: true,
-            responseType: 'blob'
+    // download(downurl, docName) {
+    //     return this.http.get(downurl, {
+    //         reportProgress: true,
+    //         responseType: 'blob'
+    //     }).pipe(map((res) => {
+    //         fileSaver(res, docName);
+    //     }), catchError((err) => {
+    //         console.log(err);
+    //         return err;
+    //     }));
+    // }
+
+    download(file: any, downrl): Observable<any> {
+        return this.http.post(downrl, file, {
+            responseType: 'blob', reportProgress: true, headers: new HttpHeaders(
+                { 'Content-Type': 'application/json' },
+            )
         }).pipe(map((res) => {
-            fileSaver(res, docName);
-        }), catchError((err) => {
-            console.log(err);
-            return err;
+            fileSaver(res, downrl);
         }));
     }
 
@@ -1703,10 +1714,6 @@ export class UtilsService {
     }
 
     getAllAssets(idForFolder, offset, sortKey: string) {
-        console.log('in get all ');
-        console.log('idForFolder => ', idForFolder);
-        console.log('offset => ', offset);
-        console.log('sortKey => ', sortKey);
         const formData = new FormData();
         formData.set('asset_id', idForFolder);
         formData.set('offset', offset);
@@ -1735,9 +1742,9 @@ export class UtilsService {
                         this.allAssets.filter(val => {
                             if (!this.isNullUndefinedOrBlank(this.allPermissions) && this.allPermissions !== '/') {
                                 const folderUrl = '/' + this.keyForFolderName + ('/' + val.name);
-                                console.log(folderUrl);
+                                console.log('folderUrl', folderUrl);
                                 const index = this.arrayOfPermissionForAssets.findIndex(val1 => val1.name === folderUrl);
-                                console.log(index);
+                                console.log('index', index);
                                 if (index !== -1 && val.asset_type === 'folder') {
                                     val['isFolderPermission'] = true;
                                 }
@@ -1745,7 +1752,7 @@ export class UtilsService {
                             } else {
                                 // val.isPermission = false;
                                 const folderUrl = '/' + this.keyForFolderName + ('/' + val.name);
-                                console.log(folderUrl);
+                                console.log('folderUrl', folderUrl);
                                 const index = this.arrayOfPermissionForAssets.findIndex(val1 => val1.name === folderUrl);
                                 console.log(index);
                                 if (index !== -1 && val.asset_type === 'folder') {

@@ -1,184 +1,163 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class=" search-header mt-4">
-        <div class="float-left">
-          <h1>Meta Config</h1>
+    <div class="row">
+        <div class="col-12">
+            <div class=" search-header mt-4">
+                <div class="float-left">
+                    <h1>Meta Config</h1>
+                </div>
+                <div class="top-right-button-container datefromto d-flex dj">
+                    <button type="button" class="btn btn-outline-primary btn-lg " (click)="openMetaModal()">Add Meta
+                        Fields
+                    </button>
+                </div>
+                <!-- <button type="button" class="btn btn-md bR4 btn-outline-primary">Export to CSV</button> -->
+            </div>
         </div>
-
-        <div class="top-right-button-container datefromto d-flex dj">
-          <button type="button" class="btn btn-outline-primary btn-lg " (click)="openMetaModal()">Add Meta Fields</button>
-        </div>
-        <!-- <button type="button" class="btn btn-md bR4 btn-outline-primary">Export to CSV</button> -->
-
-      </div>
+        <div class="separator mt-0 mb-2"></div>
     </div>
-    <div class="separator mt-0 mb-2"></div>
-  </div>
 </div>
 
 <div class="row mt-2">
-  <div class="col-md-12 col-12">
-    <div class="card rounded">
-      <div class="card-body">
-        <div class="row">
-          <div class="col-md-12 col-sm-12">
-
-            <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid
-              style="height:calc(100vh - 265px);width:100%;max-height: 100%; max-width: 100%;" rowHeight="40"
-              headerHeight="38" floatingFiltersHeight="50" class="ag-theme-balham" [rowData]="arrayOfMetaData"
-              [columnDefs]="columnDefsForMetaConfig" [rowSelection]="rowSelection" [suppressRowClickSelection]="true"
-              [suppressDragLeaveHidesColumns]="true" [pagination]="true" [isFullWidthCell]="isFullWidthCell"
-              [fullWidthCellRenderer]="fullWidthCellRenderer" enableSorting [floatingFilter]="true"
-              (gridReady)="onGridReady($event);" [debug]="true" [ensureDomOrder]="true"
-              [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true"
-              [suppressHorizontalScroll]="false" [enableColResize]="true" [pagination]="true"
-              [sortingOrder]="sortingOrder" [frameworkComponents]="frameworkComponents" suppressSizeToFit=true>
-            </ag-grid-angular>
-
-          </div>
+    <div class="col-md-12 col-12">
+        <div class="card rounded">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12">
+                        <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid style="height:calc(100vh - 265px);width:100%;max-height: 100%; max-width: 100%;" rowHeight="40" headerHeight="38" floatingFiltersHeight="50" class="ag-theme-balham" [rowData]="arrayOfMetaData"
+                            [columnDefs]="columnDefsForMetaConfig" [rowSelection]="rowSelection" [suppressRowClickSelection]="true" [suppressDragLeaveHidesColumns]="true" [pagination]="true" [isFullWidthCell]="isFullWidthCell" [fullWidthCellRenderer]="fullWidthCellRenderer"
+                            enableSorting [floatingFilter]="true" (gridReady)="onGridReady($event);" [debug]="true" [ensureDomOrder]="true" [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true" [suppressHorizontalScroll]="false" [enableColResize]="true"
+                            [pagination]="true" [sortingOrder]="sortingOrder" [frameworkComponents]="frameworkComponents" suppressSizeToFit=true>
+                        </ag-grid-angular>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-
 </div>
 
 <div class="modal fade" id="addMetaDataModal" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Add Meta Data</h5>
-        <button type="button" class="close" data-dismiss="modal" (click)="resetMetaDataModal()" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" [formGroup]="metaConfigForm">
-
-        <div class="row">
-          <div class="col-md-12 mb-2" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(errorArray)">
-            <div class="alert alert-danger" role="alert">
-              {{errorArray}}
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Meta Data</h5>
+                <button type="button" class="close" data-dismiss="modal" (click)="resetMetaDataModal()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-          <div class="col-md-6 col-12">
-            <mat-form-field appearance="outline" fxFlex="100">
-              <mat-label>Name</mat-label>
-              <input matInput required formControlName="name" autocomplete="off" [(ngModel)]="metaDataObj.field_name"
-                [maxlength]="utilsService.validationService.MAX_30">
-              <mat-error
-                *ngIf="metaConfigForm.controls['name'].hasError('required') &&  metaConfigForm.controls['name'].touched">
-                {{utilsService.validationService.REQUIRED_FOR_NAME}}</mat-error>
-              <mat-error
-                *ngIf="!metaConfigForm.controls['name'].hasError('required') && !metaConfigForm.controls['name'].valid && metaConfigForm.controls['name'].touched">
-                {{utilsService.validationService.INVALID_FOR_NAME}}
-              </mat-error>
-            </mat-form-field>
-          </div>
-          <div class="col-md-6 col-12">
+            <div class="modal-body" [formGroup]="metaConfigForm">
+                <div class="row">
+                    <div class="col-md-12 mb-2" *ngIf="!utilsService.isEmptyObjectOrNullUndefiend(errorArray)">
+                        <div class="alert alert-danger" role="alert">
+                            {{errorArray}}
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <mat-form-field appearance="outline" fxFlex="100">
+                            <mat-label>Name</mat-label>
+                            <input matInput required formControlName="name" autocomplete="off" [(ngModel)]="metaDataObj.field_name" [maxlength]="utilsService.validationService.MAX_30">
+                            <mat-error *ngIf="metaConfigForm.controls['name'].hasError('required') &&  metaConfigForm.controls['name'].touched">
+                                {{utilsService.validationService.REQUIRED_FOR_NAME}}</mat-error>
+                            <mat-error *ngIf="!metaConfigForm.controls['name'].hasError('required') && !metaConfigForm.controls['name'].valid && metaConfigForm.controls['name'].touched">
+                                {{utilsService.validationService.INVALID_FOR_NAME}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <mat-form-field appearance="outline" fxFlex="100">
+                            <mat-label>Description</mat-label>
+                            <textarea matInput formControlName="description" autocomplete="off" [(ngModel)]="metaDataObj.description"></textarea>
+                        </mat-form-field>
+                    </div>
 
-            <mat-form-field appearance="outline" fxFlex="100">
-              <mat-label>Description</mat-label>
-              <textarea matInput formControlName="description" autocomplete="off"
-                [(ngModel)]="metaDataObj.description"></textarea>
-            </mat-form-field>
-          </div>
+                    <div class="w-100"></div>
 
-          <div class="w-100"></div>
-
-          <div class="col-md-6 col-12">
-            <mat-form-field appearance="outline" fxFlex="100">
-              <mat-label>Element Type</mat-label>
-              <mat-select [(ngModel)]="metaDataObj.input_type" formControlName="elementType">
-                <mat-option *ngFor="let item of allElements" [value]="item.name">{{item.name}}</mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="metaConfigForm.controls['elementType'].hasError('required') &&  metaConfigForm.controls['elementType'].touched">
-                {{utilsService.validationService.ELEMENT_TYPE_REQUIRED}}
-              </mat-error>
-            </mat-form-field>
-            <!-- <div class="form-group">
-              <mat-form-field class="custom-ngselect" appearance="outline">
-                <mat-label>Element Type</mat-label>
-                <ng-select ngSelectMat [items]="arrayOfElementType" formControlName="elementType"
-                  [dropdownPosition]="'bottom'" notFoundText="Element Type not found." [clearable]="false"
-                  [(ngModel)]="metaDataObj.input_type" bindLabel="name" bindValue="id" required>
-                </ng-select>
-                <mat-error
-                  *ngIf="metaConfigForm.controls['elementType'].hasError('required') &&  metaConfigForm.controls['elementType'].touched">
-                  {{utilsService.validationService.ELEMENT_TYPE_REQUIRED}}
-                </mat-error>
-              </mat-form-field>
-            </div> -->
-
-          </div>
-          <div class="col-md-6 col-12">
-            <!-- <label>Role</label> -->
-            <mat-form-field appearance="outline" fxFlex="100">
-              <mat-label>Status</mat-label>
-              <mat-select [(ngModel)]="metaDataObj.status" formControlName="status">
-                <mat-option *ngFor="let item of arrayOfStatus" [value]="item.id">{{item.name}}</mat-option>
-              </mat-select>
-              <mat-error
-                *ngIf="metaConfigForm.controls['status'].hasError('required') &&  metaConfigForm.controls['status'].touched">
-                {{utilsService.validationService.STATUS_REQUIRED}}
-              </mat-error>
-            </mat-form-field>
-            <!-- <mat-form-field class="custom-ngselect" appearance="outline" fxFlex="100">
-              <mat-label>Status</mat-label>
-              <ng-select ngSelectMat [items]="arrayOfStatus" formControlName="status" [dropdownPosition]="'bottom'"
-                notFoundText="Status not found." [clearable]="false" [(ngModel)]="metaDataObj.status" bindLabel="name"
-                bindValue="id" required>
-              </ng-select>
-              <mat-error
-                *ngIf="metaConfigForm.controls['status'].hasError('required') &&  metaConfigForm.controls['status'].touched">
-                {{utilsService.validationService.STATUS_REQUIRED}}
-              </mat-error>
-            </mat-form-field> -->
-          </div>
-          <div class="col-md-6 col-12">
-            <mat-form-field appearance="outline" fxFlex="100" class="example-chip-list mat-tag-list">
-              <mat-label>Values</mat-label>
-              <mat-chip-list class="my-chip-list" #chipList1 aria-label="Tag Selection">
-                <mat-chip *ngFor="let value of arrayOfValues" [selectable]="selectable" [removable]="removable"
-                  (removed)="remove(value)">
-                  {{value}}
-                  <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
-                </mat-chip>
-                <input [matChipInputFor]="chipList1" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
-              </mat-chip-list>
-            </mat-form-field>
-          </div>
+                    <div class="col-md-6 col-12">
+                        <mat-form-field appearance="outline" fxFlex="100">
+                            <mat-label>Element Type</mat-label>
+                            <mat-select [(ngModel)]="metaDataObj.input_type" formControlName="elementType">
+                                <mat-option *ngFor="let item of allElements" [value]="item.name">{{item.name}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="metaConfigForm.controls['elementType'].hasError('required') &&  metaConfigForm.controls['elementType'].touched">
+                                {{utilsService.validationService.ELEMENT_TYPE_REQUIRED}}
+                            </mat-error>
+                        </mat-form-field>
+                        <!-- <div class="form-group">
+                            <mat-form-field class="custom-ngselect" appearance="outline">
+                                <mat-label>Element Type</mat-label>
+                                <ng-select ngSelectMat [items]="arrayOfElementType" formControlName="elementType"
+                                    [dropdownPosition]="'bottom'" notFoundText="Element Type not found."
+                                    [clearable]="false" [(ngModel)]="metaDataObj.input_type" bindLabel="name"
+                                    bindValue="id" required>
+                                </ng-select>
+                                <mat-error
+                                    *ngIf="metaConfigForm.controls['elementType'].hasError('required') &&  metaConfigForm.controls['elementType'].touched">
+                                    {{utilsService.validationService.ELEMENT_TYPE_REQUIRED}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div> -->
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <!-- <label>Role</label> -->
+                        <mat-form-field appearance="outline" fxFlex="100">
+                            <mat-label>Status</mat-label>
+                            <mat-select [(ngModel)]="metaDataObj.status" formControlName="status">
+                                <mat-option *ngFor="let item of arrayOfStatus" [value]="item.id">{{item.name}}
+                                </mat-option>
+                            </mat-select>
+                            <mat-error *ngIf="metaConfigForm.controls['status'].hasError('required') &&  metaConfigForm.controls['status'].touched">
+                                {{utilsService.validationService.STATUS_REQUIRED}}
+                            </mat-error>
+                        </mat-form-field>
+                        <!-- <mat-form-field class="custom-ngselect" appearance="outline" fxFlex="100">
+                            <mat-label>Status</mat-label>
+                            <ng-select ngSelectMat [items]="arrayOfStatus" formControlName="status"
+                                [dropdownPosition]="'bottom'" notFoundText="Status not found." [clearable]="false"
+                                [(ngModel)]="metaDataObj.status" bindLabel="name" bindValue="id" required>
+                            </ng-select>
+                            <mat-error
+                                *ngIf="metaConfigForm.controls['status'].hasError('required') &&  metaConfigForm.controls['status'].touched">
+                                {{utilsService.validationService.STATUS_REQUIRED}}
+                            </mat-error>
+                        </mat-form-field> -->
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <mat-form-field appearance="outline" fxFlex="100" class="example-chip-list mat-tag-list">
+                            <mat-label>Values</mat-label>
+                            <mat-chip-list class="my-chip-list" #chipList1 aria-label="Tag Selection">
+                                <mat-chip *ngFor="let value of arrayOfValues" [selectable]="selectable" [removable]="removable" (removed)="remove(value)">
+                                    {{value}}
+                                    <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+                                </mat-chip>
+                                <input [matChipInputFor]="chipList1" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="addOnBlur" (matChipInputTokenEnd)="add($event)">
+                            </mat-chip-list>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" [disabled]="metaConfigForm.invalid" (click)="createMetaField()">Add</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="resetMetaDataModal()">Cancel</button>
+            </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" [disabled]="metaConfigForm.invalid"
-          (click)="createMetaField()">Add</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal"
-          (click)="resetMetaDataModal()">Cancel</button>
-      </div>
     </div>
-  </div>
 </div>
 
 <!-- The Modal -->
 <div class="modal delete-modal" id="deleteMetaConfigModal">
-
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-body text-center p-20">
-        <div class="clear-icon">
-          <span class="material-icons">clear</span>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-20">
+                <div class="clear-icon">
+                    <span class="material-icons">clear</span>
+                </div>
+                <h3> Do you really want to delete these records? </h3>
+                <p>This field will be deleted from all assets. <br> This process cannot be undone.</p>
+                <div class="btngroup">
+                    <button class="btn btn-primary mr-3" (click)="deleteMetaConfigById(metaConfigIdForDelete)">Yes</button>
+                    <button class="btn btn-light" (click)="utilsService.hideModal('deleteMetaConfigModal')">No</button>
+                </div>
+            </div>
         </div>
-        <h3> Do you really want to delete these records? </h3>
-
-        <p>This field will be deleted from all assets. <br> This process cannot be undone.</p>
-        <div class="btngroup">
-          <button class="btn btn-primary mr-3" (click)="deleteMetaConfigById(metaConfigIdForDelete)">Yes</button>
-          <button class="btn btn-light" (click)="utilsService.hideModal('deleteMetaConfigModal')">No</button>
-        </div>
-      </div>
     </div>
-  </div>
 </div>

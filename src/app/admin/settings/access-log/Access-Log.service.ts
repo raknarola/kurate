@@ -15,7 +15,9 @@ import { DatePipe } from '@angular/common';
 @Injectable({
     providedIn: 'root'
 })
+
 export class AccessLogService {
+
     // ag-grid Variables
     public gridApi;
     public gridColumnApi;
@@ -28,9 +30,7 @@ export class AccessLogService {
     fromDate: Date;
     toDate: Date;
     allAccessLogs: Array<AccessLog> = new Array<AccessLog>();
-
     public isFullWidthCell;
-
     fullWidthCellRenderer: string;
     columnDefsForCollections = [
         {
@@ -112,7 +112,13 @@ export class AccessLogService {
     @ViewChild('agGrid') agGrid: AgGridNg2;
     @ViewChild('agGrid2') agGrid2: AgGridNg2;
     fromDateToDateForm: FormGroup;
-    constructor(public utilsService: UtilsService, public datepipe: DatePipe, public http: HttpClient, public formBuilder: FormBuilder) {
+
+    constructor(
+        public utilsService: UtilsService,
+        public datepipe: DatePipe,
+        public http: HttpClient,
+        public formBuilder: FormBuilder
+    ) {
         this.frameworkComponents = {
             buttonRenderer: ButtonRendererComponent,
             shareButtonRenderer: ShareCollectionButtonRendererComponent,
@@ -132,6 +138,7 @@ export class AccessLogService {
     public hasError = (controlName: string, errorName: string) => {
         return this.fromDateToDateForm.controls[controlName].hasError(errorName);
     }
+
     /**
      * @returns grid value on load of page
      */
@@ -141,11 +148,11 @@ export class AccessLogService {
         this.rowSelection = 'multiple';
         this.utilsService.loaderStart++;
         setTimeout(() => {
-
             this.agGrid.api.sizeColumnsToFit();
             this.utilsService.loaderStart--;
         }, 1000);
     }
+
     applyValidation() {
         this.fromDateToDateForm = this.formBuilder.group({
             fromDate: ['', Validators.required],
@@ -155,7 +162,6 @@ export class AccessLogService {
 
     checkDates(group: FormGroup) {
         if (group.controls.toDate.value && group.controls.fromDate.value) {
-
             if (group.controls.toDate.value < group.controls.fromDate.value) {
                 group.controls['toDate'].setErrors({ notValid: true });
                 group.controls['fromDate'].setErrors({ notValid: true });
@@ -195,8 +201,9 @@ export class AccessLogService {
         const formData = new FormData();
         formData.set('from_date', this.datepipe.transform(this.fromDate, 'yyyy-MM-dd'));
         formData.set('to_date', this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
-        this.http.post(UtilsService.URL + this.utilsService.serverVariableService.downloadActivityLogsAPI, formData, { responseType: 'arraybuffer', headers: headers })
-            .subscribe(res => {
+        this.http.post(UtilsService.URL +
+            this.utilsService.serverVariableService.downloadActivityLogsAPI,
+            formData, { responseType: 'arraybuffer', headers: headers }).subscribe(res => {
                 const blob = new Blob([res], { type: 'application/octet-stream' });
                 FileSaver.saveAs(blob, 'KurateAccessLogs.xls');
             }, err => {

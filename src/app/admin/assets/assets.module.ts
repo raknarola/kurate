@@ -11,7 +11,7 @@ const routes: Routes = [
     {
         path: '',
         redirectTo: 'all-assets',
-        pathMatch: 'full '
+        pathMatch: 'full'
     },
     {
         path: 'all-assets',

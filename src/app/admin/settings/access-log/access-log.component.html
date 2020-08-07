@@ -1,89 +1,76 @@
 <div class="container-fluid">
-  <div class="row">
-    <div class="col-12">
-      <div class=" search-header mt-4">
-        <div class="float-left">
-          <h1>Access Logs</h1>
-        </div>
-        <!-- <mat-form-field class="small-formcontrol" appearance="outline" fxFlex="100">
-          <mat-label>From</mat-label>
-          <input matInput [matDatepicker]="from" [(ngModel)]="fromDate" autocomplete="off" placeholder="Choose a date" appendTo="body">
-          <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
-          <mat-datepicker #from></mat-datepicker>
-        </mat-form-field>
-        <mat-form-field class="small-formcontrol" appearance="outline" fxFlex="100">
-          <mat-label>To</mat-label>
-          <input matInput [matDatepicker]="to" [(ngModel)]="toDate" autocomplete="off" placeholder="Choose a date" appendTo="body">
-          <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
-          <mat-datepicker #to></mat-datepicker>
-        </mat-form-field> -->
-
-        <div class="float-right">
-          <div class="top-right-button-container datefromto d-flex dj">
-            <div [formGroup]="fromDateToDateForm">
-              <mat-form-field appearance="outline">
-                <mat-label>From Date</mat-label>
-                <input matInput [matDatepicker]="startdate" formControlName="fromDate" [(ngModel)]="fromDate"
-                  placeholder="Choose a date" readonly required>
-                <mat-datepicker-toggle matSuffix [for]="startdate"></mat-datepicker-toggle>
-                <mat-datepicker #startdate></mat-datepicker>
-                <mat-error *ngIf="hasError('fromDate','notValid')">
-                </mat-error>
-                <mat-error *ngIf="hasError('fromDate','required')">
-                  {{utilsService.validationService.FROM_DATE_REQUIRED}}
-                </mat-error>
-              </mat-form-field>
-              <mat-form-field appearance="outline">
-                <mat-label>To Date</mat-label>
-                <input matInput [matDatepicker]="enddate" required formControlName="toDate" [(ngModel)]="toDate"
-                  placeholder="Choose a date" readonly>
-                <mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>
-                <mat-datepicker #enddate></mat-datepicker>
-                <mat-error *ngIf="hasError('toDate','notValid')">
-                  From Date and To Date Invalid.
-                </mat-error>
-                <mat-error *ngIf="hasError('toDate','required')">
-                  {{utilsService.validationService.TO_DATE_REQUIRED}}
-                </mat-error>
-              </mat-form-field>
+    <div class="row">
+        <div class="col-12">
+            <div class=" search-header mt-4">
+                <div class="float-left">
+                    <h1>Access Logs</h1>
+                </div>
+                <!-- <mat-form-field class="small-formcontrol" appearance="outline" fxFlex="100">
+                    <mat-label>From</mat-label>
+                    <input matInput [matDatepicker]="from" [(ngModel)]="fromDate" autocomplete="off"
+                        placeholder="Choose a date" appendTo="body">
+                    <mat-datepicker-toggle matSuffix [for]="from"></mat-datepicker-toggle>
+                    <mat-datepicker #from></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="small-formcontrol" appearance="outline" fxFlex="100">
+                    <mat-label>To</mat-label>
+                    <input matInput [matDatepicker]="to" [(ngModel)]="toDate" autocomplete="off"
+                        placeholder="Choose a date" appendTo="body">
+                    <mat-datepicker-toggle matSuffix [for]="to"></mat-datepicker-toggle>
+                    <mat-datepicker #to></mat-datepicker>
+                </mat-form-field> -->
+                <div class="float-right">
+                    <div class="top-right-button-container datefromto d-flex dj">
+                        <div [formGroup]="fromDateToDateForm">
+                            <mat-form-field appearance="outline">
+                                <mat-label>From Date</mat-label>
+                                <input matInput [matDatepicker]="startdate" formControlName="fromDate" [(ngModel)]="fromDate" placeholder="Choose a date" readonly required>
+                                <mat-datepicker-toggle matSuffix [for]="startdate"></mat-datepicker-toggle>
+                                <mat-datepicker #startdate></mat-datepicker>
+                                <mat-error *ngIf="hasError('fromDate','notValid')">
+                                </mat-error>
+                                <mat-error *ngIf="hasError('fromDate','required')">
+                                    {{utilsService.validationService.FROM_DATE_REQUIRED}}
+                                </mat-error>
+                            </mat-form-field>
+                            <mat-form-field appearance="outline">
+                                <mat-label>To Date</mat-label>
+                                <input matInput [matDatepicker]="enddate" required formControlName="toDate" [(ngModel)]="toDate" placeholder="Choose a date" readonly>
+                                <mat-datepicker-toggle matSuffix [for]="enddate"></mat-datepicker-toggle>
+                                <mat-datepicker #enddate></mat-datepicker>
+                                <mat-error *ngIf="hasError('toDate','notValid')">
+                                    From Date and To Date Invalid.
+                                </mat-error>
+                                <mat-error *ngIf="hasError('toDate','required')">
+                                    {{utilsService.validationService.TO_DATE_REQUIRED}}
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <button class="btn btn-primary btn-lg mr-2" (click)="getAccessLogData()" [disabled]="fromDateToDateForm.invalid">Search</button>
+                        <button type="button" class="btn btn-outline-primary btn-lg" [disabled]="fromDateToDateForm.invalid" (click)="download()">Export to CSV</button>
+                    </div>
+                    <!-- <button type="button" class="btn btn-md bR4 btn-outline-primary">Export to CSV</button> -->
+                </div>
             </div>
-            <button class="btn btn-primary btn-lg mr-2" (click)="getAccessLogData()" [disabled]="fromDateToDateForm.invalid">Search</button>
-            <button type="button"
-              class="btn btn-outline-primary btn-lg" [disabled]="fromDateToDateForm.invalid"
-              (click)="download()">Export to CSV</button>
-          </div>
-          <!-- <button type="button" class="btn btn-md bR4 btn-outline-primary">Export to CSV</button> -->
-
+            <div class="separator mt-0 mb-2"></div>
         </div>
-      </div>
-      <div class="separator mt-0 mb-2"></div>
-    </div>
-  </div>
-
-  <div class="row mt-2">
-    <div class="col-md-12 col-12">
-      <div class="card rounded">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-12 col-sm-12">
-
-              <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid
-                style="height:calc(100vh - 265px);width:100%;max-height: 100%; max-width: 100%;" rowHeight="40"
-                headerHeight="38" floatingFiltersHeight="50" class="ag-theme-balham" [rowData]="allAccessLogs"
-                [columnDefs]="columnDefsForCollections" [rowSelection]="rowSelection" [suppressRowClickSelection]="true"
-                [suppressDragLeaveHidesColumns]="true" [pagination]="true" [isFullWidthCell]="isFullWidthCell"
-                [fullWidthCellRenderer]="fullWidthCellRenderer" enableSorting [floatingFilter]="true"
-                (gridReady)="onGridReady($event);" [debug]="true" [ensureDomOrder]="true"
-                [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true"
-                [suppressHorizontalScroll]="false" [enableColResize]="true" [pagination]="true"
-                [sortingOrder]="sortingOrder" [frameworkComponents]="frameworkComponents" suppressSizeToFit=true>
-              </ag-grid-angular>
-
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
 
-  </div>
+    <div class="row mt-2">
+        <div class="col-md-12 col-12">
+            <div class="card rounded">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                            <ag-grid-angular id="my_div1" class="my_div1 div_new" #agGrid style="height:calc(100vh - 265px);width:100%;max-height: 100%; max-width: 100%;" rowHeight="40" headerHeight="38" floatingFiltersHeight="50" class="ag-theme-balham" [rowData]="allAccessLogs"
+                                [columnDefs]="columnDefsForCollections" [rowSelection]="rowSelection" [suppressRowClickSelection]="true" [suppressDragLeaveHidesColumns]="true" [pagination]="true" [isFullWidthCell]="isFullWidthCell" [fullWidthCellRenderer]="fullWidthCellRenderer"
+                                enableSorting [floatingFilter]="true" (gridReady)="onGridReady($event);" [debug]="true" [ensureDomOrder]="true" [paginationPageSize]="itemsPerPage" [suppressColumnVirtualisation]="true" [suppressHorizontalScroll]="false" [enableColResize]="true"
+                                [pagination]="true" [sortingOrder]="sortingOrder" [frameworkComponents]="frameworkComponents" suppressSizeToFit=true>
+                            </ag-grid-angular>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
