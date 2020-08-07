@@ -1,5 +1,6 @@
 import { UtilsService } from '../../../services/utils.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, RouterOutlet, ActivationStart } from '@angular/router';
 declare var $: any;
 
 @Component({
@@ -9,7 +10,9 @@ declare var $: any;
 })
 export class SideNavbarComponent implements OnInit {
 
-  constructor(public utilsService: UtilsService) { }
+  @ViewChild(RouterOutlet) outlet: RouterOutlet;
+  constructor(public utilsService: UtilsService,
+    private router: Router) { }
 
   ngOnInit() {
 
@@ -20,22 +23,24 @@ export class SideNavbarComponent implements OnInit {
     //   $('#app-container').toggleClass('menu-sub-hidden');
     // });
 
+
+
     $(function () {
       $(".main-menu a.opensubmenu").on("click", function (e) {
         $("#app-container").toggleClass("menu-sub-hidden");
         e.stopPropagation()
       });
-     
-      $(document).on("click", function(e) {
+
+      $(document).on("click", function (e) {
         if ($(e.target).is(".sub-menu") === false) {
           $("#app-container").addClass("menu-sub-hidden");
         }
       });
 
-      
 
 
-      $(".main-menu ul li.kishan a").on("click", function(e) {
+
+      $(".main-menu ul li.kishan a").on("click", function (e) {
         e.preventDefault();
         // alert();
 
@@ -50,12 +55,12 @@ export class SideNavbarComponent implements OnInit {
         // $(this).addClass('active').siblings().removeClass('active');
       });
 
-      $(".main-menu ul li").on("click", function(e) {
+      $(".main-menu ul li").on("click", function (e) {
         e.preventDefault();
         $('.main-menu ul li.kishan a.active').removeClass('active');
       });
 
-      $(".main-menu ul li.dashboardactive").on("click", function(e) {
+      $(".main-menu ul li.dashboardactive").on("click", function (e) {
         e.preventDefault();
         $(this).addClass('active').siblings().removeClass('active');
       });
@@ -68,6 +73,15 @@ export class SideNavbarComponent implements OnInit {
   }
 
 
+  newfuntion() {
+    this.router.events.subscribe(e => {
+      console.log('e => ', e);
 
+      if (e instanceof ActivationStart && e.snapshot.outlet === "/admin/work_area/assets/all-assets") {
+        this.outlet.deactivate();
+      }
+    });
+    this.router.navigate(['/admin/work_area/assets/all-assets']);
+  }
 
 }

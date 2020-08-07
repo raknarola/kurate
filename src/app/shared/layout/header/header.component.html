@@ -84,13 +84,13 @@
         <div class="header-icons d-inline-block align-middle">
             <div class="position-relative d-none d-sm-inline-block uploadbox"
                 *ngIf="utilsService.getLoginUsers() && utilsService.flagforHideUploadingPlusButton">
-                <div class="dropdown-menu-right dropdown">
-                    <button class="header-icon btn btn-empty" type="button" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false" id="iconMenuButton">
+                <div class="dropdown-menu-right">
+                    <button class="header-icon btn btn-empty" type="button"
+                        (click)="utilsService.closeAfterSelection()">
                         <i class="simple-icon-plus color-th"></i>
                     </button>
-                    <!--  -->
-                    <div class="dropdown-menu dropdown-menu-right" id="iconMenuButton">
+                    <div class="dropdown-menu dropdown-menu-right"
+                        [ngClass]="{'show': utilsService.flagAfterSelection}">
                         <ul>
                             <li class="normalli" (click)="openCreateNewFolderModal()">
                                 <img src="assets/images/create-folder.png">

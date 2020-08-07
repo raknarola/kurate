@@ -99,6 +99,7 @@ export class UtilsService {
     orderByForListView = 'created_at';
     reverseFlagForGridView: boolean;
     reverseFlagForListView: boolean;
+    flagAfterSelection = false;
 
     constructor(
         public http: HttpClient,
@@ -365,7 +366,7 @@ export class UtilsService {
         document.body.removeChild(selBox);
     }
 
-    async dropped(files: NgxFileDropEntry[], type: string, folderDropedKey: string, assets: Assets) {
+    dropped(files: NgxFileDropEntry[], type: string, folderDropedKey: string, assets: Assets) {
         const fileSize = 104857600;
         this.files = files;
         this.flagForShowErrorMsg = false;
@@ -413,7 +414,7 @@ export class UtilsService {
                                         relativePath = folderDropedKey + relativePath;
                                     }
                                     relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
-                                    const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
+                                    const obj = this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
                                         // Here you can access the real file
                                         const file1 = new Blob([file], { type: 'application/pdf' });
                                         const fileURL = URL.createObjectURL(file1);
@@ -521,7 +522,7 @@ export class UtilsService {
                                             relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
                                             // console.log(relativePath);
                                             // console.log(type);
-                                            const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
+                                            const obj = this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
                                                 // Here you can access the real file
                                                 // console.log(droppedFile.relativePath, file);
                                                 const file1 = new Blob([file], { type: 'application/pdf' });
@@ -635,7 +636,7 @@ export class UtilsService {
                                             relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
                                             // console.log(relativePath);
                                             // console.log(type);
-                                            const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
+                                            const obj = this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
                                                 // Here you can access the real file
                                                 // console.log(droppedFile.relativePath, file);
                                                 const file1 = new Blob([file], { type: 'application/pdf' });
@@ -741,7 +742,7 @@ export class UtilsService {
             //           relativePath = relativePath.replace(/[^a-zA-Z0-9./]/g, '_');
             //           console.log(relativePath);
             //           console.log(type);
-            //           const obj = await this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
+            //           const obj =  this.checkFileExistOrNot('origin/assets/' + relativePath).then(val1 => {
             //             // Here you can access the real file
             //             console.log(droppedFile.relativePath, file);
             //             const file1 = new Blob([file], { type: 'application/pdf' });
@@ -964,30 +965,13 @@ export class UtilsService {
             Body: assetObj.file,
             ACL: 'public-read',
             ContentType: contentType,
-            queueSize: 2
+            queueSize: 1
         };
-        // const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
-        //     this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
-        //     // console.log(this.arrayOfSelectedFiles[index].progress);
-        //     // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
-        //     // console.log(`File uploaded: ${this.arrayOfSelectedFiles[index].progress}%`);
-        //     // this.clickMe();
-        // }).send((err, data) => {
-        //     if (err) {
-        //         assetObj.status = 'Failed';
-        //         console.log('There was an error uploading your file: ', err);
-        //         return false;
-        //     }
-        //     assetObj.status = 'Success';
-        //     console.log('Successfully uploaded file.', data);
-        //     // this.uploadCompleteCount = this.arrayOfSelectedFiles.length - 1;
-        //     this.createAssetAPI(data, assetObj);
-        //     return true;
-        // });
+        console.log('this queue is called');
+
         // setTimeout(params.abort.bind(req), 1000);
         const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
             this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
-            // this.arrayOfSelectedFiles = [...this.arrayOfSelectedFiles];
         }).send((err, data) => {
             if (err) {
                 assetObj.status = 'Failed';
@@ -999,6 +983,7 @@ export class UtilsService {
             this.createAssetAPI(data, assetObj);
             return true;
         });
+        this.closeAfterSelection();
     }
 
     clickMe() {
@@ -1067,7 +1052,8 @@ export class UtilsService {
         }, false, undefined, '/admin/work_area/assets/search-assets/search');
     }
 
-    async createAssetAPI(uploadResponse, document: Assets) {
+    createAssetAPI(uploadResponse, document: Assets) {
+        this.closeAfterSelection();
         let assetObj = new Assets();
         assetObj = document;
         const splitArray = assetObj.name.split('.');
@@ -1627,21 +1613,21 @@ export class UtilsService {
         assetObj.version_key = uploadResponse.VersionId;
         const formData = new FormData();
         const obj = Serialize(assetObj, Assets);
-        await formData.set('asset_data', JSON.stringify(obj));
-        await formData.set('parent_id', this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete.toString() : '0');
-        await this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
+        formData.set('asset_data', JSON.stringify(obj));
+        formData.set('parent_id', this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete.toString() : '0');
+        this.postMethodAPI(true, this.serverVariableService.createAssetsAPI, formData, (response) => {
             if (!this.isNullUndefinedOrBlank(response)) {
                 this.flagForRefreshPage += 1;
                 if (this.flagForRefreshPage === this.arrayOfSelectedFiles.length) {
-                    console.log(' => ', this.flagForRefreshPage, this.arrayOfSelectedFiles.length);
                     this.refreshAssets();
                     this.flagForRefreshPage = 0;
                 }
             }
         });
+        this.closeAfterSelection();
     }
 
-    async refreshAssets() {
+    refreshAssets() {
         this.offsetCount = 0;
         // console.log(this.assetIdForGetFolderAssetsOnDelete);
         // console.log(this.statusOfAction);
@@ -1686,6 +1672,9 @@ export class UtilsService {
             this.offsetCount += 50;
         }
         // }
+        this.hideShowUploadingFiles();
+        console.log('document.getElementById(', document.getElementById('iconMenuButton'));
+
     }
 
     checkFileExistOrNot(key) {
@@ -1713,28 +1702,26 @@ export class UtilsService {
         });
     }
 
-    async getAllAssets(idForFolder, offset, sortKey: string) {
+    getAllAssets(idForFolder, offset, sortKey: string) {
         console.log('in get all ');
         console.log('idForFolder => ', idForFolder);
         console.log('offset => ', offset);
-
         console.log('sortKey => ', sortKey);
-
         const formData = new FormData();
-        await formData.set('asset_id', idForFolder);
-        await formData.set('offset', offset);
-        await formData.set('sort_by', sortKey);
+        formData.set('asset_id', idForFolder);
+        formData.set('offset', offset);
+        formData.set('sort_by', sortKey);
         if (!this.isNullUndefinedOrBlank(this.seletedFilType)) {
-            formData.set('filter_type', await this.seletedFilType);
+            formData.set('filter_type', this.seletedFilType);
         }
         if (!this.isNullUndefinedOrBlank(this.fromDate)) {
-            formData.set('filter_from_date', await this.datepipe.transform(this.fromDate, 'yyyy-MM-dd'));
+            formData.set('filter_from_date', this.datepipe.transform(this.fromDate, 'yyyy-MM-dd'));
         }
         if (!this.isNullUndefinedOrBlank(this.toDate)) {
-            formData.set('filter_to_date', await this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
+            formData.set('filter_to_date', this.datepipe.transform(this.toDate, 'yyyy-MM-dd'));
         }
         this.allAssets = new Array<Assets>();
-        await this.postMethodAPI(false, this.serverVariableService.listAssetsAPI, formData, (response) => {
+        this.postMethodAPI(false, this.serverVariableService.listAssetsAPI, formData, (response) => {
             if (!this.isEmptyObjectOrNullUndefiend(response)) {
                 this.allAssets = Deserialize(response, Assets);
                 // console.log(this.allPermissions);
@@ -2164,6 +2151,14 @@ export class UtilsService {
                     this.arrayOfTags = Deserialize(response, Tags);
                 }
             });
+        }
+    }
+
+    closeAfterSelection() {
+        if (this.flagAfterSelection === false) {
+            this.flagAfterSelection = true;
+        } else {
+            this.flagAfterSelection = false;
         }
     }
 

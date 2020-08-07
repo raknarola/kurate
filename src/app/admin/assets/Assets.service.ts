@@ -66,7 +66,16 @@ export class AssetsService {
     public itemsToShow = this.utilsService.allAssets.slice(0, this.noOfItemsToShowInitially);
     // No need to call onScroll if full list has already been displayed
 
-    constructor(public utilsService: UtilsService, public domSanitizer: DomSanitizer, public headerService: HeaderService, public route: ActivatedRoute, public datepipe: DatePipe, public http: HttpClient, public formBuilder: FormBuilder, public sanitizer: DomSanitizer) {
+    constructor(
+        public utilsService: UtilsService,
+        public domSanitizer: DomSanitizer,
+        public headerService: HeaderService,
+        public route: ActivatedRoute,
+        public datepipe: DatePipe,
+        public http: HttpClient,
+        public formBuilder: FormBuilder,
+        public sanitizer: DomSanitizer
+    ) {
         // this.flagForHideShowBackButton = false;
         this.value = false;
         this.flagForHideShowListView = false;
@@ -180,6 +189,8 @@ export class AssetsService {
     }
 
     openDeleteAllAssets() {
+        console.log('in delete asset');
+
         this.assetIdForDelete = undefined;
         this.utilsService.openModal('deleteAllAssetModal');
     }
@@ -806,14 +817,18 @@ export class AssetsService {
             reportProgress: true
         }).subscribe((res: any) => {
             if (res['response'] === 0) {
+                console.log('res => ', res);
                 this.utilsService.loaderStart--;
                 this.utilsService.toasterService.error(res['message'], '', {
                     positionClass: 'toast-top-right',
                     closeButton: true
                 });
             } else {
+                console.log('in foldeer in else');
                 if (asseType === 'folder') {
                     docName += '.zip';
+                    console.log('in folder');
+                    // this.utilsService.download(res['download_url'], docName).subscribe();
                     // } else if (asseType === 'file') {
                 }
                 this.utilsService.download(res['download_url'], docName).subscribe();
@@ -850,9 +865,9 @@ export class AssetsService {
     }
 
     deleteAssetById(assetId, modalId: string) {
+        console.log('in delete asset by id');
         const formData = new FormData();
         formData.set('asset_ids', assetId);
-
         this.utilsService.postMethodAPI(true, this.utilsService.serverVariableService.deleteAssetAPI, formData, (response) => {
             if (!this.utilsService.isEmptyObjectOrNullUndefiend(response)) {
                 // console.log('Assets Deleted Successfully');
@@ -860,28 +875,24 @@ export class AssetsService {
                 this.utilsService.scroll = 0;
                 this.utilsService.getAllAssets(this.utilsService.assetIdForGetFolderAssetsOnDelete ? this.utilsService.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
                 this.utilsService.arrayOfSelectedAssets = new Array<number>();
-
                 setTimeout(() => {
                     if (this.utilsService.allAssets.length > 4) {
-
                         this.clickMe();
                     } else {
                         this.utilsService.scroll = 600;
                     }
-
                 }, 2000);
             }
         }, true);
     }
 
     deleteAllAssetById(assetId, modalId: string) {
+        console.log('in delete all');
         const index2 = this.utilsService.arrayOfPermissionForAssets.findIndex(val => val.name === '/');
-
         if (index2 !== -1) {
             if (this.utilsService.arrayOfPermissionForAssets[index2].isDelete === true) {
                 const formData = new FormData();
                 formData.set('asset_ids', assetId);
-
                 this.utilsService.postMethodAPI(true, this.utilsService.serverVariableService.deleteAssetAPI, formData, (response) => {
                     if (!this.utilsService.isEmptyObjectOrNullUndefiend(response)) {
                         // console.log('Assets Deleted Successfully');
@@ -889,19 +900,15 @@ export class AssetsService {
                         this.utilsService.scroll = 0;
                         this.utilsService.getAllAssets(this.utilsService.assetIdForGetFolderAssetsOnDelete ? this.utilsService.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
                         this.utilsService.arrayOfSelectedAssets = new Array<number>();
-
                         setTimeout(() => {
                             if (this.utilsService.allAssets.length > 4) {
-
                                 this.clickMe();
                             } else {
                                 this.utilsService.scroll = 600;
                             }
-
                         }, 2000);
                     }
                 }, true);
-
             } else {
                 this.utilsService.toasterService.error(this.utilsService.serverVariableService.ERROR_MSG_WHEN_NO_ACCESS_ON_Upload, '', {
                     positionClass: 'toast-top-right',
@@ -913,7 +920,6 @@ export class AssetsService {
             if (this.utilsService.arrayOfPermissionForAssets[index1].isDelete === true) {
                 const formData = new FormData();
                 formData.set('asset_ids', assetId);
-
                 this.utilsService.postMethodAPI(true, this.utilsService.serverVariableService.deleteAssetAPI, formData, (response) => {
                     if (!this.utilsService.isEmptyObjectOrNullUndefiend(response)) {
                         // console.log('Assets Deleted Successfully');
@@ -921,15 +927,12 @@ export class AssetsService {
                         this.utilsService.scroll = 0;
                         this.utilsService.getAllAssets(this.utilsService.assetIdForGetFolderAssetsOnDelete ? this.utilsService.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.desc' : '.asc')));
                         this.utilsService.arrayOfSelectedAssets = new Array<number>();
-
                         setTimeout(() => {
                             if (this.utilsService.allAssets.length > 4) {
-
                                 this.clickMe();
                             } else {
                                 this.utilsService.scroll = 600;
                             }
-
                         }, 2000);
                     }
                 }, true);

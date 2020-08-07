@@ -69,7 +69,9 @@ export class UsageComponent implements OnInit {
                 }
             }
         },
-        tooltip: {},
+        tooltip: {
+            enabled: false
+        },
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
@@ -174,22 +176,33 @@ export class UsageComponent implements OnInit {
         this.utilsService.postMethodAPI(false, this.utilsService.serverVariableService.getUsagesAPI, param, (response: any) => {
             for (const key in response) {
                 if (Object.prototype.hasOwnProperty.call(response, key)) {
-                    pieData.push({
-                        name: (key.toString().split('_').join('\n')).toUpperCase(),
-                        y: response[key]
-                    });
+                    // pieData.push({
+                    //     name: (key.toString().split('_').join('\n')).toUpperCase(),
+                    //     y: response[key]
+                    // });
+                    if (key === 'total_usages') {
+                        pieData.push({
+                            name: '<b>Using: </b>' + ('<p style="color:"black">' + response[key] + 'GB' + '</p>'),
+                            y: response[key]
+                        });
+                    } else if (key === 'max_usages') {
+                        pieData.push({
+                            name: '<b>Permitted Use: </b>' + ('<p style="color:"black">' + response[key] + 'GB' + '</p>'),
+                            y: response[key]
+                        });
+                    }
                     this.pieChartData.push(response[key]);
                 }
             }
-            this.pieChartOptions.tooltip = {
-                formatter: function () {
-                    if (this.point.x === 0) {
-                        return '<b>Using: </b>' + ('<p style="color:"black">' + this.y + 'GB' + '</p>');
-                    } else {
-                        return '<b>Permitted Use: </b>' + ('<p style="color:"red">' + this.y + 'GB' + '</p>');
-                    }
-                }
-            };
+            // this.pieChartOptions.tooltip = {
+            //     formatter: function () {
+            //         if (this.point.x === 0) {
+            //             return '<b>Using: </b>' + ('<p style="color:"black">' + this.y + 'GB' + '</p>');
+            //         } else {
+            //             return '<b>Permitted Use: </b>' + ('<p style="color:"red">' + this.y + 'GB' + '</p>');
+            //         }
+            //     }
+            // };
             setTimeout(() => {
                 const series = [{
                     type: 'pie',
