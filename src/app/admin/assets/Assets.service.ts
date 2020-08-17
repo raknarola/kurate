@@ -819,8 +819,9 @@ export class AssetsService {
                 });
             } else {
                 if (asseType === 'folder') {
-                    docName += '.zip';
+                    // docName += '.zip';
                     // this.utilsService.download(res['download_url'], docName).subscribe();
+                    window.location.href = res['download_url'];
                 } else if (asseType === 'file') {
                     console.log('in file');
                     this.utilsService.download(res['download_url'], docName).subscribe();

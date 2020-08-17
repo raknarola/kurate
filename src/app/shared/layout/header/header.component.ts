@@ -70,6 +70,6 @@ export class HeaderComponent extends HeaderService implements OnInit {
     this.utilsService.folderNameForCreateNewFolderAPI = null;
     this.utilsService.applyCreateFolderValidations();
     this.utilsService.openModal('createFolderModal');
-    this.utilsService.closeAfterSelection();
+    // this.utilsService.closeAfterSelection();
   }
 }

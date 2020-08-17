@@ -160,9 +160,9 @@ export class SharedAssetListService {
                 });
             } else {
                 if (assetType === 'folder') {
-                    docName += '.zip';
+                    window.location.href = res['download_url'];
                 }
-                this.utilsService.download(res['download_url'], docName).subscribe();
+                // this.utilsService.download(res['download_url'], docName).subscribe();
                 this.utilsService.loaderStart--;
                 // FileSaver.saveAs(this.domSanitizer.bypassSecurityTrustUrl(res['download_url']), docName.replace(/[^a-zA-Z0-9.]/g, ''));
             }

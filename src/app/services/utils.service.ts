@@ -22,9 +22,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 import { Tags } from '../models/Tags';
 import * as fileSaver from 'file-saver';
-import { catchError, map } from 'rxjs/operators';
-import { Console } from 'console';
-import { Observable } from 'rxjs';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 
 @Injectable({
     providedIn: 'root'
@@ -73,6 +71,7 @@ export class UtilsService {
     offsetCount: number;
     previousOffset: number;
     headermainSearchNgModel: string;
+    uploadArray = [];
     arrayOfBreadCrumb: Array<{ 'asset_id': number, 'folder_name': string, 'isActive': boolean }> = new Array<{ 'asset_id': number, 'folder_name': string, 'isActive': boolean }>();
     months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     flagForHideHeaderSearch: boolean;
@@ -101,6 +100,7 @@ export class UtilsService {
     reverseFlagForGridView: boolean;
     reverseFlagForListView: boolean;
     flagAfterSelection = false;
+    increaseFlag = 0;
 
     constructor(
         public http: HttpClient,
@@ -217,25 +217,15 @@ export class UtilsService {
         return localStorage.getItem('token') ? localStorage.getItem('token') : null;
     }
 
-    // download(downurl, docName) {
-    //     return this.http.get(downurl, {
-    //         reportProgress: true,
-    //         responseType: 'blob'
-    //     }).pipe(map((res) => {
-    //         fileSaver(res, docName);
-    //     }), catchError((err) => {
-    //         console.log(err);
-    //         return err;
-    //     }));
-    // }
-
-    download(file: any, downrl): Observable<any> {
-        return this.http.post(downrl, file, {
-            responseType: 'blob', reportProgress: true, headers: new HttpHeaders(
-                { 'Content-Type': 'application/json' },
-            )
-        }).pipe(map((res) => {
-            fileSaver(res, downrl);
+    download(downurl, docName) {
+        return this.http.get(downurl, {
+            reportProgress: true,
+            responseType: 'blob'
+        }).pipe(map(res => {
+            fileSaver(res, docName);
+        }), catchError((err) => {
+            console.log(err);
+            return err;
         }));
     }
 
@@ -377,7 +367,7 @@ export class UtilsService {
         document.body.removeChild(selBox);
     }
 
-    dropped(files: NgxFileDropEntry[], type: string, folderDropedKey: string, assets: Assets) {
+    async dropped(files: NgxFileDropEntry[], type: string, folderDropedKey: string, assets: Assets) {
         const fileSize = 104857600;
         this.files = files;
         this.flagForShowErrorMsg = false;
@@ -975,11 +965,8 @@ export class UtilsService {
             Key: key,
             Body: assetObj.file,
             ACL: 'public-read',
-            ContentType: contentType,
-            queueSize: 1
+            ContentType: contentType
         };
-        console.log('this queue is called');
-
         // setTimeout(params.abort.bind(req), 1000);
         const req = bucket.upload(params).on('httpUploadProgress', (evt) => {
             this.arrayOfSelectedFiles[index].progress = Math.round(evt.loaded / evt.total * 100);
@@ -994,7 +981,6 @@ export class UtilsService {
             this.createAssetAPI(data, assetObj);
             return true;
         });
-        this.closeAfterSelection();
     }
 
     clickMe() {
@@ -1631,11 +1617,10 @@ export class UtilsService {
                 this.flagForRefreshPage += 1;
                 if (this.flagForRefreshPage === this.arrayOfSelectedFiles.length) {
                     this.refreshAssets();
-                    this.flagForRefreshPage = 0;
                 }
             }
         });
-        this.closeAfterSelection();
+        // this.closeAfterSelection();
     }
 
     refreshAssets() {
@@ -1648,7 +1633,6 @@ export class UtilsService {
         if (!this.isNullUndefinedOrBlank(this.statusOfAction)) {
             if (!this.isNullUndefinedOrBlank(this.assetIdForGetFolderAssetsOnDelete) && this.assetIdForGetFolderAssetsOnDelete > 0) {
                 this.scroll = 0;
-                // this.getAllAssets(0, 0, 'created_at.desc');
                 this.getAllAssets(this.assetIdForGetFolderAssetsOnDelete ? this.assetIdForGetFolderAssetsOnDelete : 0, '0', (this.orderByForGridView + (this.reverseFlagForListView ? '.asc' : '.desc')));
                 setTimeout(() => {
                     if (this.allAssets.length > 4) {
@@ -1682,10 +1666,7 @@ export class UtilsService {
             }, 2000);
             this.offsetCount += 50;
         }
-        // }
         this.hideShowUploadingFiles();
-        console.log('document.getElementById(', document.getElementById('iconMenuButton'));
-
     }
 
     checkFileExistOrNot(key) {
@@ -1996,8 +1977,6 @@ export class UtilsService {
     }
 
     hideShowUploadingFiles() {
-        console.log('in here');
-
         this.flagForhideShowUploadingFiles = !this.flagForhideShowUploadingFiles;
     }
 
