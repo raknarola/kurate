@@ -825,8 +825,8 @@ export class AssetsService {
                 } else if (asseType === 'file') {
                     console.log('in file');
                     this.utilsService.download(res['download_url'], docName).subscribe();
-                    this.utilsService.loaderStart--;
                 }
+                this.utilsService.loaderStart--;
             }
         }, err => {
             this.utilsService.loaderStart--;
