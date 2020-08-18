@@ -1050,7 +1050,6 @@ export class UtilsService {
     }
 
     createAssetAPI(uploadResponse, document: Assets) {
-        this.closeAfterSelection();
         let assetObj = new Assets();
         assetObj = document;
         const splitArray = assetObj.name.split('.');
@@ -1620,7 +1619,7 @@ export class UtilsService {
                 }
             }
         });
-        // this.closeAfterSelection();
+        this.closeAfterSelection();
     }
 
     refreshAssets() {
