@@ -147,7 +147,6 @@ export class SharedAssetDetailsService {
     }
 
     download(docId, docName) {
-        console.log('Download', docId);
         // const headers = new HttpHeaders()
         //   .append('ChannelID', 'WEB')
         //   .append('ReqID', '789654')
@@ -155,11 +154,9 @@ export class SharedAssetDetailsService {
         //   .append('XkurateKey', 'KEY-WEB-#1014')
         //   .append('ApiToken', this.statusOfAction);
         const formData = new FormData();
-
         formData.set('token', this.statusOfAction);
         formData.set('asset_id', docId);
         this.utilsService.loaderStart++;
-
         this.http.post(UtilsService.URL + this.utilsService.serverVariableService.downloadShareIndividualAssetAPI, formData)
             .subscribe((res: any) => {
                 console.log('res => ', res);

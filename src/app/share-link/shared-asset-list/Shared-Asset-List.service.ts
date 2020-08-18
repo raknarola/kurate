@@ -161,8 +161,9 @@ export class SharedAssetListService {
             } else {
                 if (assetType === 'folder') {
                     window.location.href = res['download_url'];
+                } else if (assetType === 'file') {
+                    this.utilsService.download(res['download_url'], docName).subscribe();
                 }
-                // this.utilsService.download(res['download_url'], docName).subscribe();
                 this.utilsService.loaderStart--;
                 // FileSaver.saveAs(this.domSanitizer.bypassSecurityTrustUrl(res['download_url']), docName.replace(/[^a-zA-Z0-9.]/g, ''));
             }

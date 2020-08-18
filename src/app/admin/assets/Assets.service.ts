@@ -794,9 +794,6 @@ export class AssetsService {
     }
 
     download(docId, docName, asseType) {
-        console.log('Download', docId);
-        console.log('docName', docName);
-        console.log('asseType', asseType);
         const headers = new HttpHeaders()
             .append('ChannelID', 'WEB')
             .append('ReqID', '789654')
@@ -819,11 +816,8 @@ export class AssetsService {
                 });
             } else {
                 if (asseType === 'folder') {
-                    // docName += '.zip';
-                    // this.utilsService.download(res['download_url'], docName).subscribe();
                     window.location.href = res['download_url'];
                 } else if (asseType === 'file') {
-                    console.log('in file');
                     this.utilsService.download(res['download_url'], docName).subscribe();
                 }
                 this.utilsService.loaderStart--;
