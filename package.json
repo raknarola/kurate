@@ -34,7 +34,7 @@
     "aws-sdk": "2.637.0",
     "buffer": "5.4.3",
     "cerialize": "0.1.18",
-    "chart.js": "2.9.3",
+    "chart.js": "2.9.4",
     "chartjs-plugin-datalabels": "0.7.0",
     "classlist.js": "1.1.20150312",
     "core-js": "^2.5.4",
